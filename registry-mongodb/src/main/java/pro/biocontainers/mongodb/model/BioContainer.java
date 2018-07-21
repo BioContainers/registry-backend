@@ -1,4 +1,4 @@
-package pro.biocontainers.model;
+package pro.biocontainers.mongodb.model;
 
 import lombok.Builder;
 import lombok.Data;

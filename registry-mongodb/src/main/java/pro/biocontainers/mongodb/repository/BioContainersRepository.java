@@ -1,10 +1,10 @@
-package pro.biocontainers.repository;
+package pro.biocontainers.mongodb.repository;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
-import pro.biocontainers.model.BioContainer;
+import pro.biocontainers.mongodb.model.BioContainer;
 
 import java.util.List;
 import java.util.Optional;

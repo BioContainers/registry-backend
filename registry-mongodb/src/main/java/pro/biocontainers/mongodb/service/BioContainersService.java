@@ -1,9 +1,9 @@
-package pro.biocontainers.service;
+package pro.biocontainers.mongodb.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pro.biocontainers.model.BioContainer;
-import pro.biocontainers.repository.BioContainersRepository;
+import pro.biocontainers.mongodb.model.BioContainer;
+import pro.biocontainers.mongodb.repository.BioContainersRepository;
 
 import java.util.Optional;
 

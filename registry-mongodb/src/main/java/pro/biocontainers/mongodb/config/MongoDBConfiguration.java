@@ -1,4 +1,4 @@
-package pro.biocontainers.config;
+package pro.biocontainers.mongodb.config;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
