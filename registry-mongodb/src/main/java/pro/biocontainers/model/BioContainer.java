@@ -20,10 +20,10 @@ public class BioContainer {
     @Indexed(name = "id")
     ObjectId id;
 
-    @Indexed(name = "accession")
+    @Indexed(name = "accession", unique = true)
     String accession;
 
-    @Indexed(name = "url")
+    @Indexed(name = "url", unique = true)
     String url;
 
     @Indexed(name = "name")
