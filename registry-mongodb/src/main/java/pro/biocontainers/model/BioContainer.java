@@ -47,5 +47,4 @@ public class BioContainer {
     @Indexed(name= "about.home")
     Set<String> softwareURL;
 
-
 }
