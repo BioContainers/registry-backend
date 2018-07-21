@@ -11,10 +11,9 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import java.util.Map;
 import java.util.Set;
 
-
-@Document(collection = "biocontainers")
 @Builder
 @Data
+@Document(collection = "biocontainers")
 public class BioContainer {
 
     /** Native Identifier from MongoDB */

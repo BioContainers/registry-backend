@@ -23,5 +23,13 @@ public class BioContainersServiceTest {
     @Test
     public void indexContainer() {
 
+        BioContainer container = BioContainer.builder()
+                .accession("blast")
+                .name("blast")
+                .url("https://hub.docker.com/r/biocontainers/blast/")
+                .build();
+
+        containersService.indexContainer(container);
+
     }
 }
