@@ -35,7 +35,7 @@ public class MongoDBConfiguration  extends AbstractMongoConfiguration {
     @Value("${mongodb.biocontainers.db.port}")
     private String port;
 
-    @Value("${maven.biocontainers.db.host}")
+    @Value("${mongodb.biocontainers.db.host}")
     private String mongoHost;
 
 
