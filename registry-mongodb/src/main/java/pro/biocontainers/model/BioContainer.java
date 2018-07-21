@@ -6,6 +6,9 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+
+import java.util.Set;
 
 
 @Document(collection = "biocontainers")
@@ -17,6 +20,9 @@ public class BioContainer {
     @Indexed(name = "id")
     ObjectId id;
 
+    @Indexed(name = "accession")
+    String accession;
+
     @Indexed(name = "url")
     String url;
 
@@ -25,6 +31,12 @@ public class BioContainer {
 
     @Indexed(name = "description")
     String description;
+
+    @Field("toolIds")
+    Set<String> toolIds;
+
+    @Indexed(name= "about.home")
+    Set<String> softwareURL;
 
 
 }
