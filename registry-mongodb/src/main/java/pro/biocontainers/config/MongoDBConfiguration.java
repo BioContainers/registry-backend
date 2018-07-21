@@ -6,11 +6,17 @@ import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
+@Configuration
+@ComponentScan(basePackages = "pro.biocontainers.service")
+@EnableMongoRepositories(basePackages = "pro.biocontainers.repository.")
 public class MongoDBConfiguration  extends AbstractMongoConfiguration {
 
 
