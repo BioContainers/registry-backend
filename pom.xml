@@ -10,8 +10,8 @@
         <version>2.0.0.RELEASE</version>
     </parent>
 
-    <groupId>org.biocontainer</groupId>
-    <artifactId>biocontainers-backend</artifactId>
+    <groupId>pro.biocontainers</groupId>
+    <artifactId>registry-backend</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <developers>
@@ -29,7 +29,7 @@
     </developers>
 
     <modules>
-        <module>biocontains-mongodb</module>
+        <module>registry-mongodb</module>
     </modules>
 
     <properties>
