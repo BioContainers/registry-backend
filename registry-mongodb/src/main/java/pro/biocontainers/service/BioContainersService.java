@@ -8,7 +8,7 @@ import pro.biocontainers.repository.BioContainersRepository;
 import java.util.Optional;
 
 @Service
-public class BioCotnainersService {
+public class BioContainersService {
 
     @Autowired
     BioContainersRepository repository;
