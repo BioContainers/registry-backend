@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 import pro.biocontainers.readers.quayio.model.ListShortContainers;
 import pro.biocontainers.readers.quayio.model.ShortQuayIOContainer;
+import pro.biocontainers.readers.quayio.services.QueryQuayIOService;
 
 import java.util.List;
 
@@ -23,15 +24,10 @@ public class QuayIOReaderApp {
     }
 
     @Bean
-    public RestTemplate restTemplate(RestTemplateBuilder builder) {
-        return builder.build();
-    }
-
-    @Bean
-    public CommandLineRunner run(RestTemplate restTemplate) throws Exception {
+    public CommandLineRunner run(RestTemplateBuilder builder) throws Exception {
         return args -> {
-            ListShortContainers listShortContainers = restTemplate.getForObject(
-                    "https://quay.io/api/v1/repository?popularity=true&last_modified=true&public=true&starred=false&namespace=biocontainers", ListShortContainers.class);
+            QueryQuayIOService service = new QueryQuayIOService(builder);
+            ListShortContainers listShortContainers = service.getListContainers("biocontainers");
             log.info(listShortContainers.toString());
         };
     }
