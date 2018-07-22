@@ -15,8 +15,8 @@ import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 @Configuration
-@ComponentScan(basePackages = "pro.biocontainers.service")
-@EnableMongoRepositories(basePackages = "pro.biocontainers.repository.")
+@ComponentScan(basePackages = "pro.biocontainers.mongodb.service")
+@EnableMongoRepositories(basePackages = "pro.biocontainers.mongodb.repository")
 public class MongoDBConfiguration  extends AbstractMongoConfiguration {
 
 
