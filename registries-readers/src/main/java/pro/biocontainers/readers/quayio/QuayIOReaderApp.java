@@ -12,7 +12,6 @@ import pro.biocontainers.readers.quayio.model.ListShortContainers;
 import pro.biocontainers.readers.quayio.model.ShortQuayIOContainer;
 import pro.biocontainers.readers.quayio.services.QueryQuayIOService;
 
-import java.util.List;
 
 @SpringBootApplication
 public class QuayIOReaderApp {
@@ -28,7 +27,6 @@ public class QuayIOReaderApp {
 
     @Bean
     public CommandLineRunner run(RestTemplateBuilder builder) throws Exception {
-        String accessToken = "bdxE6pcOcmd0YZUAmpsW8gO8yw7JEKirISxTQqBQ";
         return args -> {
             QueryQuayIOService service = new QueryQuayIOService(builder);
             service.setToken(accessToken);
