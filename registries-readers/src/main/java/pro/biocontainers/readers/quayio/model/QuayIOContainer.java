@@ -21,4 +21,27 @@ public class QuayIOContainer extends ShortQuayIOContainer{
     Long tag_expiration_s;
     Boolean is_starred;
     List<Stat> stats;
+
+    @Override
+    public String toString() {
+        return "QuayIOContainer{" +
+                "is_organization=" + is_organization +
+                ", can_write=" + can_write +
+                ", status_token='" + status_token + '\'' +
+                ", can_admin=" + can_admin +
+                ", trust_enabled=" + trust_enabled +
+                ", description='" + description + '\'' +
+                ", tags=" + tags +
+                ", tag_expiration_s=" + tag_expiration_s +
+                ", is_starred=" + is_starred +
+                ", stats=" + stats +
+                ", kind='" + kind + '\'' +
+                ", name='" + name + '\'' +
+                ", popularity=" + popularity +
+                ", namespace='" + namespace + '\'' +
+                ", last_modified=" + last_modified +
+                ", is_public=" + is_public +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

@@ -2,18 +2,14 @@ package pro.biocontainers.readers.quayio.services;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.HttpRequest;
-import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
-import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 import pro.biocontainers.readers.quayio.model.ListShortContainers;
-import pro.biocontainers.readers.quayio.model.ShortQuayIOContainer;
+import pro.biocontainers.readers.quayio.model.QuayIOContainer;
 
-import java.io.IOException;
+import java.util.Optional;
 
 @Service
 @Log4j2
@@ -30,12 +26,17 @@ public class QueryQuayIOService {
     public void setToken(String accessToken){
         if (accessToken != null) {
             this.restTemplate.getInterceptors()
-                    .add(getBearerTokenInterceptor(accessToken));
+                    .add(getAccessTokenInterceptor(accessToken));
         } else {
             this.restTemplate.getInterceptors().add(getNoTokenInterceptor());
         }
     }
 
+    /**
+     * Get the list of containers from Quay.io
+     * @param namespace namespace that contains all the containers
+     * @return Container.
+     */
     public ListShortContainers getListContainers(String namespace){
         String url = String.format("https://quay.io/api/v1/repository?popularity=true&last_modified=true&public=true&starred=false&namespace=%s", namespace);
         ListShortContainers listShortContainers = new ListShortContainers();
@@ -47,7 +48,26 @@ public class QueryQuayIOService {
         return listShortContainers;
     }
 
-    private ClientHttpRequestInterceptor  getBearerTokenInterceptor(String accessToken) {
+    /**
+     * Return an specific container by a given namespace (organization) / name of the container
+     * (containerName)
+     * @param namespace nameSpace
+     * @param containerName containerName
+     * @return QuayIOContainer
+     */
+    public Optional<QuayIOContainer> getContainer(String namespace, String containerName){
+        String url = String.format("https://quay.io/api/v1/repository/%s/%s", namespace, containerName);
+        try{
+            QuayIOContainer container = restTemplate.getForObject(url, QuayIOContainer.class);
+            return Optional.of(container);
+        }catch (RestClientException ex){
+            log.error(ex.getMessage());
+        }
+        return Optional.empty() ;
+    }
+
+
+    private ClientHttpRequestInterceptor getAccessTokenInterceptor(String accessToken) {
         ClientHttpRequestInterceptor interceptor = (request, bytes, execution) -> {
             request.getHeaders().add("Authorization", "access_token " + accessToken);
             return execution.execute(request, bytes);
