@@ -1,256 +1,145 @@
 package pro.biocontainers.readers.utilities.dockerfile;
 
-import lombok.extern.log4j.Log4j2;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
-
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-
-/**
- * Parse a Dockerfile.
- */
-@Log4j2
 public class DockerFile {
 
-    public final File dockerFile;
+    // TODO: docs about template features
+    final static Pattern TEMPLATE_PATTERN             = Pattern.compile("\\$[^\\$^\\$]+\\$");
+    final static Pattern TEMPLATE_DEFAULT_PATTERN     = Pattern.compile("(.*):-(.*)");
+    // Docker file templates may contains following constructions:
+    // parameter[= > < >= <= !=]condition?expression1:expression2
+    // Parameter is replaced with expression1 if value of parameter is matched to condition and replaced with expression2 otherwise
+    final static Pattern TEMPLATE_CONDITIONAL_PATTERN = Pattern.compile("([^><=!\\s]+)([><=!]+)?(.*)?\\?(.*)?:(.*)?");
 
-    private final File baseDirectory;
+    private List<String> lines;
+    private Map<String, Object> parameters;
+    private List<DockerImage>   images;
 
-    public DockerFile(File dockerFile, File baseDirectory) {
-        if (!dockerFile.exists()) {
-            throw new IllegalStateException(String.format("Dockerfile %s does not exist", dockerFile.getAbsolutePath()));
+    public List<String> getLines() {
+        if (lines == null) {
+            lines = new LinkedList<>();
         }
-
-        if (!dockerFile.isFile()) {
-            throw new IllegalStateException(String.format("Dockerfile %s is not a file", dockerFile.getAbsolutePath()));
-        }
-
-        this.dockerFile = dockerFile;
-
-        if (!baseDirectory.exists()) {
-            throw new IllegalStateException(String.format("Base directory %s does not exist", baseDirectory.getAbsolutePath()));
-        }
-
-        if (!baseDirectory.isDirectory()) {
-            throw new IllegalStateException(String.format("Base directory %s is not a directory", baseDirectory.getAbsolutePath()));
-        }
-
-        this.baseDirectory = baseDirectory;
+        return lines;
     }
 
-    private static class LineTransformer implements Function<String, Optional<? extends DockerFileStatement>> {
+    public List<DockerImage> getImages() {
+        if (images == null) {
+            images = new LinkedList<>();
+        }
+        return images;
+    }
 
-        private int line = 0;
+    public Map<String, Object> getParameters() {
+        if (parameters == null) {
+            parameters = new LinkedHashMap<>();
+        }
+        return parameters;
+    }
 
-        @Override
-        public Optional<? extends DockerFileStatement> apply(String input)  {
-            try {
-                line++;
-                return DockerFileStatement.createFromLine(input);
-
-            } catch (Exception ex) {
-                log.error("Error on dockerfile line " + line);
-            }
-            return Optional.empty();
+    public void writeDockerfile(java.io.File path) throws IOException {
+        try (FileWriter output = new FileWriter(path)) {
+            writeDockerfile(output);
         }
     }
 
-    public Iterable<DockerFileStatement> getStatements() throws IOException, FileException {
-        Collection<String> dockerFileContent = FileUtils.readLines(dockerFile);
-
-        if (dockerFileContent.size() <= 0) {
-            throw new FileException(String.format("Dockerfile %s is empty", dockerFile));
-        }
-
-        Collection<Optional<? extends DockerFileStatement>> optionals = dockerFileContent.stream().map(new LineTransformer()).collect(Collectors.toList());
-        return optionals.stream().filter(x -> x.isPresent()).map(x -> x.get()).collect(Collectors.toList());
-    }
-
-    public List<String> getIgnores() throws IOException, FileException {
-        List<String> ignores = new ArrayList<String>();
-        File dockerIgnoreFile = new File(baseDirectory, ".dockerignore");
-        if (dockerIgnoreFile.exists()) {
-            int lineNumber = 0;
-            List<String> dockerIgnoreFileContent = FileUtils.readLines(dockerIgnoreFile);
-            for (String pattern : dockerIgnoreFileContent) {
-                lineNumber++;
-                pattern = pattern.trim();
-                if (pattern.isEmpty()) {
-                    continue; // skip empty lines
+    public void writeDockerfile(Appendable output) throws IOException {
+        StringBuilder buf = null;
+        for (String line : getLines()) {
+            boolean isEmptyOutput = false;
+            final Matcher matcher = TEMPLATE_PATTERN.matcher(line);
+            if (matcher.find()) {
+                int start = 0;
+                if (buf == null) {
+                    buf = new StringBuilder();
+                } else {
+                    buf.setLength(0);
                 }
-                pattern = FilenameUtils.normalize(pattern);
-                ignores.add(pattern);
-            }
-        }
-        return ignores;
-    }
+                do {
+                    buf.append(line.substring(start, matcher.start()));
+                    final String template = line.substring(matcher.start(), matcher.end());
+                    final String expression = line.substring(matcher.start() + 1, matcher.end() - 1);
 
-    public ScannedResult parse() throws IOException, FileException {
-        return new ScannedResult();
-    }
-
-    /**
-     * Result of scanning / parsing a docker file.
-     */
-    public class ScannedResult {
-
-        final List<String> ignores;
-
-        final List<File> filesToAdd = new ArrayList<File>();
-
-        public InputStream buildDockerFolderTar() throws FileException {
-            return buildDockerFolderTar(baseDirectory);
-        }
-
-        public InputStream buildDockerFolderTar(File directory) throws FileException {
-
-            File dockerFolderTar = null;
-
-            try {
-                final String archiveNameWithOutExtension = UUID.randomUUID().toString();
-
-                dockerFolderTar = CompressArchiveUtil.archiveTARFiles(directory, filesToAdd,
-                        archiveNameWithOutExtension);
-
-                long length = dockerFolderTar.length();
-
-                final FileInputStream tarInputStream = FileUtils.openInputStream(dockerFolderTar);
-                final File tarFile = dockerFolderTar;
-
-                return new InputStream() {
-
-                    @Override
-                    public int available() throws IOException {
-                        return tarInputStream.available();
-                    }
-
-                    @Override
-                    public int read() throws IOException {
-                        return tarInputStream.read();
-                    }
-
-                    @Override
-                    public int read(byte[] buff, int offset, int len) throws IOException {
-                        return tarInputStream.read(buff, offset, len);
-                    }
-
-                    @Override
-                    public void close() throws IOException {
-                        IOUtils.closeQuietly(tarInputStream);
-                        FileUtils.deleteQuietly(tarFile);
-                    }
-                };
-
-            } catch (IOException ex) {
-                FileUtils.deleteQuietly(dockerFolderTar);
-                throw new FileException("Error occurred while preparing Docker context folder.");
-            }
-        }
-
-        @Override
-        public String toString() {
-            return new StringBuilder().append("ignores : " + ignores)
-                    .append("filesToAdd : " + filesToAdd).toString();
-        }
-
-        public ScannedResult() throws IOException, FileException {
-
-            ignores = getIgnores();
-
-            String matchingIgnorePattern = effectiveMatchingIgnorePattern(dockerFile);
-
-            if (matchingIgnorePattern != null) {
-                throw new FileException(String.format(
-                        "Dockerfile is excluded by pattern '%s' in .dockerignore file", matchingIgnorePattern));
-            }
-
-            addFilesInDirectory(baseDirectory);
-        }
-
-        /**
-         * Adds all files found in <code>directory</code> and subdirectories to
-         * <code>filesToAdd</code> collection. It also adds any empty directories
-         * if found.
-         *
-         * @param directory directory
-         * @throws FileException when IO error occurs
-         */
-        private void addFilesInDirectory(File directory) throws FileException {
-            File[] files = directory.listFiles();
-
-            if (files == null) {
-                throw new FileException("Failed to read build context directory: " + baseDirectory.getAbsolutePath());
-            }
-
-            if (files.length != 0) {
-                for (File f : files) {
-                    if (effectiveMatchingIgnorePattern(f) == null) {
-                        if (f.isDirectory()) {
-                            addFilesInDirectory(f);
-                        } else {
-                            filesToAdd.add(f);
+                    String parameterName;
+                    Matcher subMatcher;
+                    Object value;
+                    // we've a default pattern so extract parameter name
+                    if ((subMatcher = TEMPLATE_DEFAULT_PATTERN.matcher(expression)).matches()) {
+                        parameterName = subMatcher.group(1);
+                        value = getParameters().get(parameterName);
+                        if (value == null) {
+                            value = subMatcher.group(2);
                         }
+                    } else if ((subMatcher = TEMPLATE_CONDITIONAL_PATTERN.matcher(expression)).matches()) {
+                        parameterName = subMatcher.group(1);
+                        final String operator = subMatcher.group(2);
+                        final String condition = subMatcher.group(3);
+                        final String ifTrue = subMatcher.group(4);
+                        final String ifFalse = subMatcher.group(5);
+                        if (operator == null && condition.isEmpty()) {
+                            // parameter?expression1:expression2
+                            value = getParameters().get(parameterName);
+                            value = (value instanceof Boolean && (Boolean)value)
+                                    || (value instanceof String && Boolean.parseBoolean((String)value))
+                                    || (value instanceof Number && 0 != ((Number)value).intValue())
+                                    ? ifTrue
+                                    : ifFalse;
+                        } else {
+                            value = getParameters().get(parameterName);
+                            if ("=".equals(operator)) {
+                                value = condition.equals(value) ? ifTrue : ifFalse;
+                            } else if ("!=".equals(operator)) {
+                                value = condition.equals(value) ? ifFalse : ifTrue;
+                            } else if (">".equals(operator)) {
+                                value = String.valueOf(value).compareTo(condition) > 0 ? ifTrue : ifFalse;
+                            } else if ("<".equals(operator)) {
+                                value = condition.compareTo(String.valueOf(value)) > 0 ? ifTrue : ifFalse;
+                            } else if (">=".equals(operator)) {
+                                value = condition.compareTo(String.valueOf(value)) <= 0 ? ifTrue : ifFalse;
+                            } else if ("<=".equals(operator)) {
+                                value = condition.compareTo(String.valueOf(value)) >= 0 ? ifTrue : ifFalse;
+                            }
+                        }
+                        if (!isEmptyOutput && (value == null || value.toString().length() == 0)) {
+                            isEmptyOutput = true;
+                        }
+                    } else {
+                        // not a default expression, so expression is the parameter name
+                        parameterName = expression;
+                        value = getParameters().get(parameterName);
                     }
-                }
-                // base directory should at least contains Dockerfile, but better check
-            } else if (!isBaseDirectory(directory)) {
-                // add empty directory
-                filesToAdd.add(directory);
-            }
-        }
-
-        private boolean isBaseDirectory(File directory) {
-            return directory.compareTo(baseDirectory) == 0;
-        }
-
-        /**
-         * Returns all matching ignore patterns for the given file name.
-         */
-        private List<String> matchingIgnorePatterns(String fileName) throws FileException {
-            List<String> matches = new ArrayList<String>();
-
-            int lineNumber = 0;
-            for (String pattern : ignores) {
-                String goLangPattern = pattern.startsWith("!") ? pattern.substring(1) : pattern;
-                lineNumber++;
-                try {
-                    if (GoLangFileMatch.match(goLangPattern, fileName)) {
-                        matches.add(pattern);
+                    if (value == null) {
+                        value = template;
                     }
-                } catch (FileException e) {
-                    throw new FileException(String.format(
-                            "Invalid pattern '%s' on line %s in .dockerignore file", pattern, lineNumber));
+                    buf.append(String.valueOf(value));
+                    start = matcher.end();
+                } while (matcher.find());
+                final String subLine = line.substring(start);
+                if (isEmptyOutput && subLine.length() == 0) {
+                    continue;
                 }
+                buf.append(subLine);
+                output.append(buf);
+            } else {
+                output.append(line);
             }
-
-            return matches;
+            output.append('\n');
         }
+    }
 
-        /**
-         * Returns the matching ignore pattern for the given file or null if it should NOT be ignored. Exception rules like "!Dockerfile"
-         * will be respected.
-         */
-        private String effectiveMatchingIgnorePattern(File file) throws FileException {
-            // normalize path to replace '/' to '\' on Windows
-            String relativeFilename = FilenameUtils.normalize(FilePathUtil.relativize(baseDirectory, file));
-
-            List<String> matchingPattern = matchingIgnorePatterns(relativeFilename);
-
-            if (matchingPattern.isEmpty()) {
-                return null;
-            }
-
-            String lastMatchingPattern = matchingPattern.get(matchingPattern.size() - 1);
-
-            return !lastMatchingPattern.startsWith("!") ? lastMatchingPattern : null;
-        }
+    @Override
+    public String toString() {
+        return "DockerFile{" +
+                "lines=" + lines +
+                ", parameters=" + parameters +
+                ", images=" + images +
+                '}';
     }
 }
