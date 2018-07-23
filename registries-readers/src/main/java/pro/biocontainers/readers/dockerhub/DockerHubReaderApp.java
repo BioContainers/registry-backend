@@ -28,7 +28,7 @@ public class DockerHubReaderApp {
     }
 
     @Bean
-    public CommandLineRunner run(RestTemplateBuilder builder) throws Exception {
+    public CommandLineRunner run(RestTemplateBuilder builder) {
         return args -> {
             DockerHubQueryService service = new DockerHubQueryService(builder, configuration);
             ListDockerHubContainers containersList = service.getAllContainers("biocontainers");

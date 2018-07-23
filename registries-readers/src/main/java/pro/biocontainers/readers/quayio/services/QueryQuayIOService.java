@@ -68,11 +68,10 @@ public class QueryQuayIOService {
 
 
     private ClientHttpRequestInterceptor getAccessTokenInterceptor(String accessToken) {
-        ClientHttpRequestInterceptor interceptor = (request, bytes, execution) -> {
+        return (request, bytes, execution) -> {
             request.getHeaders().add("Authorization", "access_token " + accessToken);
             return execution.execute(request, bytes);
         };
-        return interceptor;
     }
 
     private ClientHttpRequestInterceptor getNoTokenInterceptor() {

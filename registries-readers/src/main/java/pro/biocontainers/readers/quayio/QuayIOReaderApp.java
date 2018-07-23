@@ -28,7 +28,7 @@ public class QuayIOReaderApp {
     }
 
     @Bean
-    public CommandLineRunner run(RestTemplateBuilder builder) throws Exception {
+    public CommandLineRunner run(RestTemplateBuilder builder) {
         return args -> {
             QueryQuayIOService service = new QueryQuayIOService(builder);
             service.setToken(accessToken);

@@ -76,9 +76,6 @@ public class DockerHubQueryService {
         DockerHubContainer container = new DockerHubContainer();
         try {
             DockerHubContainerBriefInfo info = restTemplate.getForObject(containerDetailsUrl, DockerHubContainerBriefInfo.class);
-            if(info == null) {
-                return Optional.empty();
-            }
             container.setInfo(info);
 
             DockerHubTagFetcher tagsFetcher = restTemplate.getForObject(containerTagsUrl, DockerHubTagFetcher.class);
@@ -103,11 +100,10 @@ public class DockerHubQueryService {
 
 
     private ClientHttpRequestInterceptor getAccessTokenInterceptor(String accessToken) {
-        ClientHttpRequestInterceptor interceptor = (request, bytes, execution) -> {
+        return (request, bytes, execution) -> {
             request.getHeaders().add("Authorization", "access_token " + accessToken);
             return execution.execute(request, bytes);
         };
-        return interceptor;
     }
 
     private ClientHttpRequestInterceptor getNoTokenInterceptor() {

@@ -44,8 +44,7 @@ public class MongoDBConfiguration  extends AbstractMongoConfiguration {
     public MongoClient mongoClient() {
         MongoCredential credential = MongoCredential.createCredential(getUser(), getAuthenticationDatabse(), getPassword().toCharArray());
         MongoClientOptions options = MongoClientOptions.builder().build();
-        MongoClient mongoClient = configureSingleMachine(credential, options);
-        return mongoClient;
+        return configureSingleMachine(credential, options);
     }
 
     @Bean
