@@ -10,10 +10,8 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import pro.biocontainers.readers.quayio.model.ListShortContainers;
 import pro.biocontainers.readers.quayio.model.QuayIOContainer;
-import pro.biocontainers.readers.quayio.model.ShortQuayIOContainer;
 import pro.biocontainers.readers.quayio.services.QueryQuayIOService;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 
