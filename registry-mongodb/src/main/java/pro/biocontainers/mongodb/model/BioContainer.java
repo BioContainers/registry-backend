@@ -40,10 +40,4 @@ public class BioContainer {
     @Indexed(name = "description")
     String description;
 
-    @Field("toolIds")
-    Set<String> toolIds;
-
-    @Indexed(name= "about.home")
-    Set<String> softwareURL;
-
 }

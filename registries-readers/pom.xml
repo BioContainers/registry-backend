@@ -55,6 +55,17 @@
             <artifactId>guava</artifactId>
             <version>17.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.docker-java</groupId>
+            <artifactId>docker-java</artifactId>
+            <version>3.1.0-rc-3</version>
+        </dependency>
+        <dependency>
+            <groupId>fr.uca.i3s.sparks.docker.model</groupId>
+            <artifactId>dockermodel</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 
     <build>
