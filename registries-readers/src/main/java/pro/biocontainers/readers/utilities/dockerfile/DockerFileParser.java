@@ -6,51 +6,49 @@ import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.Reader;
-import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * @author ypriverol
  */
 public class DockerFileParser {
 
+    public static final Pattern LABEL_AGAIN_MULTILINE = Pattern.compile(".*(\\\\)+\\s*");
+    public static final Pattern LABEL_END_MULTILINE = Pattern.compile("[^\\\\]*");
+
     /** Parse content of Dockerfile from the specified File. */
     public static DockerFile parse(File file) throws FileException {
         try {
-            return parse(CharStreams.readLines(Files.newReader(file, Charset.defaultCharset())));
+            return parse(readLines(Files.newReader(file, Charset.defaultCharset())));
         } catch (IOException e) {
             throw new FileException("Error happened parsing the Docker file." + e.getMessage(), e);
         }
     }
 
-    /** Parse content of Dockerfile from the specified URL. */
-    public static DockerFile parse(final URL file) throws FileException {
-        try {
-            return parse(CharStreams.readLines(Resources.asCharSource(file, Charset.defaultCharset()).openStream()));
-        } catch (IOException e) {
-            throw new FileException("Error happened parsing the Docker file:" + e.getMessage(), e);
-        }
-    }
+    private static Iterable<String> readLines(BufferedReader bufferedReader) throws IOException {
+        String line = bufferedReader.readLine();
+        StringBuilder sb = new StringBuilder();
 
-    /** Parse content of Dockerfile from the specified Reader. */
-    public static DockerFile parse(Reader reader) throws FileException {
-        try {
-            return parse(CharStreams.readLines(reader));
-        } catch (IOException e) {
-            throw new FileException("Error happened parsing the Docker file:" + e.getMessage(), e);
+        while(line != null){
+            if (LABEL_AGAIN_MULTILINE.matcher(line).matches()) {
+                sb.append(line);
+            }else{
+                sb.append(line).append("\n");
+            }
+            line = bufferedReader.readLine();
         }
-    }
 
-    /** Parse content of Dockerfile that is represented by String value. */
-    public static DockerFile parse(String contentOfDockerFile) throws FileException {
-        try {
-            return parse(CharStreams.readLines(CharSource.wrap(contentOfDockerFile).openStream()));
-        } catch (IOException e) {
-            throw new FileException("Error happened parsing the Docker file:" + e.getMessage(), e);
-        }
+
+        String fileAsString = sb.toString();
+        System.out.println("Contents : " + fileAsString);
+        return Arrays.asList(fileAsString.split("\n"));
     }
 
     private static DockerFile parse(Iterable<String> lines) throws FileException {
@@ -283,7 +281,7 @@ public class DockerFileParser {
         LABEL {
             @Override
             void setInstructionArgumentsToModel(DockerImage model, String line) throws FileException {
-                model.getComments().add(getInstructionArguments(line));
+                model.getLabels().add(getInstructionArguments(line));
             }
 
             @Override

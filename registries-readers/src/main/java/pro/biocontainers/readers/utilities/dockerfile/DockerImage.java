@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class DockerImage {
+    public List<String> labels;
     private String                     from;
     private List<String>               maintainer;
     private List<String>               run;
@@ -116,6 +117,13 @@ public class DockerImage {
             comments = new LinkedList<>();
         }
         return comments;
+    }
+
+    public List<String> getLabels() {
+        if (labels == null) {
+            labels = new LinkedList<>();
+        }
+        return labels;
     }
 
     @Override
