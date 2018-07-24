@@ -6,9 +6,9 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class Tag {
-    String image_id;
-    String last_modified;
-    String name;
-    String manifest_digest;
-    Long size;
+    private String image_id;
+    private String last_modified;
+    private String name;
+    private String manifest_digest;
+    private Long size;
 }

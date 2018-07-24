@@ -2,7 +2,7 @@ package pro.biocontainers.readers.quayio;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -20,8 +20,8 @@ public class QuayIOReaderApp {
 
     private static final Logger log = LoggerFactory.getLogger(QuayIOReaderApp.class);
 
-    @Value("${quay.io.token}")
-    private String accessToken;
+    @Autowired
+    private QuayIOConfiguration configuration;
 
     public static void main(String args[]) {
         SpringApplication.run(QuayIOReaderApp.class);
@@ -30,13 +30,12 @@ public class QuayIOReaderApp {
     @Bean
     public CommandLineRunner run(RestTemplateBuilder builder) {
         return args -> {
-            QueryQuayIOService service = new QueryQuayIOService(builder);
-            service.setToken(accessToken);
+            QueryQuayIOService service = new QueryQuayIOService(builder, configuration);
             ListShortContainers listShortContainers = service.getListContainers("biocontainers");
             log.info(listShortContainers.getRepositories().toString());
-            listShortContainers.getRepositories().stream().forEach( x-> {
+            listShortContainers.getRepositories().stream().forEach(x -> {
                 Optional<QuayIOContainer> container = service.getContainer("biocontainers", x.getName());
-                if(container.isPresent())
+                if (container.isPresent())
                     log.debug(container.toString());
             });
         };

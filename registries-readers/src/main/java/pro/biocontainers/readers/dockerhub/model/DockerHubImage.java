@@ -6,8 +6,8 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class DockerHubImage {
-    Long size;
-    String architecture;
-    String os;
-    String os_version;
+    private Long size;
+    private String architecture;
+    private String os;
+    private String os_version;
 }

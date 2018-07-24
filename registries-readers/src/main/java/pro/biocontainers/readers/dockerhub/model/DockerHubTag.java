@@ -8,13 +8,13 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class DockerHubTag {
-    String name;
-    Long full_size;
-    List<DockerHubImage> images;
-    Long id;
-    Long repository;
-    Long creator;
-    Long last_updater;
-    String last_updated;
+    private String name;
+    private Long full_size;
+    private List<DockerHubImage> images;
+    private Long id;
+    private Long repository;
+    private Long creator;
+    private Long last_updater;
+    private String last_updated;
 
 }

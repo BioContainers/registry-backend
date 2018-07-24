@@ -7,6 +7,6 @@ import lombok.Data;
 @Data
 public class Stat {
 
-    String date;
-    Long count;
+    private String date;
+    private Long count;
 }

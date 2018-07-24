@@ -2,25 +2,24 @@ package pro.biocontainers.readers.quayio.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.util.List;
 import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
-public class QuayIOContainer extends ShortQuayIOContainer{
+public class QuayIOContainer extends ShortQuayIOContainer {
 
-    Boolean is_organization;
-    Boolean can_write;
-    String  status_token;
-    Boolean can_admin;
-    Boolean trust_enabled;
-    String  description;
-    Map<String, Tag> tags;
-    Long tag_expiration_s;
-    Boolean is_starred;
-    List<Stat> stats;
+    private Boolean is_organization;
+    private Boolean can_write;
+    private String status_token;
+    private Boolean can_admin;
+    private Boolean trust_enabled;
+    private String description;
+    private Map<String, Tag> tags;
+    private Long tag_expiration_s;
+    private Boolean is_starred;
+    private List<Stat> stats;
 
     @Override
     public String toString() {

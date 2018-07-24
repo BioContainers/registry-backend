@@ -7,19 +7,13 @@ import lombok.Data;
 @Data
 public class ShortQuayIOContainer {
 
-    String kind;
-
-    String name;
-
-    Integer popularity;
-
-    String namespace;
-
-    Long last_modified;
-
-    Boolean is_public;
-
-    String description;
+    protected String kind;
+    protected String name;
+    protected Integer popularity;
+    protected String namespace;
+    protected Long last_modified;
+    protected Boolean is_public;
+    protected String description;
 
     @Override
     public String toString() {

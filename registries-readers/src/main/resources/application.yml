@@ -11,12 +11,14 @@ logging.level:
   sun.rmi: WARN
 
 dockerhub:
+  token: @maven.dockerhub.token@
   urls:
     containers-list: "https://hub.docker.com/v2/repositories/%%namespace%%/?page_size=100"
     container-details: "https://hub.docker.com/v2/repositories/%%namespace%%/%%container_name%%/"
     container-tags: "https://hub.docker.com/v2/repositories/%%namespace%%/%%container_name%%/tags/?page_size=250"
 
 quay.io:
+  token: @maven.quay.io.token@
   urls:
     containers-list: "https://quay.io/api/v1/repository?popularity=true&last_modified=true&public=true&starred=false&namespace=%%namespace%%"
     container-details: "https://quay.io/api/v1/repository/%%namespace%%/%%container_name%%"

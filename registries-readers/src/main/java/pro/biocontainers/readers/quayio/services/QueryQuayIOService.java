@@ -6,6 +6,7 @@ import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import pro.biocontainers.readers.quayio.QuayIOConfiguration;
 import pro.biocontainers.readers.quayio.model.ListShortContainers;
 import pro.biocontainers.readers.quayio.model.QuayIOContainer;
 
@@ -15,15 +16,13 @@ import java.util.Optional;
 @Log4j2
 public class QueryQuayIOService {
 
-    RestTemplate restTemplate;
+    private RestTemplate restTemplate;
+    private QuayIOConfiguration configuration;
 
-    public QueryQuayIOService(RestTemplateBuilder builder){
+    public QueryQuayIOService(RestTemplateBuilder builder, QuayIOConfiguration configuration) {
         restTemplate = builder.build();
-
-
-    }
-
-    public void setToken(String accessToken){
+        this.configuration = configuration;
+        String accessToken = configuration.getAccessToken();
         if (accessToken != null) {
             this.restTemplate.getInterceptors()
                     .add(getAccessTokenInterceptor(accessToken));
@@ -34,15 +33,17 @@ public class QueryQuayIOService {
 
     /**
      * Get the list of containers from Quay.io
+     *
      * @param namespace namespace that contains all the containers
      * @return Container.
      */
-    public ListShortContainers getListContainers(String namespace){
-        String url = String.format("https://quay.io/api/v1/repository?popularity=true&last_modified=true&public=true&starred=false&namespace=%s", namespace);
+    public ListShortContainers getListContainers(String namespace) {
+        String containersListUrl = configuration.getContainersListUrl();
+        String url = containersListUrl.replaceAll("%%namespace%%", namespace);
         ListShortContainers listShortContainers = new ListShortContainers();
-        try{
-             listShortContainers = restTemplate.getForObject(url, ListShortContainers.class);
-        }catch (RestClientException ex){
+        try {
+            listShortContainers = restTemplate.getForObject(url, ListShortContainers.class);
+        } catch (RestClientException ex) {
             log.error(ex.getMessage());
         }
         return listShortContainers;
@@ -51,19 +52,21 @@ public class QueryQuayIOService {
     /**
      * Return an specific container by a given namespace (organization) / name of the container
      * (containerName)
-     * @param namespace nameSpace
+     *
+     * @param namespace     nameSpace
      * @param containerName containerName
      * @return QuayIOContainer
      */
-    public Optional<QuayIOContainer> getContainer(String namespace, String containerName){
-        String url = String.format("https://quay.io/api/v1/repository/%s/%s", namespace, containerName);
-        try{
+    public Optional<QuayIOContainer> getContainer(String namespace, String containerName) {
+        String url = configuration.getContainersDetailsUrl().replaceAll("%%namespace%%", namespace)
+                .replaceAll("%%container_name%%", containerName);
+        try {
             QuayIOContainer container = restTemplate.getForObject(url, QuayIOContainer.class);
             return Optional.of(container);
-        }catch (RestClientException ex){
+        } catch (RestClientException ex) {
             log.error(ex.getMessage());
         }
-        return Optional.empty() ;
+        return Optional.empty();
     }
 
 
