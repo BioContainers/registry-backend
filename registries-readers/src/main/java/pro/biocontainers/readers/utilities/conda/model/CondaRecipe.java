@@ -27,6 +27,8 @@ public class CondaRecipe {
 
     private static final String VERSION = "version";
     private static final String NAME = "name";
+    private static final String URL = "url";
+    private static final String HOME = "home";
 
     @JsonProperty(value = "package")
     Map<String,String> recipeProperties;
@@ -43,11 +45,19 @@ public class CondaRecipe {
     @JsonProperty("extra")
     Map<String, Object> extras;
 
+    @JsonProperty(value = "source")
+    Map<String, String> sources;
+
     /** Version of the software **/
     private String version;
 
     /** Parse the name of the Container*/
     String name;
+
+    /** Where the binary can be found **/
+    String binaryURL;
+
+    String homeURL;
 
     public Map<String, Object> getExtras() {
         return extras;
@@ -56,8 +66,16 @@ public class CondaRecipe {
     public void parseProperties(){
         if(recipeProperties.containsKey(NAME))
             this.name = recipeProperties.get(NAME);
+
         if(recipeProperties.containsKey(VERSION))
             this.version = recipeProperties.get(VERSION);
+
+        if(sources.containsKey(URL))
+            this.binaryURL = sources.get(URL);
+
+        if(about.containsKey(HOME))
+            this.homeURL = about.get(HOME);
+
 
     }
 }
