@@ -16,9 +16,9 @@ import java.util.Optional;
 @Log4j2
 public class DockerHubQueryService {
 
-    RestTemplate restTemplate;
+    private RestTemplate restTemplate;
 
-    DockerHubConfiguration configuration;
+    private DockerHubConfiguration configuration;
 
     public DockerHubQueryService(RestTemplateBuilder builder, DockerHubConfiguration configuration) {
         restTemplate = builder.build();
@@ -44,10 +44,10 @@ public class DockerHubQueryService {
         List<DockerHubContainerBriefInfo> containersList = new ArrayList<>();
         try {
             DockerHubContainerFetcher fetcher = restTemplate.getForObject(url, DockerHubContainerFetcher.class);
-            while(true) {
+            while (true) {
                 containersList.addAll(fetcher.getRepositories());
                 url = fetcher.getNext();
-                if(url == null){
+                if (url == null) {
                     break;
                 }
                 fetcher = restTemplate.getForObject(url, DockerHubContainerFetcher.class);
@@ -79,11 +79,11 @@ public class DockerHubQueryService {
             container.setInfo(info);
 
             DockerHubTagFetcher tagsFetcher = restTemplate.getForObject(containerTagsUrl, DockerHubTagFetcher.class);
-            List<DockerHubTag> tagsList= new ArrayList<>();
-            while(true) {
+            List<DockerHubTag> tagsList = new ArrayList<>();
+            while (true) {
                 tagsList.addAll(tagsFetcher.getTags());
                 String url = tagsFetcher.getNext();
-                if(url == null){
+                if (url == null) {
                     break;
                 }
                 tagsFetcher = restTemplate.getForObject(url, DockerHubTagFetcher.class);

@@ -7,18 +7,18 @@ import lombok.Data;
 @Data
 public class DockerHubContainerBriefInfo {
 
-    String user;
-    String name;
-    String namespace;
-    String repository_type;
-    Short status;
-    String description;
-    Boolean is_private;
-    Boolean is_automated;
-    Boolean can_edit;
-    Long star_count;
-    Long pull_count;
-    String last_updated;
-    Boolean has_starred;
-//    String full_description;
+    private String user;
+    private String name;
+    private String namespace;
+    private String repository_type;
+    private Short status;
+    private String description;
+    private Boolean is_private;
+    private Boolean is_automated;
+    private Boolean can_edit;
+    private Long star_count;
+    private Long pull_count;
+    private String last_updated;
+    private Boolean has_starred;
+//    private String full_description;
 }

@@ -10,11 +10,11 @@ import java.util.List;
 @Data
 public class DockerHubTagFetcher {
 
-    Long count;
-    String next;
-    String previuos;
+    private Long count;
+    private String next;
+    private String previuos;
 
     @JsonProperty(value = "results")
-    List<DockerHubTag> tags;
+    private List<DockerHubTag> tags;
 
 }

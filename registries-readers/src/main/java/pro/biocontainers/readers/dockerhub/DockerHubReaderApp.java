@@ -21,7 +21,7 @@ public class DockerHubReaderApp {
     private static final Logger log = LoggerFactory.getLogger(DockerHubReaderApp.class);
 
     @Autowired
-    DockerHubConfiguration configuration;
+    private DockerHubConfiguration configuration;
 
     public static void main(String args[]) {
         SpringApplication.run(DockerHubReaderApp.class);

@@ -1,13 +1,15 @@
 package pro.biocontainers.readers.dockerhub.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class DockerHubContainer {
 
-    DockerHubContainerBriefInfo info;
-    List<DockerHubTag> tags;
+    private DockerHubContainerBriefInfo info;
+    private List<DockerHubTag> tags;
 
 }

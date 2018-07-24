@@ -10,11 +10,11 @@ import java.util.List;
 @Data
 public class DockerHubContainerFetcher {
 
-    Long count;
-    String next;
-    String previuos;
+    private Long count;
+    private String next;
+    private String previuos;
 
     @JsonProperty(value = "results")
-    List<DockerHubContainerBriefInfo> repositories;
+    private List<DockerHubContainerBriefInfo> repositories;
 
 }
