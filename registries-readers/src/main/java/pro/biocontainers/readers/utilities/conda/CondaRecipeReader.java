@@ -42,6 +42,7 @@ public class CondaRecipeReader {
 
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         CondaRecipe recipe = mapper.readValue(result.getOutput(), CondaRecipe.class);
+        recipe.parseProperties();
 
 
         return recipe;

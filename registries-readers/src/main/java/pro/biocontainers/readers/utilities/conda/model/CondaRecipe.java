@@ -2,6 +2,8 @@ package pro.biocontainers.readers.utilities.conda.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 import java.util.Map;
@@ -20,10 +22,14 @@ import java.util.Map;
  * Created by ypriverol (ypriverol@gmail.com) on 24/07/2018.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Data
 public class CondaRecipe {
 
+    private static final String VERSION = "version";
+    private static final String NAME = "name";
+
     @JsonProperty(value = "package")
-    Map<String,String> pageProperties;
+    Map<String,String> recipeProperties;
 
     @JsonProperty(value = "requirements")
     Map<String, List<String>> requirements;
@@ -37,6 +43,21 @@ public class CondaRecipe {
     @JsonProperty("extra")
     Map<String, Object> extras;
 
+    /** Version of the software **/
+    private String version;
 
+    /** Parse the name of the Container*/
+    String name;
 
+    public Map<String, Object> getExtras() {
+        return extras;
+    }
+
+    public void parseProperties(){
+        if(recipeProperties.containsKey(NAME))
+            this.name = recipeProperties.get(NAME);
+        if(recipeProperties.containsKey(VERSION))
+            this.version = recipeProperties.get(VERSION);
+
+    }
 }
