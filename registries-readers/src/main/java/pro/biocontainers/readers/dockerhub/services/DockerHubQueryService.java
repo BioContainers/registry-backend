@@ -82,7 +82,7 @@ public class DockerHubQueryService {
             DockerHubTagFetcher tagsFetcher = restTemplate.getForObject(containerTagsUrl, DockerHubTagFetcher.class);
             List<DockerHubTag> tagsList = new ArrayList<>();
             while (true) {
-                tagsList.addAll(tagsFetcher.getTags());
+                tagsList.addAll(Objects.requireNonNull(tagsFetcher).getTags());
                 String url = tagsFetcher.getNext();
                 if (url == null) {
                     break;

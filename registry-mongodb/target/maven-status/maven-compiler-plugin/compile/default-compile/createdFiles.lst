@@ -1,0 +1,5 @@
+pro/biocontainers/mongodb/model/BioContainer.class
+pro/biocontainers/mongodb/model/BioContainer$BioContainerBuilder.class
+pro/biocontainers/mongodb/service/BioContainersService.class
+pro/biocontainers/mongodb/repository/BioContainersRepository.class
+pro/biocontainers/mongodb/config/MongoDBConfiguration.class

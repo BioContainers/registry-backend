@@ -1,0 +1,4 @@
+/Users/yperez/IdeaProjects/github-repo/biodocker/registry-backend/registry-pipelines/src/main/java/pro/biocontainers/pipelines/jobs/AbstractJob.java
+/Users/yperez/IdeaProjects/github-repo/biodocker/registry-backend/registry-pipelines/src/main/java/pro/biocontainers/pipelines/configs/DataSourceConfiguration.java
+/Users/yperez/IdeaProjects/github-repo/biodocker/registry-backend/registry-pipelines/src/main/java/pro/biocontainers/pipelines/jobs/registries/ImportContainersFromDockerHubJob.java
+/Users/yperez/IdeaProjects/github-repo/biodocker/registry-backend/registry-pipelines/src/main/java/pro/biocontainers/pipelines/utilities/PipelineConstants.java

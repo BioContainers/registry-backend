@@ -9,8 +9,7 @@
         <artifactId>registry-backend</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    
-    <groupId>pro.biocontainers</groupId>
+
     <artifactId>registry-pipelines</artifactId>
     <version>1.0-SNAPSHOT</version>
 

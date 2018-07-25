@@ -183,7 +183,7 @@ public class DockerParser {
         BufferedWriter writer = new BufferedWriter(new FileWriter(dockerFile));
         FileInputStream fis = new FileInputStream(dockerFile);
         BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
-        String line = null;
+        String line;
         String newLine = null;
         boolean hc = false;
         boolean concatFlag = false;
@@ -570,7 +570,7 @@ public class DockerParser {
             Pattern p = Pattern.compile("\"(.*?)\"");
             Matcher m = p.matcher(command);
 
-            List<String> matches = new ArrayList<String>();
+            List<String> matches = new ArrayList<>();
             while (m.find()) {
                 matches.add(m.group(1));
             }
@@ -607,7 +607,7 @@ public class DockerParser {
             Pattern p = Pattern.compile("\"(.*?)\"");
             Matcher m = p.matcher(command);
 
-            List<String> matches = new ArrayList<String>();
+            List<String> matches = new ArrayList<>();
             while (m.find()) {
                 matches.add(m.group(1));
             }
@@ -652,7 +652,7 @@ public class DockerParser {
 
     public List<Label> parseAndGetLabelInstruction(String command) {
         List<Label> labels = new ArrayList<>();
-        List<String> parts = new ArrayList<String>();
+        List<String> parts = new ArrayList<>();
         Pattern regex = Pattern.compile("[^\\s\"']+|\"([^\"]*)\"|'([^']*)'");
         Matcher regexMatcher = regex.matcher(command);
         while (regexMatcher.find()) {
@@ -724,7 +724,7 @@ public class DockerParser {
             Pattern p = Pattern.compile("\"(.*?)\"");
             Matcher m = p.matcher(command);
 
-            List<String> matches = new ArrayList<String>();
+            List<String> matches = new ArrayList<>();
             while (m.find()) {
                 matches.add(m.group(1));
             }
@@ -809,7 +809,7 @@ public class DockerParser {
                     Pattern p = Pattern.compile("\"(.*?)\"");
                     Matcher m = p.matcher(command);
 
-                    List<String> matches = new ArrayList<String>();
+                    List<String> matches = new ArrayList<>();
                     while (m.find()) {
                         matches.add(m.group(1));
                     }
@@ -850,7 +850,7 @@ public class DockerParser {
             Pattern p = Pattern.compile("\"(.*?)\"");
             Matcher m = p.matcher(command);
 
-            List<String> matches = new ArrayList<String>();
+            List<String> matches = new ArrayList<>();
             while (m.find()) {
                 matches.add(m.group(1));
             }
@@ -939,9 +939,7 @@ public class DockerParser {
         Pattern pattern = Pattern.compile(patternInput);
         Matcher matcher = pattern.matcher(data);
         try {
-            if (matcher.find()) {
-                //  System.out.println("getStringFromRegexPattern" + matcher.group(0));
-            }
+            matcher.find();
             return matcher.group(0);
         } catch (Exception e) {
             // e.printStackTrace();

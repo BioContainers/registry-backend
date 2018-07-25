@@ -5,7 +5,6 @@ package pro.biocontainers.readers.utilities.dockerfile.models;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.text.ParseException;
 import java.util.List;
 
 import static java.lang.Math.toIntExact;
