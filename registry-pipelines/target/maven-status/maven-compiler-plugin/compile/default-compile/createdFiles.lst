@@ -1,6 +1,0 @@
-pro/biocontainers/pipelines/configs/DataSourceConfiguration.class
-pro/biocontainers/pipelines/jobs/registries/ImportContainersFromDockerHubJob.class
-pro/biocontainers/pipelines/utilities/PipelineConstants.class
-pro/biocontainers/pipelines/utilities/PipelineConstants$JobNames.class
-pro/biocontainers/pipelines/jobs/AbstractJob.class
-pro/biocontainers/pipelines/utilities/PipelineConstants$StepNames.class
