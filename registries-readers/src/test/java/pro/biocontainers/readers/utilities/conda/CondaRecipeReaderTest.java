@@ -1,6 +1,8 @@
 package pro.biocontainers.readers.utilities.conda;
 
+import org.junit.Assert;
 import org.junit.Test;
+import pro.biocontainers.readers.utilities.conda.model.CondaRecipe;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,8 +27,8 @@ public class CondaRecipeReaderTest {
     @Test
     public void parse() throws URISyntaxException, IOException {
         File file = new File(Objects.requireNonNull(CondaRecipeReaderTest.class.getClassLoader().getResource("files/meta.yaml")).toURI());
-        CondaRecipeReader.parseProperties(file);
-
+        CondaRecipe recipe = CondaRecipeReader.parseProperties(file);
+        Assert.assertTrue("The version of the software is 2.1.0 --", recipe.getSoftwareVersion().equalsIgnoreCase("2.1.0"));
     }
 
 

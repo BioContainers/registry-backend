@@ -167,7 +167,6 @@ public class DockerParser {
                 comments.add(c);
 
                 newLine = "";
-                instruction = "";
                 commentFlag = false;
             }
         }
@@ -887,10 +886,6 @@ public class DockerParser {
         return new User(dockerfile, command);
 
 
-    }
-
-    public Instruction parseAndGetShellInstruction(String command) {
-        return null;
     }
 
     public Instruction parseAndGetMaintainerInstruction(String user) {

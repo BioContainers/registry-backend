@@ -78,7 +78,7 @@ public class Project {
         return gitUrl1.replaceAll(".git", "");
     }
 
-    private void mapGitHubAPIMetaDataToProject(GitHubAPIMetaData gitHubAPIMetaData, Project project) throws ParseException {
+    private void mapGitHubAPIMetaDataToProject(GitHubAPIMetaData gitHubAPIMetaData, Project project) {
         //Date created_at = DateExtractor.getDateFromJsonString(gitHubAPIMetaData.created_at);
         project.setLocalRepoPath(gitHubAPIMetaData.name);
         project.setRepo_id(toIntExact(gitHubAPIMetaData.id));

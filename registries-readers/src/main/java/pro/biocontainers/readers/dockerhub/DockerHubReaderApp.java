@@ -35,7 +35,7 @@ public class DockerHubReaderApp {
             log.info("***********containersList*************");
             log.info(containersList.toString());
             log.info("************************");
-            containersList.getRepositories().stream().forEach(x -> {
+            containersList.getRepositories().forEach(x -> {
                 Optional<DockerHubContainer> container = service.getContainer("biocontainers", x.getName());
                 if (container.isPresent()) {
                     log.debug("**********container**************");

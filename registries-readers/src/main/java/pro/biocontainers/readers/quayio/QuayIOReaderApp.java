@@ -33,7 +33,7 @@ public class QuayIOReaderApp {
             QueryQuayIOService service = new QueryQuayIOService(builder, configuration);
             ListShortContainers listShortContainers = service.getListContainers("biocontainers");
             log.info(listShortContainers.getRepositories().toString());
-            listShortContainers.getRepositories().stream().forEach(x -> {
+            listShortContainers.getRepositories().forEach(x -> {
                 Optional<QuayIOContainer> container = service.getContainer("biocontainers", x.getName());
                 if (container.isPresent())
                     log.debug(container.toString());

@@ -44,15 +44,15 @@ public class Run extends Instruction{
         }
         this.params= paramsShortened;
 
-        String allParams = "";
+        StringBuilder allParams = new StringBuilder();
         for(String p: params){
-            allParams += "¦"+ p;
+            allParams.append("¦").append(p);
         }
 
         if (allParams.length() > 240){
             this.allParams = allParams.substring(0, 240) + "...";
         }else{
-            this.allParams = allParams;
+            this.allParams = allParams.toString();
         }
 
         if (allParams.length() > 240){

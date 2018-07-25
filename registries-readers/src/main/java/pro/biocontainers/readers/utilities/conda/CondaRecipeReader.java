@@ -37,7 +37,7 @@ public class CondaRecipeReader {
         Map<String, Object> context = Maps.newHashMap();
 
         RenderResult result = jinjava.renderForResult(template, context);
-        log.info(result.getContext().toString());
+        log.info(result.getOutput());
 
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         CondaRecipe recipe = mapper.readValue(result.getOutput(), CondaRecipe.class);

@@ -2,6 +2,7 @@ package pro.biocontainers.readers.utilities.dockerfile;
 
 import org.junit.Assert;
 import org.junit.Test;
+import pro.biocontainers.readers.utilities.dockerfile.models.Snapshot;
 
 import java.io.File;
 import java.io.IOException;

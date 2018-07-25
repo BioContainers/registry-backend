@@ -97,7 +97,7 @@ public class CondaRecipe implements IContainerRecipe {
         if(extras.containsKey(IDENTIFIERS)){
             this.identifiers = new HashMap<>();
             List<String> identifiers = (List<String>) extras.get(IDENTIFIERS);
-            identifiers.stream().forEach( x-> {
+            identifiers.forEach(x-> {
                 Optional<ExternalID> externalID = ExternalID.findValue(x.split(":")[0]);
                 if(externalID.isPresent()){
                     List<String> values = new ArrayList<>();
