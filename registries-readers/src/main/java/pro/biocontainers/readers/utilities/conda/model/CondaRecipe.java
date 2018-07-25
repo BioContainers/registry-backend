@@ -131,7 +131,7 @@ public class CondaRecipe implements IContainerRecipe {
     }
 
     @Override
-    public String softwareVersion() {
+    public String getSoftwareVersion() {
         return this.softwareVersion;
     }
 }

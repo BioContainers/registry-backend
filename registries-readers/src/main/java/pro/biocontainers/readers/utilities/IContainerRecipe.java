@@ -17,6 +17,6 @@ public interface IContainerRecipe {
 
     Map<String, List<String>> getExternalIds();
 
-    String softwareVersion();
+    String getSoftwareVersion();
 
 }

@@ -22,3 +22,4 @@ quay.io:
   urls:
     containers-list: "https://quay.io/api/v1/repository?popularity=true&last_modified=true&public=true&starred=false&namespace=%%namespace%%"
     container-details: "https://quay.io/api/v1/repository/%%namespace%%/%%container_name%%"
+

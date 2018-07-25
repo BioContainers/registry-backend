@@ -30,6 +30,6 @@ public class DockerParserTest {
         DockerParser parser = new DockerParser(rawDockerfile1.getParent(), rawDockerfile1.getAbsolutePath());
         DockerContainer dockerfileDockerContainer1 = parser.getParsedDockerfileObject(rawDockerfile1);
         Assert.assertEquals("Number of labels is 10", 11, dockerfileDockerContainer1.labels.size());
-        Assert.assertTrue("The version of the software is -- 1.3.1-3-deb", dockerfileDockerContainer1.softwareVersion().equalsIgnoreCase("1.3.1-3-deb"));
+        Assert.assertTrue("The version of the software is -- 1.3.1-3-deb", dockerfileDockerContainer1.getSoftwareVersion().equalsIgnoreCase("1.3.1-3-deb"));
     }
 }

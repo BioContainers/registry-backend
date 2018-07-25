@@ -189,7 +189,7 @@ public class DockerContainer implements IContainerRecipe {
     }
 
     @Override
-    public String softwareVersion() {
+    public String getSoftwareVersion() {
         return getLabelValue(SOFTWARE_VERSION);
     }
 
