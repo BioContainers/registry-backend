@@ -20,6 +20,9 @@ import pro.biocontainers.pipelines.utilities.PipelineConstants;
 import pro.biocontainers.readers.dockerhub.DockerHubConfiguration;
 import pro.biocontainers.readers.dockerhub.model.DockerHubContainer;
 import pro.biocontainers.readers.dockerhub.services.DockerHubQueryService;
+import pro.biocontainers.readers.quayio.QuayIOConfiguration;
+import pro.biocontainers.readers.quayio.model.QuayIOContainer;
+import pro.biocontainers.readers.quayio.services.QueryQuayIOService;
 
 import java.util.Optional;
 
@@ -40,7 +43,7 @@ import java.util.Optional;
  */
 @Configuration
 @Slf4j
-@Import({ DataSourceConfiguration.class, DockerHubConfiguration.class, MongoDBConfiguration.class})
+@Import({ DataSourceConfiguration.class, DockerHubConfiguration.class, QuayIOConfiguration.class, MongoDBConfiguration.class})
 public class ImportContainersFromDockerHubJob extends AbstractJob {
 
     @Bean
@@ -52,10 +55,16 @@ public class ImportContainersFromDockerHubJob extends AbstractJob {
     DockerHubConfiguration dockerHubConfig;
 
     @Autowired
+    QuayIOConfiguration quayIOConfiguration;
+
+    @Autowired
     BioContainersService mongoService;
 
     @Value("${public-url.dockerhub}")
     String dockerHubRegistry;
+
+    @Value("${public-url.quayio}")
+    String quayIOHubRegistry;
 
 
     /**
@@ -71,7 +80,27 @@ public class ImportContainersFromDockerHubJob extends AbstractJob {
                     service.getAllContainers("biocontainers").getRepositories().forEach(x -> {
                         Optional<DockerHubContainer> container = service.getContainer("biocontainers", x.getName());
                         if (container.isPresent()) {
-                            mongoService.indexContainer(BiocontainerTransformer.transformDockerHubContainerToBiocontainer(container.get(), dockerHubRegistry));
+                            mongoService.indexContainer(BiocontainerTransformer.transformContainerToBiocontainer(container.get(), dockerHubRegistry));
+                            log.debug("**********container**************");
+                            log.debug(container.toString());
+                            log.debug("************************");
+                        }
+                    });
+                    return RepeatStatus.FINISHED;
+                })
+                .build();
+    }
+
+    @Bean
+    public Step readContainersFromQuayIO() {
+        return stepBuilderFactory
+                .get(PipelineConstants.StepNames.READ_QUAYIO_REGISTRY_LIST.name())
+                .tasklet((stepContribution, chunkContext) -> {
+                    QueryQuayIOService service = new QueryQuayIOService(restTemplateBuilder(), quayIOConfiguration);
+                    service.getListContainers("biocontainers").getRepositories().forEach(x -> {
+                        Optional<QuayIOContainer> container = service.getContainer("biocontainers", x.getName());
+                        if (container.isPresent()) {
+                            mongoService.indexContainer(BiocontainerTransformer.transformContainerToBiocontainer(container.get(), quayIOHubRegistry));
                             log.debug("**********container**************");
                             log.debug(container.toString());
                             log.debug("************************");
@@ -93,9 +122,9 @@ public class ImportContainersFromDockerHubJob extends AbstractJob {
         return jobBuilderFactory
                 .get(PipelineConstants.JobNames.READ_DOCKERHUB_CONTAINERS_JOB.getName())
                 .start(readContainersFromDockerHub())
+                .next(readContainersFromQuayIO())
                 .build();
     }
-
 
 
 

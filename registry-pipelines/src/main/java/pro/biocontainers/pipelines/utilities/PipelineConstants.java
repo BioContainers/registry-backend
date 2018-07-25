@@ -3,7 +3,8 @@ package pro.biocontainers.pipelines.utilities;
 public class PipelineConstants {
     public enum StepNames {
 
-        READ_DOCKERHUB_REGISTRY_LIST("Read all Dockerhub Containers in the list");
+        READ_DOCKERHUB_REGISTRY_LIST("Read all Dockerhub Containers in the list"),
+        READ_QUAYIO_REGISTRY_LIST("Read all QuayIO Containers in the list");
 
         String name;
 
