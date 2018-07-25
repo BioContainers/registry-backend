@@ -3,7 +3,7 @@ package pro.biocontainers.readers.utilities.dockerfile.models.commands;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
-import pro.biocontainers.readers.utilities.dockerfile.models.Snapshot;
+import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
 
 
 
@@ -13,15 +13,15 @@ public class WorkDir extends Instruction{
    public long id;
 
     @JsonIgnore
-    Snapshot snapshot;
+    DockerContainer dockerContainer;
 
     public String path;
 
     public boolean current;
 
-    public WorkDir(Snapshot snapshot, String path) {
+    public WorkDir(DockerContainer dockerContainer, String path) {
         super();
-        this.snapshot = snapshot;
+        this.dockerContainer = dockerContainer;
         this.path= path;
     }
 

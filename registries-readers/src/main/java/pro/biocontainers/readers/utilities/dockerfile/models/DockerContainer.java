@@ -5,15 +5,27 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 import lombok.Setter;
+import pro.biocontainers.readers.utilities.ExternalID;
+import pro.biocontainers.readers.utilities.IContainerRecipe;
 import pro.biocontainers.readers.utilities.dockerfile.models.commands.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Getter
 @Setter
-public class Snapshot {
+public class DockerContainer implements IContainerRecipe {
+
+    private static final String SOFTWARE = "software";
+    private static final String DESCRIPTION = "about.summary";
+    private static final String LICENSE = "about.license";
+    private static final String HOME_URL = "about.home";
+    private static final String DOC_URL = "about.documentation";
+    private static final String SOFTWARE_VERSION = "software.version";
+
 
     private long id;
 
@@ -130,7 +142,70 @@ public class Snapshot {
     }
 
 
-    public Snapshot() {
+    public DockerContainer() {
 
+    }
+
+    @Override
+    public String getSoftwareName() {
+        return getLabelValue(SOFTWARE);
+    }
+
+    @Override
+    public String getDescription() {
+        return getLabelValue(DESCRIPTION);
+    }
+
+    @Override
+    public String getLicense() {
+        return getLabelValue(LICENSE);
+    }
+
+    @Override
+    public String getHomeURL() {
+        return getLabelValue(HOME_URL);
+    }
+
+    @Override
+    public String getDocumentationURL() {
+        return getLabelValue(DOC_URL);
+    }
+
+    @Override
+    public Map<String, List<String>> getExternalIds() {
+        Map<String, List<String>> identifiers = new HashMap<>();
+        if(labels != null){
+            for(Label label: labels){
+                for(ExternalID extId: ExternalID.values()){
+                    if(label.key.contains(extId.name())){
+                        List<String> values = (identifiers.containsKey(extId.name())) ?identifiers.get(extId.name()):new ArrayList<>();
+                        values.add(label.value);
+                        identifiers.put(extId.name(), values);
+                    }
+                }
+            }
+        }
+        return identifiers;
+    }
+
+    @Override
+    public String softwareVersion() {
+        return getLabelValue(SOFTWARE_VERSION);
+    }
+
+    /**
+     * Get the value for an specific Key
+     * @param key {@link Label} key
+     * @return value
+     */
+    private String getLabelValue(String key){
+        String value = null;
+        if(labels != null && labels.size() > 0){
+            for(Label label: labels){
+                if(label.key.equalsIgnoreCase(key))
+                    value = label.value;
+            }
+        }
+        return value;
     }
 }

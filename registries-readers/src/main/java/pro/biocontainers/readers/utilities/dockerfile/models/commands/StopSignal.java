@@ -3,7 +3,7 @@ package pro.biocontainers.readers.utilities.dockerfile.models.commands;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
-import pro.biocontainers.readers.utilities.dockerfile.models.Snapshot;
+import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
 
 
 @Getter
@@ -16,15 +16,15 @@ public class StopSignal extends Instruction{
     private long id;
 
     @JsonIgnore
-    Snapshot snapshot;
+    DockerContainer dockerContainer;
 
     public String signal;
 
     public boolean current;
 
-    public StopSignal(Snapshot snapshot, String signal) {
+    public StopSignal(DockerContainer dockerContainer, String signal) {
         super();
-        this.snapshot = snapshot;
+        this.dockerContainer = dockerContainer;
         this.signal = signal;
     }
 

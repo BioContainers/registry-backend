@@ -4,7 +4,7 @@ package pro.biocontainers.readers.utilities.dockerfile.models.commands;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
-import pro.biocontainers.readers.utilities.dockerfile.models.Snapshot;
+import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ public class Run extends Instruction{
     public long id;
 
     @JsonIgnore
-    Snapshot snapshot;
+    DockerContainer dockerContainer;
 
     public int score;
 
@@ -29,8 +29,8 @@ public class Run extends Instruction{
 
     public boolean current;
 
-    public Run(Snapshot snapshot,String executable, List<String> params) {
-        this.snapshot = snapshot;
+    public Run(DockerContainer dockerContainer, String executable, List<String> params) {
+        this.dockerContainer = dockerContainer;
         this.executable=executable;
 
         List<String> paramsShortened = new ArrayList<>();

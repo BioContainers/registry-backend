@@ -4,7 +4,7 @@ package pro.biocontainers.readers.utilities.dockerfile.models.commands;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
-import pro.biocontainers.readers.utilities.dockerfile.models.Snapshot;
+import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
 
 
 @Getter
@@ -14,7 +14,7 @@ public class Healthcheck extends Instruction {
     private long id;
 
     @JsonIgnore
-    Snapshot snapshot;
+    DockerContainer dockerContainer;
 
     String optionsBeforeInstructions;
 
@@ -24,9 +24,9 @@ public class Healthcheck extends Instruction {
 
     public String allParams;
 
-    public Healthcheck(Snapshot snapshot, String instruction, String allParams) {
+    public Healthcheck(DockerContainer dockerContainer, String instruction, String allParams) {
         super();
-        this.snapshot = snapshot;
+        this.dockerContainer = dockerContainer;
         this.instruction = instruction;
         this.allParams = allParams;
     }
@@ -36,9 +36,9 @@ public class Healthcheck extends Instruction {
         this.optionsBeforeInstructions = optionsBeforeInstructions;
     }
 
-    public Healthcheck(Snapshot snapshot, String instruction, String optionsBeforeInstructions, String allParams) {
+    public Healthcheck(DockerContainer dockerContainer, String instruction, String optionsBeforeInstructions, String allParams) {
         super();
-        this.snapshot = snapshot;
+        this.dockerContainer = dockerContainer;
         this.instruction = instruction;
         this.optionsBeforeInstructions = optionsBeforeInstructions;
 

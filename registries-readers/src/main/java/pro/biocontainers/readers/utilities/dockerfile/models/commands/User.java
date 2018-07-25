@@ -3,7 +3,7 @@ package pro.biocontainers.readers.utilities.dockerfile.models.commands;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
-import pro.biocontainers.readers.utilities.dockerfile.models.Snapshot;
+import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
 
 
 @Getter
@@ -12,15 +12,15 @@ public class User extends Instruction{
     public long id;
 
     @JsonIgnore
-    Snapshot snapshot;
+    DockerContainer dockerContainer;
 
     public String username;
 
     public boolean current;
 
-    public User(Snapshot snapshot, String username) {
+    public User(DockerContainer dockerContainer, String username) {
         super();
-        this.snapshot = snapshot;
+        this.dockerContainer = dockerContainer;
         this.username = username;
     }
 

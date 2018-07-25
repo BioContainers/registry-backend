@@ -2,16 +2,14 @@ package pro.biocontainers.readers.utilities.dockerfile.models.commands;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import pro.biocontainers.readers.utilities.dockerfile.models.Snapshot;
-
-
+import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
 
 
 public class Comment extends Instruction{
     public long id;
 
     @JsonIgnore
-    Snapshot snapshot;
+    DockerContainer dockerContainer;
 
     public String instructionAfter;
 
@@ -19,9 +17,9 @@ public class Comment extends Instruction{
 
     public boolean current;
 
-    public Comment(Snapshot snapshot, String instructionAfter, String comment) {
+    public Comment(DockerContainer dockerContainer, String instructionAfter, String comment) {
         super();
-        this.snapshot = snapshot;
+        this.dockerContainer = dockerContainer;
         this.instructionAfter = instructionAfter;
 
         if (comment.length() > 240){

@@ -4,7 +4,7 @@ package pro.biocontainers.readers.utilities.dockerfile.models.commands;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
-import pro.biocontainers.readers.utilities.dockerfile.models.Snapshot;
+import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
 
 
 @Getter
@@ -14,7 +14,7 @@ public class OnBuild extends Instruction{
     public long id;
 
     @JsonIgnore
-    Snapshot snapshot;
+    DockerContainer dockerContainer;
 
     public boolean current;
 
@@ -22,9 +22,9 @@ public class OnBuild extends Instruction{
 
     public String allParams;
 
-    public OnBuild(Snapshot snapshot, String instruction, String allParams) {
+    public OnBuild(DockerContainer dockerContainer, String instruction, String allParams) {
         super();
-        this.snapshot = snapshot;
+        this.dockerContainer = dockerContainer;
         this.instruction =instruction;
 
         if (allParams.length() > 240){

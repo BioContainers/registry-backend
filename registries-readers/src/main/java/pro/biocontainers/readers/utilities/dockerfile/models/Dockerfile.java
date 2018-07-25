@@ -32,12 +32,12 @@ public class Dockerfile {
 
     private int commits;
 
-    private List<Snapshot> dockerfileSnapshots = new ArrayList<>();
+    private List<DockerContainer> dockerfileDockerContainers = new ArrayList<>();
 
     private List<String> violatedRules = new ArrayList<>();
 
     public int getCommits() {
-        return dockerfileSnapshots.size();
+        return dockerfileDockerContainers.size();
     }
 
     public List<String> getViolatedRules() throws IOException, InterruptedException {

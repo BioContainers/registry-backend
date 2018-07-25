@@ -2,7 +2,7 @@ package pro.biocontainers.readers.utilities.dockerfile;
 
 import org.junit.Assert;
 import org.junit.Test;
-import pro.biocontainers.readers.utilities.dockerfile.models.Snapshot;
+import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,7 +28,8 @@ public class DockerParserTest {
     public void getParsedDockerfileObject() throws IOException, URISyntaxException {
         File rawDockerfile1 = new File( Objects.requireNonNull(DockerParserTest.class.getClassLoader().getResource("files/Dockerfile")).toURI());
         DockerParser parser = new DockerParser(rawDockerfile1.getParent(), rawDockerfile1.getAbsolutePath());
-        Snapshot dockerfileSnapshot1 = parser.getParsedDockerfileObject(rawDockerfile1);
-        Assert.assertEquals("Number of labels is 10", 11, dockerfileSnapshot1.labels.size());
+        DockerContainer dockerfileDockerContainer1 = parser.getParsedDockerfileObject(rawDockerfile1);
+        Assert.assertEquals("Number of labels is 10", 11, dockerfileDockerContainer1.labels.size());
+        Assert.assertTrue("The version of the software is -- 1.3.1-3-deb", dockerfileDockerContainer1.softwareVersion().equalsIgnoreCase("1.3.1-3-deb"));
     }
 }

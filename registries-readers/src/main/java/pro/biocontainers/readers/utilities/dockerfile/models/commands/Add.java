@@ -2,7 +2,7 @@ package pro.biocontainers.readers.utilities.dockerfile.models.commands;
 
 import lombok.Getter;
 import lombok.Setter;
-import pro.biocontainers.readers.utilities.dockerfile.models.Snapshot;
+import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
 
 @Getter
 @Setter
@@ -10,7 +10,7 @@ public class Add extends Instruction{
     public long id;
 
 
-    Snapshot snapshot;
+    DockerContainer dockerContainer;
     public String source;
 
     public String sourceDestination;
@@ -19,9 +19,9 @@ public class Add extends Instruction{
 
     public boolean current;
 
-    public Add(Snapshot snapshot, String source, String destinatation) {
+    public Add(DockerContainer dockerContainer, String source, String destinatation) {
         super();
-        this.snapshot = snapshot;
+        this.dockerContainer = dockerContainer;
         this.source = source;
         this.destination=destinatation;
 

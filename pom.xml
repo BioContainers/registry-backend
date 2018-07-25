@@ -107,7 +107,7 @@
             <url>http://www.ebi.ac.uk/Tools/maven/repos/content/groups/ebi-repo/</url>
         </repository>
         <repository>
-            <id>nexus-ebi-snapshot-repo</id>
+            <id>nexus-ebi-dockerContainer-repo</id>
             <url>http://www.ebi.ac.uk/Tools/maven/repos/content/groups/ebi-snapshots/</url>
         </repository>
     </repositories>
@@ -119,7 +119,7 @@
             <name>EBI Nexus Repository</name>
             <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-release</url>
         </repository>
-        <!-- Deployment to EBI's snapshot repository -->
+        <!-- Deployment to EBI's dockerContainer repository -->
         <snapshotRepository>
             <uniqueVersion>false</uniqueVersion>
             <id>pst-snapshots</id>

@@ -4,7 +4,7 @@ package pro.biocontainers.readers.utilities.dockerfile.models.commands;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
-import pro.biocontainers.readers.utilities.dockerfile.models.Snapshot;
+import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
 
 
 @Getter
@@ -13,15 +13,15 @@ public class Expose extends Instruction{
     public long id;
 
     @JsonIgnore
-    Snapshot snapshot;
+    DockerContainer dockerContainer;
 
     public long port;
 
     public boolean current;
 
-    public Expose(Snapshot snapshot, String port) {
+    public Expose(DockerContainer dockerContainer, String port) {
         super();
-        this.snapshot = snapshot;
+        this.dockerContainer = dockerContainer;
         String p = port.replaceAll("[^0-9]+", " ");
         p = p.replaceAll(" ", "");
         this.port = Integer.parseInt(p);

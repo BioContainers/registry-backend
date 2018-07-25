@@ -4,7 +4,7 @@ package pro.biocontainers.readers.utilities.dockerfile.models.commands;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
-import pro.biocontainers.readers.utilities.dockerfile.models.Snapshot;
+import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
 
 
 
@@ -15,15 +15,15 @@ public class Volume extends Instruction{
 
 
     @JsonIgnore
-    Snapshot snapshot;
+    DockerContainer dockerContainer;
 
     public String value;
 
     public boolean current;
 
-    public Volume(Snapshot snapshot, String match) {
+    public Volume(DockerContainer dockerContainer, String match) {
         super();
-        this.snapshot = snapshot;
+        this.dockerContainer = dockerContainer;
         this.value = match;
     }
 

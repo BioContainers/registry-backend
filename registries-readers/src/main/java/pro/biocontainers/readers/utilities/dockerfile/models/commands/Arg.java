@@ -3,7 +3,7 @@ package pro.biocontainers.readers.utilities.dockerfile.models.commands;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
-import pro.biocontainers.readers.utilities.dockerfile.models.Snapshot;
+import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
 
 @Getter
 @Setter
@@ -12,13 +12,13 @@ public class Arg extends Instruction{
 
 
     @JsonIgnore
-    Snapshot snapshot;
+    DockerContainer dockerContainer;
     public String arg;
     public boolean current;
 
-    public Arg(Snapshot snapshot, String arg) {
+    public Arg(DockerContainer dockerContainer, String arg) {
         super();
-        this.snapshot =snapshot;
+        this.dockerContainer = dockerContainer;
         this.arg = arg;
     }
 

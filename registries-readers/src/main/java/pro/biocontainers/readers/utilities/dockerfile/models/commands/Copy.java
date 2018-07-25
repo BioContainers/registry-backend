@@ -4,7 +4,7 @@ package pro.biocontainers.readers.utilities.dockerfile.models.commands;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
-import pro.biocontainers.readers.utilities.dockerfile.models.Snapshot;
+import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
 
 
 @Getter
@@ -14,7 +14,7 @@ public class Copy extends Instruction{
     public long id;
 
     @JsonIgnore
-    Snapshot snapshot;
+    DockerContainer dockerContainer;
 
     public String source;
 
@@ -24,10 +24,10 @@ public class Copy extends Instruction{
 
     public boolean current;
 
-    public Copy(Snapshot snapshot, String source, String destinatation) {
+    public Copy(DockerContainer dockerContainer, String source, String destinatation) {
         super();
         this.source = source;
-        this.snapshot = snapshot;
+        this.dockerContainer = dockerContainer;
         this.destination=destinatation;
 
         this.sourceDestination = source +" -> " + destinatation;

@@ -4,7 +4,7 @@ package pro.biocontainers.readers.utilities.dockerfile.models.commands;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
-import pro.biocontainers.readers.utilities.dockerfile.models.Snapshot;
+import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
 
 @Getter
 @Setter
@@ -16,15 +16,15 @@ public class Maintainer extends Instruction{
     private long id;
 
     @JsonIgnore
-    Snapshot snapshot;
+    DockerContainer dockerContainer;
 
     public String maintainername;
 
     public boolean current;
 
-    public Maintainer(Snapshot snapshot, String maintainername) {
+    public Maintainer(DockerContainer dockerContainer, String maintainername) {
         super();
-        this.snapshot = snapshot;
+        this.dockerContainer = dockerContainer;
         this.maintainername  =maintainername;
     }
 

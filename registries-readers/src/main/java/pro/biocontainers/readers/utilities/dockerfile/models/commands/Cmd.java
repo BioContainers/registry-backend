@@ -4,7 +4,7 @@ package pro.biocontainers.readers.utilities.dockerfile.models.commands;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
-import pro.biocontainers.readers.utilities.dockerfile.models.Snapshot;
+import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class Cmd extends Instruction{
     private long id;
 
     @JsonIgnore
-    public Snapshot snapshot;
+    public DockerContainer dockerContainer;
 
     public String executable;
 
@@ -29,8 +29,8 @@ public class Cmd extends Instruction{
 
     public String allParams;
 
-    public Cmd(Snapshot snapshot, String executable, List<String> params) {
-        this.snapshot = snapshot;
+    public Cmd(DockerContainer dockerContainer, String executable, List<String> params) {
+        this.dockerContainer = dockerContainer;
         this.executable=executable;
         this.params=params;
 

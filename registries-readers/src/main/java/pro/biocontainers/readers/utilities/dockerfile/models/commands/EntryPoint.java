@@ -3,7 +3,7 @@ package pro.biocontainers.readers.utilities.dockerfile.models.commands;
 import lombok.Getter;
 import lombok.Setter;
 
-import pro.biocontainers.readers.utilities.dockerfile.models.Snapshot;
+import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public class EntryPoint extends Instruction {
 
     private long id;
 
-    Snapshot snapshot;
+    DockerContainer dockerContainer;
 
     public String executable;
 
@@ -23,9 +23,9 @@ public class EntryPoint extends Instruction {
 
     public String allParams;
 
-    public EntryPoint(Snapshot snapshot, String executable, List<String> params) {
+    public EntryPoint(DockerContainer dockerContainer, String executable, List<String> params) {
         super();
-        this.snapshot = snapshot;
+        this.dockerContainer = dockerContainer;
         this.executable = executable;
         this.params = params;
 

@@ -2,7 +2,7 @@ package pro.biocontainers.readers.utilities.dockerfile;
 
 
 
-import pro.biocontainers.readers.utilities.dockerfile.models.Snapshot;
+import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
 import pro.biocontainers.readers.utilities.dockerfile.models.commands.*;
 
 import java.io.*;
@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 
 public class DockerParser {
 
-    Snapshot dockerfile = new Snapshot();
+    DockerContainer dockerfile = new DockerContainer();
     public String localDockerfilePath;
     public String localPath;
 
@@ -61,8 +61,8 @@ public class DockerParser {
         this.localPath = localpath;
     }
 
-    public Snapshot getParsedDockerfileObject(File rawDockerfile) throws IOException {
-        dockerfile = new Snapshot();
+    public DockerContainer getParsedDockerfileObject(File rawDockerfile) throws IOException {
+        dockerfile = new DockerContainer();
         File fileToBeFlat = new File(rawDockerfile.getPath());
         File flatDockerfile = getFlatDockerFile(fileToBeFlat);
         doClassificationOfLines(flatDockerfile);
@@ -70,8 +70,8 @@ public class DockerParser {
         return dockerfile;
     }
 
-    public Snapshot getDockerfileObject() throws IOException {
-        dockerfile = new Snapshot();
+    public DockerContainer getDockerfileObject() throws IOException {
+        dockerfile = new DockerContainer();
         File fileToBeFlat = new File(this.localPath + "/" + this.localDockerfilePath + "/" + "Dockerfile");
         File flatDockerfile = getFlatDockerFile(fileToBeFlat);
         doClassificationOfLines(flatDockerfile);
@@ -113,7 +113,7 @@ public class DockerParser {
         return m.find();
     }
 
-    public List<Comment> getCommentsFromDockerfile(File flatDockerFile, Snapshot snapshot) throws IOException {
+    public List<Comment> getCommentsFromDockerfile(File flatDockerFile, DockerContainer dockerContainer) throws IOException {
         List<Comment> comments = new ArrayList<>();
         FileInputStream fis = new FileInputStream(flatDockerFile);
         BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
@@ -131,7 +131,7 @@ public class DockerParser {
 
                 if (checkForInstruction(tempLine)) {
                     boolean outCommInstruction = true;
-                    Comment c = new Comment(snapshot, "commented out: " + getInstructionInString(tempLine), tempLine);
+                    Comment c = new Comment(dockerContainer, "commented out: " + getInstructionInString(tempLine), tempLine);
                     comments.add(c);
                     break statement;
                 }
@@ -144,10 +144,10 @@ public class DockerParser {
                 }
             } else if (line.trim().isEmpty()) {
                 if (commentFlag && header) {
-                    Comment c = new Comment(snapshot, "standalone", newLine);
+                    Comment c = new Comment(dockerContainer, "standalone", newLine);
                     comments.add(c);
                 } else if (commentFlag && !header) {
-                    Comment c = new Comment(snapshot, "header", newLine);
+                    Comment c = new Comment(dockerContainer, "header", newLine);
                     comments.add(c);
                     header = true;
                 }
@@ -163,7 +163,7 @@ public class DockerParser {
 
                 String foundInstruction = arr[0];
 
-                Comment c = new Comment(snapshot, "before " + foundInstruction, newLine);
+                Comment c = new Comment(dockerContainer, "before " + foundInstruction, newLine);
                 comments.add(c);
 
                 newLine = "";
