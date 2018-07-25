@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 import lombok.Setter;
-import pro.biocontainers.readers.utilities.ExternalID;
-import pro.biocontainers.readers.utilities.IContainerRecipe;
+import pro.biocontainers.readers.ExternalID;
+import pro.biocontainers.readers.IContainerRecipe;
 import pro.biocontainers.readers.utilities.dockerfile.models.commands.*;
 
 import java.util.ArrayList;

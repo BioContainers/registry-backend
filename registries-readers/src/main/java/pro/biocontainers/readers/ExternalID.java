@@ -1,4 +1,4 @@
-package pro.biocontainers.readers.utilities;
+package pro.biocontainers.readers;
 
 import java.util.Optional;
 

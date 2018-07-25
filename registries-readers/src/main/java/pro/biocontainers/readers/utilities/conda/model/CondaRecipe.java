@@ -3,8 +3,8 @@ package pro.biocontainers.readers.utilities.conda.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import pro.biocontainers.readers.utilities.ExternalID;
-import pro.biocontainers.readers.utilities.IContainerRecipe;
+import pro.biocontainers.readers.ExternalID;
+import pro.biocontainers.readers.IContainerRecipe;
 
 import java.util.*;
 

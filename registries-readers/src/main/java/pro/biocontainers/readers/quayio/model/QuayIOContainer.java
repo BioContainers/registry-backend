@@ -3,14 +3,18 @@ package pro.biocontainers.readers.quayio.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import pro.biocontainers.readers.IRegistryContainer;
+import pro.biocontainers.readers.Tuple;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @EqualsAndHashCode(callSuper = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
-public class QuayIOContainer extends ShortQuayIOContainer {
+public class QuayIOContainer extends ShortQuayIOContainer implements IRegistryContainer {
 
     private Boolean is_organization;
     private Boolean can_write;
@@ -44,5 +48,46 @@ public class QuayIOContainer extends ShortQuayIOContainer {
                 ", is_public=" + is_public +
                 ", description='" + description + '\'' +
                 '}';
+    }
+
+    @Override
+    public String getNameSpace() {
+        return this.namespace;
+    }
+
+    @Override
+    public Boolean isPrivate() {
+        return false;
+    }
+
+    @Override
+    public Integer getPullCount() {
+        return this.popularity;
+    }
+
+    @Override
+    public Date getLastUpdated() {
+        return new Date(this.last_modified);
+    }
+
+    @Override
+    public Boolean isStarred() {
+        return is_starred;
+    }
+
+    @Override
+    public Integer getStartCount() {
+        return is_starred?1:0 ;
+    }
+
+    @Override
+    public List<Tuple<String, Integer>> getContainerTags() {
+        return tags.entrySet().stream().map(x -> new Tuple<>(x.getValue().getName(), x.getValue().getSize().intValue())).collect(Collectors.toList());
+
+    }
+
+    @Override
+    public List<Tuple<Date, Integer>> getContainerStats() {
+        return stats.stream().map( x-> new Tuple<>(new Date(x.getDate()), x.getCount().intValue())).collect(Collectors.toList());
     }
 }
