@@ -89,7 +89,7 @@ public class CondaRecipe implements IContainerRecipe {
             this.description = about.get(SUMMARY);
 
         if(about.containsKey(LICENSE))
-            this.license = about.get(license);
+            this.license = about.get(LICENSE);
 
         if(about.containsKey(DOC_URL))
             this.docURL = about.get(DOC_URL);
