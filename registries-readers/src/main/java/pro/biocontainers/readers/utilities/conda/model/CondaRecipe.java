@@ -3,10 +3,10 @@ package pro.biocontainers.readers.utilities.conda.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import org.apache.commons.lang3.tuple.Pair;
+import pro.biocontainers.readers.utilities.ExternalID;
+import pro.biocontainers.readers.utilities.IContainerRecipe;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This code is licensed under the Apache License, Version 2.0 (the
@@ -23,12 +23,16 @@ import java.util.Map;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
-public class CondaRecipe {
+public class CondaRecipe implements IContainerRecipe {
 
     private static final String VERSION = "version";
     private static final String NAME = "name";
     private static final String URL = "url";
     private static final String HOME = "home";
+    private static final String SUMMARY = "summary";
+    private static final String LICENSE = "license";
+    private static final String DOC_URL="doc_url";
+    private static final String IDENTIFIERS = "identifiers";
 
     @JsonProperty(value = "package")
     Map<String,String> recipeProperties;
@@ -58,6 +62,11 @@ public class CondaRecipe {
     String binaryURL;
 
     String homeURL;
+    private String description;
+
+    private String license;
+    private String docURL;
+    private Map<String, List<String>> identifiers;
 
     public Map<String, Object> getExtras() {
         return extras;
@@ -76,6 +85,48 @@ public class CondaRecipe {
         if(about.containsKey(HOME))
             this.homeURL = about.get(HOME);
 
+        if(about.containsKey(SUMMARY))
+            this.description = about.get(SUMMARY);
 
+        if(about.containsKey(LICENSE))
+            this.license = about.get(license);
+
+        if(about.containsKey(DOC_URL))
+            this.docURL = about.get(DOC_URL);
+
+        if(extras.containsKey(IDENTIFIERS)){
+            this.identifiers = new HashMap<>();
+            List<String> identifiers = (List<String>) extras.get(IDENTIFIERS);
+            identifiers.stream().forEach( x-> {
+                Optional<ExternalID> externalID = ExternalID.findValue(x.split(":")[0]);
+                if(externalID.isPresent()){
+                    List<String> values = new ArrayList<>();
+                    if(this.identifiers.containsKey(externalID.get().name()))
+                        values = this.identifiers.get(externalID.get().name());
+                    values.add(x.split(":")[1]);
+                    this.identifiers.put(externalID.get().name(), values);
+                }
+            });
+        }
+    }
+
+    @Override
+    public String getDescription() {
+        return this.description;
+    }
+
+    @Override
+    public String getLicense() {
+        return this.license;
+    }
+
+    @Override
+    public String getDocumentationURL() {
+        return this.docURL;
+    }
+
+    @Override
+    public Map<String, List<String>> getExternalIds() {
+        return this.identifiers;
     }
 }
