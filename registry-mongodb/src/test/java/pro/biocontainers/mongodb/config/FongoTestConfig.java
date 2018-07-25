@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
-@ComponentScan(basePackages = "pro.biocontainers.service")
-@EnableMongoRepositories(basePackages = "pro.biocontainers.repository")
+@ComponentScan(basePackages = "pro.biocontainers.mongodb.service")
+@EnableMongoRepositories(basePackages = "pro.biocontainers.mongodb.repository")
 @Configuration
 public class FongoTestConfig extends AbstractMongoConfiguration {
 

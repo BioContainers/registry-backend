@@ -1,8 +1,0 @@
-github:
-  docker-containers-recipes: "https://raw.githubusercontent.com/BioContainers/containers/master/%%software_name%%/%%software_version%%/Dockerfile"
-  bioconda-containers-recipes: "https://raw.githubusercontent.com/bioconda/bioconda-recipes/master/recipes/%%software_name%%/%%software_version%%/meta.yaml"
-
-public-url:
-  quay-io: "quay.io/biocontainers/%%software_name%%"
-  dockerhub: "biocontainers/%%software_name%%"
-  elixir-registry: "containers.biocontainers.pro/biocontainers/%%software_name%%"

@@ -4,12 +4,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Import;
 import pro.biocontainers.pipelines.configs.DataSourceConfiguration;
 import pro.biocontainers.pipelines.jobs.AbstractJob;
 import pro.biocontainers.pipelines.utilities.PipelineConstants;
+import pro.biocontainers.readers.dockerhub.DockerHubConfiguration;
+import pro.biocontainers.readers.dockerhub.model.DockerHubContainer;
+import pro.biocontainers.readers.dockerhub.services.DockerHubQueryService;
+
+import java.util.Optional;
 
 /**
  * This code is licensed under the Apache License, Version 2.0 (the
@@ -28,8 +36,16 @@ import pro.biocontainers.pipelines.utilities.PipelineConstants;
  */
 @Configuration
 @Slf4j
-@Import({ DataSourceConfiguration.class})
+@Import({ DataSourceConfiguration.class, DockerHubConfiguration.class, })
 public class ImportContainersFromDockerHubJob extends AbstractJob {
+
+    @Bean
+    public RestTemplateBuilder restTemplateBuilder() {
+        return new RestTemplateBuilder();
+    }
+
+    @Autowired
+    DockerHubConfiguration dockerHubConfig;
 
 
     /**
@@ -41,7 +57,15 @@ public class ImportContainersFromDockerHubJob extends AbstractJob {
         return stepBuilderFactory
                 .get(PipelineConstants.StepNames.READ_DOCKERHUB_REGISTRY_LIST.name())
                 .tasklet((stepContribution, chunkContext) -> {
-                    System.out.println();
+                    DockerHubQueryService service = new DockerHubQueryService(restTemplateBuilder(), dockerHubConfig);
+                    service.getAllContainers("biocontainers").getRepositories().forEach(x -> {
+                        Optional<DockerHubContainer> container = service.getContainer("biocontainers", x.getName());
+                        if (container.isPresent()) {
+                            log.debug("**********container**************");
+                            log.debug(container.toString());
+                            log.debug("************************");
+                        }
+                    });
                     return RepeatStatus.FINISHED;
                 })
                 .build();

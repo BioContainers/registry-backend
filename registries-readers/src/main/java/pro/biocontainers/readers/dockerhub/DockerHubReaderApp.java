@@ -21,7 +21,7 @@ public class DockerHubReaderApp {
     private static final Logger log = LoggerFactory.getLogger(DockerHubReaderApp.class);
 
     @Autowired
-    private DockerHubConfiguration configuration;
+    private DockerHubConfiguration dockerHubConfig;
 
     public static void main(String args[]) {
         SpringApplication.run(DockerHubReaderApp.class);
@@ -30,7 +30,7 @@ public class DockerHubReaderApp {
     @Bean
     public CommandLineRunner run(RestTemplateBuilder builder) {
         return args -> {
-            DockerHubQueryService service = new DockerHubQueryService(builder, configuration);
+            DockerHubQueryService service = new DockerHubQueryService(builder, dockerHubConfig);
             ListDockerHubContainers containersList = service.getAllContainers("biocontainers");
             log.info("***********containersList*************");
             log.info(containersList.toString());
