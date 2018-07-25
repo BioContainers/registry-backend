@@ -5,13 +5,17 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Import;
+import pro.biocontainers.mongodb.config.MongoDBConfiguration;
+import pro.biocontainers.mongodb.service.BioContainersService;
 import pro.biocontainers.pipelines.configs.DataSourceConfiguration;
 import pro.biocontainers.pipelines.jobs.AbstractJob;
+import pro.biocontainers.pipelines.utilities.BiocontainerTransformer;
 import pro.biocontainers.pipelines.utilities.PipelineConstants;
 import pro.biocontainers.readers.dockerhub.DockerHubConfiguration;
 import pro.biocontainers.readers.dockerhub.model.DockerHubContainer;
@@ -36,7 +40,7 @@ import java.util.Optional;
  */
 @Configuration
 @Slf4j
-@Import({ DataSourceConfiguration.class, DockerHubConfiguration.class, })
+@Import({ DataSourceConfiguration.class, DockerHubConfiguration.class, MongoDBConfiguration.class})
 public class ImportContainersFromDockerHubJob extends AbstractJob {
 
     @Bean
@@ -46,6 +50,12 @@ public class ImportContainersFromDockerHubJob extends AbstractJob {
 
     @Autowired
     DockerHubConfiguration dockerHubConfig;
+
+    @Autowired
+    BioContainersService mongoService;
+
+    @Value("${public-url.dockerhub}")
+    String dockerHubRegistry;
 
 
     /**
@@ -61,6 +71,7 @@ public class ImportContainersFromDockerHubJob extends AbstractJob {
                     service.getAllContainers("biocontainers").getRepositories().forEach(x -> {
                         Optional<DockerHubContainer> container = service.getContainer("biocontainers", x.getName());
                         if (container.isPresent()) {
+                            mongoService.indexContainer(BiocontainerTransformer.transformDockerHubContainerToBiocontainer(container.get(), dockerHubRegistry));
                             log.debug("**********container**************");
                             log.debug(container.toString());
                             log.debug("************************");
@@ -78,7 +89,7 @@ public class ImportContainersFromDockerHubJob extends AbstractJob {
      * @return the calculatePrideArchiveDataUsage job
      */
     @Bean
-    public Job syncMongoProjectToSolrCloudJob() {
+    public Job importDockerHubToMongoDB() {
         return jobBuilderFactory
                 .get(PipelineConstants.JobNames.READ_DOCKERHUB_CONTAINERS_JOB.getName())
                 .start(readContainersFromDockerHub())

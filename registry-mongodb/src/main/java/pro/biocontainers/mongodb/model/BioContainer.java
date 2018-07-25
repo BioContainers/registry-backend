@@ -7,7 +7,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Map;
+import java.util.Date;
+import java.util.List;
 
 @Builder
 @Data
@@ -23,19 +24,29 @@ public class BioContainer {
     @Indexed(name = "accession", unique = true)
     String accession;
 
-    /** URLs where the containers can be download, The Key of the hash is the URL
-     * the value is the status of the URL **/
-    @Indexed(name = "urls", unique = true)
-    Map<String, String> urls;
-
-    /** Main URL where the user can download the container. **/
-    @Indexed(name = "mainURL", unique = true)
-    String url;
+    @Indexed(name = "namespace")
+    String nameSpace;
 
     @Indexed(name = "name")
     String name;
 
+    /** Main URL where the user can download the container. **/
+    @Indexed(name = "url")
+    String url;
+
     @Indexed(name = "description")
     String description;
+
+    @Indexed(name = "pullCount")
+    Integer pullCount;
+
+    @Indexed(name = "lastUpdate")
+    Date lastUpdate;
+
+    @Indexed(name = "starred")
+    Boolean starred;
+
+    @Indexed(name = "tags")
+    List<Tuple<String, Integer>> tags;
 
 }
