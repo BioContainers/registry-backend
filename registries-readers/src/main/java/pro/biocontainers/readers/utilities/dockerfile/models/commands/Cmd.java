@@ -4,13 +4,10 @@ package pro.biocontainers.readers.utilities.dockerfile.models.commands;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
-import pro.biocontainers.readers.utilities.dockerfile.Snapshot;
+import pro.biocontainers.readers.utilities.dockerfile.models.Snapshot;
 
 import java.util.List;
 
-/**
- * Created by salizumberi-laptop on 01.11.2016.
- */
 
 @Getter
 @Setter
@@ -37,15 +34,15 @@ public class Cmd extends Instruction{
         this.executable=executable;
         this.params=params;
 
-        String allParams = "";
+        StringBuilder allParams = new StringBuilder();
         for(String p: params){
-            allParams += "¦"+ p;
+            allParams.append("¦").append(p);
         }
 
         if (allParams.length() > 240){
             this.allParams = allParams.substring(0, 240) + "...";
         }else{
-            this.allParams = allParams;
+            this.allParams = allParams.toString();
         }
     }
 

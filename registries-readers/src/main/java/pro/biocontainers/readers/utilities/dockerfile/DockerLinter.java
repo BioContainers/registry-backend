@@ -5,15 +5,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-/**
- * Created by salizumberi-laptop on 26.10.2016.
- */
 public class DockerLinter {
 
     public final static String HADOLINT_EXEC = "docker run --rm -i lukasmartinelli/hadolint < ";
     public static String getReportOfLinting(File file) throws IOException, InterruptedException{
         String exec  = HADOLINT_EXEC +file.getAbsolutePath();
-        ProcessBuilder processBuilder = null;
+        ProcessBuilder processBuilder;
 
         processBuilder = new ProcessBuilder("cmd","/c",exec);
 
@@ -26,7 +23,7 @@ public class DockerLinter {
         {
             String readLine;
             while ((readLine = processOutputReader.readLine()) != null){
-                processOutput.append(readLine + System.lineSeparator());
+                processOutput.append(readLine).append(System.lineSeparator());
             }
             process.waitFor();
         }

@@ -2,11 +2,7 @@ package pro.biocontainers.readers.utilities.dockerfile.models.commands;
 
 import lombok.Getter;
 import lombok.Setter;
-import pro.biocontainers.readers.utilities.dockerfile.Snapshot;
-
-/**
- * Created by salizumberi-laptop on 01.11.2016.
- */
+import pro.biocontainers.readers.utilities.dockerfile.models.Snapshot;
 
 @Getter
 @Setter

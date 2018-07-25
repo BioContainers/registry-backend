@@ -6,7 +6,6 @@ import com.google.common.collect.Maps;
 import com.hubspot.jinjava.Jinjava;
 import com.hubspot.jinjava.interpret.RenderResult;
 import lombok.extern.log4j.Log4j;
-import org.apache.commons.io.Charsets;
 import pro.biocontainers.readers.utilities.conda.model.CondaRecipe;
 
 import java.io.File;

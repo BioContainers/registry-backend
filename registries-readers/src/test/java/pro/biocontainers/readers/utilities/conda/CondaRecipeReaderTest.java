@@ -5,8 +5,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-
-import static org.junit.Assert.*;
+import java.util.Objects;
 
 /**
  * This code is licensed under the Apache License, Version 2.0 (the
@@ -25,7 +24,7 @@ public class CondaRecipeReaderTest {
 
     @Test
     public void parse() throws URISyntaxException, IOException {
-        File file = new File(CondaRecipeReaderTest.class.getClassLoader().getResource("files/meta.yaml").toURI());
+        File file = new File(Objects.requireNonNull(CondaRecipeReaderTest.class.getClassLoader().getResource("files/meta.yaml")).toURI());
         CondaRecipeReader.parseProperties(file);
 
     }

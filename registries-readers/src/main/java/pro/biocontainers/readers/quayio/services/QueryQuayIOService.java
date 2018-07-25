@@ -62,7 +62,7 @@ public class QueryQuayIOService {
                 .replaceAll("%%container_name%%", containerName);
         try {
             QuayIOContainer container = restTemplate.getForObject(url, QuayIOContainer.class);
-            return Optional.of(container);
+            return Optional.ofNullable(container);
         } catch (RestClientException ex) {
             log.error(ex.getMessage());
         }

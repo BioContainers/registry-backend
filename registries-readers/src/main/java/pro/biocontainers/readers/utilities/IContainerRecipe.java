@@ -5,18 +5,18 @@ import java.util.Map;
 
 public interface IContainerRecipe {
 
-    public String getSoftwareName();
+    String getSoftwareName();
 
-    public String getDescription();
+    String getDescription();
 
-    public String getLicense();
+    String getLicense();
 
-    public String getHomeURL();
+    String getHomeURL();
 
-    public String getDocumentationURL();
+    String getDocumentationURL();
 
-    public Map<String, List<String>> getExternalIds();
+    Map<String, List<String>> getExternalIds();
 
-    public String softwareVersion();
+    String softwareVersion();
 
 }

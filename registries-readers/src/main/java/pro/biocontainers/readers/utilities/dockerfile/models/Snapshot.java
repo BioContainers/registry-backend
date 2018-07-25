@@ -10,9 +10,7 @@ import pro.biocontainers.readers.utilities.dockerfile.models.commands.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by salizumberi-laptop on 18.11.2016.
- */
+
 @Getter
 @Setter
 public class Snapshot {

@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.text.ParseException;
-import java.util.Date;
 import java.util.List;
 
 import static java.lang.Math.toIntExact;
@@ -76,15 +75,14 @@ public class Project {
 
     private String extractRepositoryName(String gitUrl) {
         String gitUrl1 = gitUrl.replaceAll("https://github.com/", "");
-        String gitUrl2 = gitUrl1.replaceAll(".git", "");
-        return gitUrl2;
+        return gitUrl1.replaceAll(".git", "");
     }
 
     private void mapGitHubAPIMetaDataToProject(GitHubAPIMetaData gitHubAPIMetaData, Project project) throws ParseException {
         //Date created_at = DateExtractor.getDateFromJsonString(gitHubAPIMetaData.created_at);
         project.setLocalRepoPath(gitHubAPIMetaData.name);
         project.setRepo_id(toIntExact(gitHubAPIMetaData.id));
-        project.setFirstCommitDate(Long.valueOf(firstCommitDate));
+        project.setFirstCommitDate(firstCommitDate);
         project.setForks(toIntExact(gitHubAPIMetaData.forks_count));
         project.setSize(toIntExact(gitHubAPIMetaData.size));
         project.setNetworkCount(toIntExact(gitHubAPIMetaData.network_count));

@@ -10,6 +10,7 @@ import pro.biocontainers.readers.dockerhub.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -45,7 +46,7 @@ public class DockerHubQueryService {
         try {
             DockerHubContainerFetcher fetcher = restTemplate.getForObject(url, DockerHubContainerFetcher.class);
             while (true) {
-                containersList.addAll(fetcher.getRepositories());
+                containersList.addAll(Objects.requireNonNull(fetcher).getRepositories());
                 url = fetcher.getNext();
                 if (url == null) {
                     break;

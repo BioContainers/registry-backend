@@ -3,9 +3,7 @@ package pro.biocontainers.readers.utilities.dockerfile.models.commands;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * Created by salizumberi-laptop on 01.11.2016.
- */
+
 @Getter
 @Setter
 public class Instruction {

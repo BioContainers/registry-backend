@@ -2,10 +2,12 @@ package pro.biocontainers.readers.quayio.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 import java.util.Map;
 
+@EqualsAndHashCode(callSuper = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class QuayIOContainer extends ShortQuayIOContainer {

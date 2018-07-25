@@ -2,6 +2,7 @@ package pro.biocontainers.readers.utilities.dockerfile;
 
 
 
+import pro.biocontainers.readers.utilities.dockerfile.models.Snapshot;
 import pro.biocontainers.readers.utilities.dockerfile.models.commands.*;
 
 import java.io.*;
@@ -9,6 +10,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,11 +47,11 @@ public class DockerParser {
         if (pathTokens.length == 1) {
             this.localDockerfilePath = "";
         } else {
-            String newPath = "";
+            StringBuilder newPath = new StringBuilder();
             for (int i = 0; i < pathTokens.length - 1; i++) {
-                newPath += pathTokens[i] + "/";
+                newPath.append(pathTokens[i]).append("/");
             }
-            this.localDockerfilePath = newPath;
+            this.localDockerfilePath = newPath.toString();
         }
         this.localPath = localpath;
     }
@@ -101,11 +103,7 @@ public class DockerParser {
         boolean o = isContainExactWord(line, "ONBUILD");
         boolean p = isContainExactWord(line, "USER");
         boolean q = isContainExactWord(line, "WORKDIR");
-        if (a || b || c || d || e || f || g || h || i || j || k || l || m || n || o || p || q) {
-            return true;
-        } else {
-            return false;
-        }
+        return a || b || c || d || e || f || g || h || i || j || k || l || m || n || o || p || q;
     }
 
     public boolean isContainExactWord(String fullString, String partWord) {
@@ -119,7 +117,7 @@ public class DockerParser {
         List<Comment> comments = new ArrayList<>();
         FileInputStream fis = new FileInputStream(flatDockerFile);
         BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
-        String line = null;
+        String line;
         String instruction = "";
         String newLine = "";
         boolean out = false;
@@ -154,7 +152,6 @@ public class DockerParser {
                     header = true;
                 }
                 newLine = "";
-                instruction = "";
                 commentFlag = false;
 
             } else if (doesLineHaveAnInstruction(line) && commentFlag) {
@@ -352,11 +349,7 @@ public class DockerParser {
         } else if (line.contains("WORKDIR")) {
             return true;
 
-        } else if (line.startsWith("#")) {
-            return true;
-        } else {
-            return false;
-        }
+        } else return line.startsWith("#");
     }
 
     public void doClassificationOfLines(File file) throws IOException {
@@ -393,11 +386,7 @@ public class DockerParser {
             return false;
         } else if (instructionToCheck.contains("ARG")) {
             return false;
-        } else if (instructionToCheck.contains("ONBUILD")) {
-            return false;
-        } else {
-            return true;
-        }
+        } else return !instructionToCheck.contains("ONBUILD");
     }
 
     public boolean isSingleInstruction(String instructionToCheck) {
@@ -409,11 +398,7 @@ public class DockerParser {
             return true;
         } else if (instructionToCheck.contains("HEALTHCHECK")) {
             return true;
-        } else if (instructionToCheck.contains("STOPSIGNAL")) {
-            return true;
-        } else {
-            return false;
-        }
+        } else return instructionToCheck.contains("STOPSIGNAL");
     }
 
 
@@ -532,8 +517,8 @@ public class DockerParser {
         List<Expose> exposes = new ArrayList<>();
         if (ports.matches(".*\\d+.*")) {
             String[] parts = ports.split(" ");
-            for (int i = 0; i < parts.length; i++) {
-                exposes.add(new Expose(dockerfile, parts[i]));
+            for (String part : parts) {
+                exposes.add(new Expose(dockerfile, part));
             }
         }
         this.exposes = exposes;
@@ -547,7 +532,7 @@ public class DockerParser {
             Pattern p = Pattern.compile("\"(.*?)\"");
             Matcher m = p.matcher(command);
 
-            List<String> matches = new ArrayList<String>();
+            List<String> matches = new ArrayList<>();
             while (m.find()) {
                 matches.add(m.group(1));
             }
@@ -684,8 +669,8 @@ public class DockerParser {
             }
         }
         List<String> newParts = new ArrayList<>();
-        for(int i =0; i< parts.size(); i++){
-            String[] valuekeyJoint = parts.get(i).split("=");
+        for (String part : parts) {
+            String[] valuekeyJoint = part.split("=");
             newParts.addAll(Arrays.asList(valuekeyJoint));
         }
         parts = newParts;
@@ -818,9 +803,7 @@ public class DockerParser {
             if (commandx.contains("echo")) {
                 executable = "echo";
                 String arr[] = commandx.split(" ", 2);
-                for (int i = 0; i < arr.length; i++) {
-                    params.add(arr[i]);
-                }
+                Collections.addAll(params, arr);
 
             } else {
                 if (command.contains("[")) {
@@ -879,8 +862,8 @@ public class DockerParser {
             }
         } else {
             String[] parts = command.split(" ");
-            for (int i = 0; i < parts.length; i++) {
-                volumes.add(new Volume(dockerfile, parts[i]));
+            for (String part : parts) {
+                volumes.add(new Volume(dockerfile, part));
             }
         }
         this.volumes = volumes;

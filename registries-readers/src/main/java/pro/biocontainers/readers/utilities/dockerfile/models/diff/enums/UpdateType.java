@@ -1,8 +1,6 @@
 package pro.biocontainers.readers.utilities.dockerfile.models.diff.enums;
 
-/**
- * Created by salizumberi-laptop on 03.12.2016.
- */
+
 public enum UpdateType implements ChangeType<UpdateType>{
     ADD("ADD"),
     CMD("CMD"),

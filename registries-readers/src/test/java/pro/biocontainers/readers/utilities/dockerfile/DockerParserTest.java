@@ -6,8 +6,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-
-import static org.junit.Assert.*;
+import java.util.Objects;
 
 /**
  * This code is licensed under the Apache License, Version 2.0 (the
@@ -26,9 +25,9 @@ public class DockerParserTest {
 
     @Test
     public void getParsedDockerfileObject() throws IOException, URISyntaxException {
-        File rawDockerfile1 = new File( DockerParserTest.class.getClassLoader().getResource("files/Dockerfile").toURI());
+        File rawDockerfile1 = new File( Objects.requireNonNull(DockerParserTest.class.getClassLoader().getResource("files/Dockerfile")).toURI());
         DockerParser parser = new DockerParser(rawDockerfile1.getParent(), rawDockerfile1.getAbsolutePath());
         Snapshot dockerfileSnapshot1 = parser.getParsedDockerfileObject(rawDockerfile1);
-        Assert.assertTrue("Number of labels is 10", dockerfileSnapshot1.labels.size() == 11);
+        Assert.assertEquals("Number of labels is 10", 11, dockerfileSnapshot1.labels.size());
     }
 }
