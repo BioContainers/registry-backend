@@ -53,10 +53,10 @@ public class CondaRecipe implements IContainerRecipe {
     Map<String, String> sources;
 
     /** Version of the software **/
-    private String version;
+    private String softwareVersion;
 
     /** Parse the name of the Container*/
-    String name;
+    String softwareName;
 
     /** Where the binary can be found **/
     String binaryURL;
@@ -74,10 +74,10 @@ public class CondaRecipe implements IContainerRecipe {
 
     public void parseProperties(){
         if(recipeProperties.containsKey(NAME))
-            this.name = recipeProperties.get(NAME);
+            this.softwareName = recipeProperties.get(NAME);
 
         if(recipeProperties.containsKey(VERSION))
-            this.version = recipeProperties.get(VERSION);
+            this.softwareVersion = recipeProperties.get(VERSION);
 
         if(sources.containsKey(URL))
             this.binaryURL = sources.get(URL);
@@ -128,5 +128,10 @@ public class CondaRecipe implements IContainerRecipe {
     @Override
     public Map<String, List<String>> getExternalIds() {
         return this.identifiers;
+    }
+
+    @Override
+    public String softwareVersion() {
+        return this.softwareVersion;
     }
 }

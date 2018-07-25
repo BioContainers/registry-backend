@@ -5,7 +5,7 @@ import java.util.Map;
 
 public interface IContainerRecipe {
 
-    public String getName();
+    public String getSoftwareName();
 
     public String getDescription();
 
@@ -16,5 +16,7 @@ public interface IContainerRecipe {
     public String getDocumentationURL();
 
     public Map<String, List<String>> getExternalIds();
+
+    public String softwareVersion();
 
 }
