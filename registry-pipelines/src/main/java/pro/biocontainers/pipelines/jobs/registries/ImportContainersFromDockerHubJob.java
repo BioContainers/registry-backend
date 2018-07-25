@@ -100,6 +100,10 @@ public class ImportContainersFromDockerHubJob extends AbstractJob {
                     service.getListContainers("biocontainers").getRepositories().forEach(x -> {
                         Optional<QuayIOContainer> container = service.getContainer("biocontainers", x.getName());
                         if (container.isPresent()) {
+                            QuayIOContainer ioContainer = container.get();
+                            ioContainer.setDescription(x.getDescription());
+                            ioContainer.setLast_modified(x.getLast_modified());
+                            ioContainer.setPopularity(x.getPopularity());
                             mongoService.indexContainer(BiocontainerTransformer.transformContainerToBiocontainer(container.get(), quayIOHubRegistry));
                             log.debug("**********container**************");
                             log.debug(container.toString());

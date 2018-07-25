@@ -1,9 +1,12 @@
 package pro.biocontainers.pipelines.utilities;
 
 import pro.biocontainers.mongodb.model.BioContainer;
+import pro.biocontainers.mongodb.model.Tuple;
 import pro.biocontainers.readers.IRegistryContainer;
 import pro.biocontainers.readers.dockerhub.model.DockerHubContainer;
 import pro.biocontainers.readers.quayio.model.QuayIOContainer;
+
+import java.util.stream.Collectors;
 
 /**
  * This code is licensed under the Apache License, Version 2.0 (the
@@ -26,6 +29,10 @@ public class BiocontainerTransformer {
                 .name(container.getName())
                 .accession(accession)
                 .description(container.getDescription())
+                .lastUpdate(container.getLastUpdated())
+                .pullCount(container.getPullCount())
+                .tags(container.getContainerTags().stream().map(x -> new Tuple<>(x.getKey(), x.getValue())).collect(Collectors.toList()))
+                .starred(container.isStarred())
                 .build();
 
     }

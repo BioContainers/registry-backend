@@ -2,9 +2,13 @@ package pro.biocontainers.readers.dockerhub.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import lombok.extern.log4j.Log4j;
 import pro.biocontainers.readers.IRegistryContainer;
 import pro.biocontainers.readers.Tuple;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,6 +16,7 @@ import java.util.stream.Collectors;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
+@Log4j
 public class DockerHubContainer implements IRegistryContainer {
 
     private DockerHubContainerBriefInfo info;
@@ -39,7 +44,18 @@ public class DockerHubContainer implements IRegistryContainer {
 
     @Override
     public Date getLastUpdated() {
-        return new Date(info.getLast_updated());
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = null;
+        try {
+            if(info.getLast_updated() != null){
+                log.info(info.getLast_updated());
+                date = formatter.parse(info.getLast_updated());
+                return date;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override

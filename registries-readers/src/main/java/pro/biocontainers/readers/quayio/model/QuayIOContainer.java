@@ -67,7 +67,9 @@ public class QuayIOContainer extends ShortQuayIOContainer implements IRegistryCo
 
     @Override
     public Date getLastUpdated() {
-        return new Date(this.last_modified);
+        if(this.last_modified != null)
+            return new Date(this.last_modified * 1000);
+        return null;
     }
 
     @Override
