@@ -21,7 +21,7 @@ import pro.biocontainers.readers.quayio.model.QuayIOContainer;
 public class BiocontainerTransformer {
 
     public static BioContainer transformContainerToBiocontainer(IRegistryContainer container, String accessionURL) {
-        String accession = accessionURL.replace("%%name_space", container.getNameSpace()).replace("%%software_name%%", container.getName());
+        String accession = accessionURL.replace("%%name_space%%", container.getNameSpace()).replace("%%software_name%%", container.getName());
         return  BioContainer.builder()
                 .name(container.getName())
                 .accession(accession)
