@@ -2,7 +2,9 @@ package pro.biocontainers.readers.github.services;
 
 import com.google.common.io.Files;
 import org.apache.commons.io.FileUtils;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import pro.biocontainers.readers.github.configs.GitHubConfiguration;
 import pro.biocontainers.readers.utilities.conda.CondaRecipeReader;
 import pro.biocontainers.readers.utilities.conda.model.CondaRecipe;
@@ -12,17 +14,17 @@ import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
-import java.util.Objects;
 
 @Service
 public class GitHubFileReader {
 
     GitHubConfiguration config;
+    RestTemplate restTemplate;
 
-    public GitHubFileReader(GitHubConfiguration config){
+    public GitHubFileReader(GitHubConfiguration config, RestTemplateBuilder builder){
         this.config = config;
+        this.restTemplate = builder.build();
     }
 
     /**
@@ -70,5 +72,16 @@ public class GitHubFileReader {
         tempDir.deleteOnExit();
 
         return container;
+    }
+
+    /**
+     * Get the DockerFile 
+     * @return
+     */
+    public DockerFileNameList getDockerFiles() {
+        String url = config.getGitHubAPIFiles();
+        return restTemplate.getForObject(url, DockerFileNameList.class);
+
+
     }
 }
