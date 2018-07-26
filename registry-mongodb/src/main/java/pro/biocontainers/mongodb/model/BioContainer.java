@@ -50,4 +50,7 @@ public class BioContainer {
     @Indexed(name = "tags")
     List<Tuple<String, Integer>> tags;
 
+    @Indexed(name = "version")
+    String version;
+
 }

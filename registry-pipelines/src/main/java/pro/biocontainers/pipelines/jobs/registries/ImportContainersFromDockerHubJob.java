@@ -79,7 +79,6 @@ public class ImportContainersFromDockerHubJob extends AbstractJob {
                     DockerHubQueryService service = new DockerHubQueryService(restTemplateBuilder(), dockerHubConfig);
                     service.getAllContainers("biocontainers").getRepositories().parallelStream().forEach(x -> {
                         Optional<DockerHubContainer> container = service.getContainer("biocontainers", x.getName());
-                        //container = reaContainerRecipeFromGithub(container);
                         if (container.isPresent()) {
                             mongoService.indexContainer(BiocontainerTransformer.transformContainerToBiocontainer(container.get(), dockerHubRegistry));
                             log.debug("**********container**************");

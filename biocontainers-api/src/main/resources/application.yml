@@ -1,2 +1,6 @@
 server.port: 9999
-registry.api.base-path: /api/v2
+registry.api.base-path: /api/v2/
+
+
+management.endpoints.web.exposure.include: '*'
+springfox.documentation.swagger.v2.home: /api/v2/api-docs

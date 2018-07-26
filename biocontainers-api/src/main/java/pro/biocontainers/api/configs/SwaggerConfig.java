@@ -4,6 +4,9 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import pro.biocontainers.api.model.Metadata;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -29,7 +32,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  */
 @EnableSwagger2
 @Configuration
-public class SwaggerConfig {
+public class SwaggerConfig extends WebMvcConfigurationSupport {
 
     private Metadata metadata;
 
@@ -40,6 +43,13 @@ public class SwaggerConfig {
                 .country("Europe")
                 .friendlyName("BioContainers RestFul API")
                 .version("v2")
+                .description("The BioContainers Restful API provides the information of all the containers and tools develop by BioContainers Community -- http://biocontainers.pro")
+                .contact(pro.biocontainers.api.model.Contact.builder()
+                        .email("biocotainers@gmail.com")
+                        .name("BioContainers Community")
+                        .url("http://biocontainers.pro")
+                        .build())
+                .license("Apache License Version 2.0")
                 .build();
         return this.metadata;
     }
@@ -50,25 +60,38 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.any())
-                .paths(paths())
+                .paths(PathSelectors.any())
+//                .paths(PathSelectors.regex("/v2/.*"))
                 .build().apiInfo(apiInfo());
     }
 
-    /**
-     * This function exclude all the paths we don't want to show in the swagger documentation.
-     * @return List of paths
-     */
-    private Predicate<String> paths() {
-        return Predicates.not(PathSelectors.regex("/error"));
-    }
+//    /**
+//     * This function exclude all the paths we don't want to show in the swagger documentation.
+//     * @return List of paths
+//     */
+//    private Predicate<String> paths() {
+//        return Predicates
+//                .not(PathSelectors.regex("/error"))
+//                ;
+//    }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title(metadata.getFriendlyName())
-                .description("The PRIDE PRoteomics IDEntifications (PRIDE) database is a centralized, standards compliant, public data repository for proteomics data, including protein and peptide identifications, post-translational modifications and supporting spectral evidence. ")
-                .contact(new Contact("PRIDE Support Team", "www.ebi.ac.uk/pride", "pride-support@ebi.ac.uk"))
-                .license("Apache License Version 2.0")
+                .description(metadata.getDescription())
+                .contact(new Contact(metadata.getContact().getName(), metadata.getContact().getUrl(),metadata.getContact().getEmail()))
+                .license(metadata.getLicense())
                 .version(metadata.getVersion())
                 .build();
+    }
+
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addRedirectViewController("/api/v2/api-docs", "/swagger-ui.html").setKeepQueryParams(true);
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/api/**").addResourceLocations("classpath:/META-INF/resources/");
     }
 }

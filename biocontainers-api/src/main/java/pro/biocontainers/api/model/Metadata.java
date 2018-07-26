@@ -24,5 +24,11 @@ public class Metadata {
 
     @JsonProperty("description")
     private String description;
+
+    @JsonProperty("contact")
+    private Contact contact;
+
+    @JsonProperty("license")
+    private String license;
 }
 

@@ -94,7 +94,7 @@ public class CondaRecipe implements IContainerRecipe {
         if(about.containsKey(DOC_URL))
             this.docURL = about.get(DOC_URL);
 
-        if(extras.containsKey(IDENTIFIERS)){
+        if(extras != null && extras.containsKey(IDENTIFIERS)){
             this.identifiers = new HashMap<>();
             List<String> identifiers = (List<String>) extras.get(IDENTIFIERS);
             identifiers.forEach(x-> {

@@ -20,7 +20,10 @@ public class GitHubFileReader {
     }
 
     public CondaRecipe parseCondaRecipe(String name, String version) throws IOException {
-        URL url = new URL(config.getCondaRecipeURL().replace("%%software_name%%", name).replace("%%software_version%%", version));
+        String stringURL =config.getCondaRecipeURL().replace("%%software_name%%", name);
+        if(version != null)
+            stringURL = stringURL.replace("%%software_version%%", version);
+        URL url = new URL(stringURL);
         File fileTemp = File.createTempFile("meta", ".yml");
         FileUtils.copyURLToFile(url, fileTemp);
 

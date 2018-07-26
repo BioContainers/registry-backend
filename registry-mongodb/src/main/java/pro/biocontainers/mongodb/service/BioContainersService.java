@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import pro.biocontainers.mongodb.model.BioContainer;
 import pro.biocontainers.mongodb.repository.BioContainersRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,5 +31,24 @@ public class BioContainersService {
            log.error("A BioContainer with similar accession already exists!!!");
         }
         return Optional.of(container);
+    }
+
+    /**
+     * Find all Containers
+     * @return
+     */
+    public List<BioContainer> findAll(){
+        return repository.findAll();
+    }
+
+    public void updateContainer(BioContainer bioContainer) {
+        try {
+            if(bioContainer.getId() != null){
+                repository.save(bioContainer);
+                log.info("The following container has been updated -- " + bioContainer.getId().toString());
+            }
+        }catch(DuplicateKeyException ex){
+            log.error("A BioContainer with similar accession already exists!!!");
+        }
     }
 }
