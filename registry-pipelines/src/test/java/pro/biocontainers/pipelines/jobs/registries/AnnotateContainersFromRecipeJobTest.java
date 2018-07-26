@@ -45,7 +45,7 @@ public class AnnotateContainersFromRecipeJobTest {
      * @throws Exception
      */
     @Test
-    public void syncMongoToSolrCloud() throws Exception {
+    public void annotateContainersFromRecipes() throws Exception {
         JobExecution jobExecution = jobLauncherTestUtils.launchJob();
         Assert.assertEquals(BatchStatus.COMPLETED.name(), jobExecution.getExitStatus().getExitCode());
     }

@@ -10,11 +10,12 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Builder
 @Data
 @Document(collection = "biocontainers")
-public class BioContainer {
+public class BioContainer implements IContainerImage{
 
     /** Native Identifier from MongoDB */
     @Id
@@ -47,8 +48,8 @@ public class BioContainer {
     @Indexed(name = "starred")
     Boolean starred;
 
-    @Indexed(name = "tags")
-    List<Tuple<String, Integer>> tags;
+    @Indexed(name = "images")
+    Map<String, ContainerImage> images;
 
     @Indexed(name = "version")
     String version;

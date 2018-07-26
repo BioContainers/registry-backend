@@ -9,6 +9,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import pro.biocontainers.readers.github.configs.GitHubConfiguration;
 import pro.biocontainers.readers.utilities.conda.model.CondaRecipe;
+import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
 
 import java.io.IOException;
 
@@ -27,6 +28,17 @@ public class GitHubFileReaderTest {
         try {
             CondaRecipe recipe = reader.parseCondaRecipe("abyss", "2.1.0");
             Assert.assertTrue(recipe.getSoftwareName().equalsIgnoreCase("abyss"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void parseDockerfileRecipe() {
+        GitHubFileReader reader = new GitHubFileReader(config);
+        try {
+            DockerContainer recipe = reader.parseDockerRecipe("abacas", "1.3.1-3-deb");
+            Assert.assertTrue(recipe.getSoftwareName().equalsIgnoreCase("abacas"));
         } catch (IOException e) {
             e.printStackTrace();
         }

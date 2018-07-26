@@ -82,4 +82,6 @@ public class DockerHubContainer implements IRegistryContainer {
     public List<Tuple<Date, Integer>> getContainerStats() {
         return new ArrayList<>();
     }
+
+
 }

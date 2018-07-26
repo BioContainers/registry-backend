@@ -1,11 +1,14 @@
 package pro.biocontainers.pipelines.utilities;
 
 import pro.biocontainers.mongodb.model.BioContainer;
+import pro.biocontainers.mongodb.model.ContainerImage;
 import pro.biocontainers.mongodb.model.Tuple;
 import pro.biocontainers.readers.IRegistryContainer;
 import pro.biocontainers.readers.dockerhub.model.DockerHubContainer;
 import pro.biocontainers.readers.quayio.model.QuayIOContainer;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -25,13 +28,17 @@ public class BiocontainerTransformer {
 
     public static BioContainer transformContainerToBiocontainer(IRegistryContainer container, String accessionURL) {
         String accession = accessionURL.replace("%%name_space%%", container.getNameSpace()).replace("%%software_name%%", container.getName());
+        Map<String, ContainerImage> images = new HashMap<>();
+        container.getContainerTags().stream().forEach( x-> {
+            images.put(x.getKey(), ContainerImage.builder().size(x.getValue()).build());
+        });
         return  BioContainer.builder()
                 .name(container.getName())
                 .accession(accession)
                 .description(container.getDescription())
                 .lastUpdate(container.getLastUpdated())
                 .pullCount(container.getPullCount())
-                .tags(container.getContainerTags().stream().map(x -> new Tuple<>(x.getKey(), x.getValue())).collect(Collectors.toList()))
+                .images(images)
                 .starred(container.isStarred())
                 .build();
 

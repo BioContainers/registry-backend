@@ -32,6 +32,7 @@ import pro.biocontainers.pipelines.utilities.PipelineConstants;
 import pro.biocontainers.readers.github.configs.GitHubConfiguration;
 import pro.biocontainers.readers.github.services.GitHubFileReader;
 import pro.biocontainers.readers.utilities.conda.model.CondaRecipe;
+import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -71,26 +72,29 @@ public class AnnotateContainersFromRecipeJob extends AbstractJob {
      * This methods connects to the database read all the Oracle information for public
      * @return
      */
-//    @Bean
-//    Step annotateContainersFromDockerHub() {
-//        return stepBuilderFactory
-//                .get(PipelineConstants.StepNames.ANNOTATE_DOCKERHUB_RECIPE.name())
-//                .tasklet((stepContribution, chunkContext) -> {
-//                    mongoService.findAll().parallelStream().forEach( bioContainer -> {
-//                        try {
-//                            CondaRecipe recipe = fileReaderService.parseCondaRecipe(bioContainer.getName(), bioContainer.getVersion());
-//                            bioContainer.setDescription(recipe.getDescription());
-//                            mongoService.updateContainer(bioContainer);
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                        }
-//
-//                    });
-//
-//                    return RepeatStatus.FINISHED;
-//                })
-//                .build();
-//    }
+    @Bean
+    Step annotateContainersFromDockerHub() {
+        return stepBuilderFactory
+                .get(PipelineConstants.StepNames.ANNOTATE_DOCKERHUB_RECIPE.name())
+                .tasklet((stepContribution, chunkContext) -> {
+                    mongoService.findAll().parallelStream()
+                            .filter(x -> !x.getAccession().equalsIgnoreCase(PipelineConstants.QUAYIO)).forEach( bioContainer -> {
+                                try {
+                                    DockerContainer recipe = fileReaderService.parseDockerRecipe(bioContainer.getName(), bioContainer.getVersion());
+                                    bioContainer.setDescription(recipe.getDescription());
+                                    mongoService.updateContainer(bioContainer);
+                            mongoService.updateContainer(bioContainer);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            log.error("The container recipe hasn't been found in the Dockerhub  -- " + bioContainer.getAccession());
+                        }
+
+                    });
+
+                    return RepeatStatus.FINISHED;
+                })
+                .build();
+    }
 
     @Bean
     public Step annnotateContainersFromQuayIO() {
@@ -123,8 +127,8 @@ public class AnnotateContainersFromRecipeJob extends AbstractJob {
     public Job annotateCondaDockerContainers() {
         return jobBuilderFactory
                 .get(PipelineConstants.JobNames.ANNOTATE_CONTAINERS_JOB.getName())
-//                .start(annotateContainersFromDockerHub())
                 .start(annnotateContainersFromQuayIO())
+                .next(annotateContainersFromDockerHub())
                 .build();
     }
 
