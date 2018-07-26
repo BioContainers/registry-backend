@@ -21,5 +21,8 @@ public class Metadata {
 
     @JsonProperty("friendly_name")
     private String friendlyName;
+
+    @JsonProperty("description")
+    private String description;
 }
 
