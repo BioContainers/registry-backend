@@ -18,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DockerFileName {
+
     @JsonProperty(value = "path")
     String path;
     @JsonProperty(value = "mode")
@@ -32,5 +33,29 @@ public class DockerFileName {
     String url;
 
     public DockerFileName() {
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public String getMode() {
+        return mode;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getSha() {
+        return sha;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public String getUrl() {
+        return url;
     }
 }

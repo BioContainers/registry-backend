@@ -50,7 +50,7 @@ public class CondaRecipe implements IContainerRecipe {
     Map<String, Object> extras;
 
     @JsonProperty(value = "source")
-    Map<String, String> sources;
+    Map<String, Object> sources;
 
     /** Version of the software **/
     private String softwareVersion;
@@ -79,8 +79,14 @@ public class CondaRecipe implements IContainerRecipe {
         if(recipeProperties.containsKey(VERSION))
             this.softwareVersion = recipeProperties.get(VERSION);
 
-        if(sources.containsKey(URL))
-            this.binaryURL = sources.get(URL);
+        if(sources != null && sources.containsKey(URL)){
+            if(sources.get(URL) instanceof String){
+                this.binaryURL = (String) sources.get(URL);
+            }else if(sources.get(URL) instanceof List){
+                this.binaryURL = (String) ((List) sources.get(URL)).get(0);
+            }
+
+        }
 
         if(about.containsKey(HOME))
             this.homeURL = about.get(HOME);

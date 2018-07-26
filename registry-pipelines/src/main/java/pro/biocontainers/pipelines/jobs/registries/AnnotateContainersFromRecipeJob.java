@@ -24,18 +24,20 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import pro.biocontainers.mongodb.config.MongoDBConfiguration;
 import pro.biocontainers.mongodb.service.BioContainersService;
 import pro.biocontainers.pipelines.configs.DataSourceConfiguration;
 import pro.biocontainers.pipelines.jobs.AbstractJob;
 import pro.biocontainers.pipelines.utilities.PipelineConstants;
 import pro.biocontainers.readers.github.configs.GitHubConfiguration;
+import pro.biocontainers.readers.github.services.DockerFileNameList;
 import pro.biocontainers.readers.github.services.GitHubFileReader;
 import pro.biocontainers.readers.utilities.conda.model.CondaRecipe;
 import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
 
 import java.io.IOException;
-import java.util.Optional;
+import java.util.*;
 
 @Configuration
 @Slf4j
@@ -55,11 +57,7 @@ public class AnnotateContainersFromRecipeJob extends AbstractJob {
 
     GitHubFileReader fileReaderService;
 
-    @Bean
-    GitHubFileReader getFileReaderService(){
-        fileReaderService = new GitHubFileReader(gitHubConfiguration);
-        return this.fileReaderService;
-    }
+    RestTemplateBuilder builder;
 
     @Value("${public-url.dockerhub}")
     String dockerHubRegistry;
@@ -67,6 +65,18 @@ public class AnnotateContainersFromRecipeJob extends AbstractJob {
     @Value("${public-url.quayio}")
     String quayIOHubRegistry;
 
+
+    @Bean
+    public RestTemplateBuilder getRestTemplate() {
+        builder = new RestTemplateBuilder();
+        return builder;
+    }
+
+    @Bean
+    GitHubFileReader getFileReaderService(){
+        fileReaderService = new GitHubFileReader(gitHubConfiguration, builder);
+        return this.fileReaderService;
+    }
 
     /**
      * This methods connects to the database read all the Oracle information for public
@@ -77,6 +87,20 @@ public class AnnotateContainersFromRecipeJob extends AbstractJob {
         return stepBuilderFactory
                 .get(PipelineConstants.StepNames.ANNOTATE_DOCKERHUB_RECIPE.name())
                 .tasklet((stepContribution, chunkContext) -> {
+                    DockerFileNameList files = fileReaderService.getDockerFiles();
+                    Map<String, Set<String>> toolMap = new HashMap<>();
+                    files.getTree()
+                            .stream()
+                            .filter( x-> x.getPath().toLowerCase().contains(PipelineConstants.DOCKERFILE.toLowerCase()))
+                            .forEach( fileName -> {
+                                String name = fileName.getPath();
+                                String[] nameValues = name.split("\\/");
+                                if(nameValues.length > 1){
+                                    Set<String> values = (toolMap.containsKey(nameValues[0]))? toolMap.get(nameValues[0]) :new HashSet<>() ;
+                                    values.add(name);
+                                    toolMap.put(nameValues[0], values);
+                                }
+                            });
                     mongoService.findAll().parallelStream()
                             .filter(x -> !x.getAccession().equalsIgnoreCase(PipelineConstants.QUAYIO)).forEach( bioContainer -> {
                                 try {

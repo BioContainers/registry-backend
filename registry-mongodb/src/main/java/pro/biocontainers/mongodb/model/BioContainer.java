@@ -49,7 +49,7 @@ public class BioContainer implements IContainerImage{
     Boolean starred;
 
     @Indexed(name = "images")
-    Map<String, ContainerImage> images;
+    List<ContainerImage> images;
 
     @Indexed(name = "version")
     String version;

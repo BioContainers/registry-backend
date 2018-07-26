@@ -7,7 +7,9 @@ import pro.biocontainers.readers.IRegistryContainer;
 import pro.biocontainers.readers.dockerhub.model.DockerHubContainer;
 import pro.biocontainers.readers.quayio.model.QuayIOContainer;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -28,9 +30,12 @@ public class BiocontainerTransformer {
 
     public static BioContainer transformContainerToBiocontainer(IRegistryContainer container, String accessionURL) {
         String accession = accessionURL.replace("%%name_space%%", container.getNameSpace()).replace("%%software_name%%", container.getName());
-        Map<String, ContainerImage> images = new HashMap<>();
+        List<ContainerImage> images = new ArrayList<>();
         container.getContainerTags().stream().forEach( x-> {
-            images.put(x.getKey(), ContainerImage.builder().size(x.getValue()).build());
+            images.add(ContainerImage.builder()
+                    .size(x.getValue())
+                    .tag(x.getKey())
+                    .build());
         });
         return  BioContainer.builder()
                 .name(container.getName())

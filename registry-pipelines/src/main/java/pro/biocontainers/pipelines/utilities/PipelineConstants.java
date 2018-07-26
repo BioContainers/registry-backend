@@ -3,6 +3,7 @@ package pro.biocontainers.pipelines.utilities;
 public class PipelineConstants {
 
     public static final String QUAYIO = "quay.io";
+    public static final String DOCKERFILE = "Dockerfile";
 
     public enum StepNames {
 

@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import pro.biocontainers.mongodb.config.MongoDBConfiguration;
 import pro.biocontainers.mongodb.service.BioContainersService;
 import pro.biocontainers.pipelines.configs.DataSourceConfiguration;
