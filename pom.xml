@@ -30,6 +30,7 @@
     </developers>
 
     <modules>
+        <module>registries-api</module>
         <module>registries-readers</module>
         <module>registry-mongodb</module>
         <module>registry-pipelines</module>
