@@ -3,7 +3,6 @@ package pro.biocontainers.api.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
 
 /**
  * Describes a class (type) of tool allowing us to categorize
@@ -19,6 +18,7 @@ import lombok.Data;
  * @author ypriverol
  */
 
+@ApiModel(description = "Describes a class (type) of tool allowing us to categorize workflows, tasks, and maybe even other entities (such as services) separately")
 public enum ToolClass {
 
     WORKFLOW("1", "Workflow", "A workflow Tool contains multiple tool, tasks"),
@@ -27,9 +27,6 @@ public enum ToolClass {
     SERVICE("4", "Service", "A Service can be an API, Database, Web Service"),
     MULTIPLE_TOOL("5", "Multiple Tool", "Tool compose by multiple tool");
 
-@Data
-@ApiModel(description = "Describes a class (type) of tool allowing us to categorize workflows, tasks, and maybe even other entities (such as services) separately")
-public class ToolClass {
     @ApiModelProperty(value = "The unique identifier for the class")
     @JsonProperty("id")
     private String id;

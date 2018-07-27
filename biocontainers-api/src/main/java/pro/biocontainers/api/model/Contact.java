@@ -20,7 +20,7 @@ import lombok.Data;
  */
 @Data
 @Builder
-@ApiModel(description = "Contact details of Biocontainer API Service")
+@ApiModel(description = "Contact details of Biocontainer API service team")
 public class Contact {
 
     @ApiModelProperty(value = "name")
