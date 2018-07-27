@@ -88,32 +88,32 @@ public class AnnotateContainersFromRecipeJob extends AbstractJob {
                 .get(PipelineConstants.StepNames.ANNOTATE_DOCKERHUB_RECIPE.name())
                 .tasklet((stepContribution, chunkContext) -> {
                     DockerFileNameList files = fileReaderService.getDockerFiles();
-                    Map<String, Set<String>> toolMap = new HashMap<>();
-                    files.getTree()
-                            .stream()
-                            .filter( x-> x.getPath().toLowerCase().contains(PipelineConstants.DOCKERFILE.toLowerCase()))
-                            .forEach( fileName -> {
-                                String name = fileName.getPath();
-                                String[] nameValues = name.split("\\/");
-                                if(nameValues.length > 1){
-                                    Set<String> values = (toolMap.containsKey(nameValues[0]))? toolMap.get(nameValues[0]) :new HashSet<>() ;
-                                    values.add(name);
-                                    toolMap.put(nameValues[0], values);
-                                }
-                            });
-                    mongoService.findAll().parallelStream()
-                            .filter(x -> !x.getAccession().equalsIgnoreCase(PipelineConstants.QUAYIO)).forEach( bioContainer -> {
-                                try {
-                                    DockerContainer recipe = fileReaderService.parseDockerRecipe(bioContainer.getName(), bioContainer.getVersion());
-                                    bioContainer.setDescription(recipe.getDescription());
-                                    mongoService.updateContainer(bioContainer);
-                            mongoService.updateContainer(bioContainer);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            log.error("The container recipe hasn't been found in the Dockerhub  -- " + bioContainer.getAccession());
-                        }
-
-                    });
+//                    Map<String, Set<String>> toolMap = new HashMap<>();
+//                    files.getTree()
+//                            .stream()
+//                            .filter( x-> x.getPath().toLowerCase().contains(PipelineConstants.DOCKERFILE.toLowerCase()))
+//                            .forEach( fileName -> {
+//                                String name = fileName.getPath();
+//                                String[] nameValues = name.split("\\/");
+//                                if(nameValues.length > 1){
+//                                    Set<String> values = (toolMap.containsKey(nameValues[0]))? toolMap.get(nameValues[0]) :new HashSet<>() ;
+//                                    values.add(name);
+//                                    toolMap.put(nameValues[0], values);
+//                                }
+//                            });
+//                    mongoService.findAll().parallelStream()
+//                            .filter(x -> !x.getAccession().equalsIgnoreCase(PipelineConstants.QUAYIO)).forEach( bioContainer -> {
+//                                try {
+//                                    DockerContainer recipe = fileReaderService.parseDockerRecipe(bioContainer.getName(), bioContainer.getVersion());
+//                                    bioContainer.setDescription(recipe.getDescription());
+//                                    mongoService.updateContainer(bioContainer);
+//                            mongoService.updateContainer(bioContainer);
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                            log.error("The container recipe hasn't been found in the Dockerhub  -- " + bioContainer.getAccession());
+//                        }
+//
+//                    });
 
                     return RepeatStatus.FINISHED;
                 })
@@ -125,16 +125,16 @@ public class AnnotateContainersFromRecipeJob extends AbstractJob {
         return stepBuilderFactory
                 .get(PipelineConstants.StepNames.ANNOTATE_QUAYIO_RECIPE.name())
                 .tasklet((stepContribution, chunkContext) -> {
-                    mongoService.findAll().parallelStream().filter(x -> x.getAccession().contains(PipelineConstants.QUAYIO)).forEach( bioContainer -> {
-                        try {
-                            CondaRecipe recipe = fileReaderService.parseCondaRecipe(bioContainer.getName(), bioContainer.getVersion());
-                            bioContainer.setDescription(recipe.getDescription());
-                            mongoService.updateContainer(bioContainer);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            log.error("The container recipe hasn't been found in the conda-recipes -- " + bioContainer.getAccession());
-                        }
-                    });
+//                    mongoService.findAll().parallelStream().filter(x -> x.getAccession().contains(PipelineConstants.QUAYIO)).forEach( bioContainer -> {
+//                        try {
+//                            CondaRecipe recipe = fileReaderService.parseCondaRecipe(bioContainer.getName(), bioContainer.getVersion());
+//                            bioContainer.setDescription(recipe.getDescription());
+//                            mongoService.updateContainer(bioContainer);
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                            log.error("The container recipe hasn't been found in the conda-recipes -- " + bioContainer.getAccession());
+//                        }
+//                    });
 
                     return RepeatStatus.FINISHED;
                 })

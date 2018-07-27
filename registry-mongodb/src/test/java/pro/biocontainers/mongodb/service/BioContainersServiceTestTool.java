@@ -22,7 +22,7 @@ public class BioContainersServiceTestTool {
     public void indexContainer() {
 
         BioContainerTool container = BioContainerTool.builder()
-                .accession("blast")
+                .id("blast")
                 .name("blast")
                 .url("https://hub.docker.com/r/biocontainers/blast/")
                 .build();

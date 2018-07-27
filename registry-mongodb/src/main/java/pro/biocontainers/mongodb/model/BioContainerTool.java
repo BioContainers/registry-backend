@@ -22,12 +22,11 @@ public class BioContainerTool implements Tool {
 
     /** Native Identifier from MongoDB */
     @Id
-    @Indexed(name = "id")
-    ObjectId id;
+    @Field("uui")
+    ObjectId uui;
 
-    /** Accession provided by BioContainers Community**/
-    @Indexed(name = "accession", unique = true)
-    String accession;
+    @Indexed(name = "id")
+    String id;
 
     @Indexed(name = "name")
     String name;

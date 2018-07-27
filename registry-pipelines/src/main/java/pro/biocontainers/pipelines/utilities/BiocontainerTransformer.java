@@ -33,11 +33,11 @@ public class BiocontainerTransformer {
         });
         return  BioContainerTool.builder()
                 .name(container.getName())
-                .accession(accession)
+                .id(accession)
                 .description(container.getDescription())
-                .lastUpdate(container.getLastUpdated())
-                .pullCount(container.getPullCount())
-                .images(images)
+//                .lastUpdate(container.getLastUpdated())
+//                .pullCount(container.getPullCount())
+//                .images(images)
                 .starred(container.isStarred())
                 .build();
 

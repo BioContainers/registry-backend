@@ -63,10 +63,14 @@ public class BioContainerToolVersion implements ToolVersion {
 
     private String verifiedSource;
 
+    @Indexed(name = "hashName")
     private String hashName;
 
     @Indexed(name = "lastUpdate")
     Date lastUpdate;
+
+    @Indexed(name = "popularity")
+    Integer popularity;
 
     @Override
     public String getName() {

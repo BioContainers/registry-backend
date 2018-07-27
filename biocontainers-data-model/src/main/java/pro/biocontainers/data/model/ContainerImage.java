@@ -17,5 +17,5 @@ public interface ContainerImage {
 
     String getTag();
 
-    String getSize();
+    Integer getSize();
 }
