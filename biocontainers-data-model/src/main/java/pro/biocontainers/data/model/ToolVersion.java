@@ -1,6 +1,7 @@
 package pro.biocontainers.data.model;
 
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -33,10 +34,10 @@ public interface ToolVersion {
     String getRegistryUrl();
 
     /** Used in conjunction with a registry_url if provided to locate images **/
-    List<ContainerImage> getImageName();
+    Collection<? extends ContainerImage> getImageName();
 
     /** Descriptor Type **/
-    List<DescriptorType> getDescriptorTypes();
+    Collection<? extends DescriptorType> getDescriptorTypes();
 
     /** Has a Build Recipe (DockerFile or Conda Recipe) **/
     Boolean getContainerFile();

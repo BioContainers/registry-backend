@@ -1,11 +1,10 @@
 package pro.biocontainers.mongodb.service;
 
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
-import pro.biocontainers.mongodb.model.BioContainer;
+import pro.biocontainers.mongodb.model.BioContainerTool;
 import pro.biocontainers.mongodb.repository.BioContainersRepository;
 
 import java.util.List;
@@ -21,14 +20,14 @@ public class BioContainersService {
     /**
      * This method index a new Container using as import the container object.
      *
-     * @param container {@link BioContainer}
+     * @param container {@link BioContainerTool}
      * @return Optional
      */
-    public Optional<BioContainer> indexContainer(BioContainer container){
+    public Optional<BioContainerTool> indexContainer(BioContainerTool container){
         try {
             container = repository.save(container);
         }catch(DuplicateKeyException ex){
-           log.error("A BioContainer with similar accession already exists!!!");
+           log.error("A BioContainerTool with similar accession already exists!!!");
         }
         return Optional.of(container);
     }
@@ -37,18 +36,18 @@ public class BioContainersService {
      * Find all Containers
      * @return
      */
-    public List<BioContainer> findAll(){
+    public List<BioContainerTool> findAll(){
         return repository.findAll();
     }
 
-    public void updateContainer(BioContainer bioContainer) {
+    public void updateContainer(BioContainerTool bioContainerTool) {
         try {
-            if(bioContainer.getId() != null){
-                repository.save(bioContainer);
-                log.info("The following container has been updated -- " + bioContainer.getId().toString());
+            if(bioContainerTool.getId() != null){
+                repository.save(bioContainerTool);
+                log.info("The following container has been updated -- " + bioContainerTool.getId().toString());
             }
         }catch(DuplicateKeyException ex){
-            log.error("A BioContainer with similar accession already exists!!!");
+            log.error("A BioContainerTool with similar accession already exists!!!");
         }
     }
 }

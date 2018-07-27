@@ -4,6 +4,7 @@ package pro.biocontainers.data.model;
 import lombok.Data;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -25,7 +26,7 @@ public interface Tool {
     /** Get Tool Name */
     String getToolName();
 
-    List<ToolClass> getToolClasses();
+    Collection<ToolClass> getToolClasses();
 
     String getDescription();
 
@@ -38,7 +39,7 @@ public interface Tool {
     String getMetaVersion();
 
     /** An array of IDs for the applications that are stored inside this tool (for example `https://bio.tools/tool/mytum.de/SNAP2/1`) **/
-    List<String> getContains();
+    Collection<String> getContains();
 
     /** Whether this tool has a checker tool associated with it */
     Boolean getHasChecker();
@@ -57,6 +58,6 @@ public interface Tool {
     Boolean getSigned();
 
     /** A list of versions for this tool **/
-    List<ToolVersion> getVersions();
+    Collection<? extends ToolVersion> getVersions();
 }
 

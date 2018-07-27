@@ -14,6 +14,13 @@
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
+
+        <dependency>
+            <groupId>pro.biocontainers</groupId>
+            <artifactId>biocontainers-data-model</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
         <!-- MongoDB and Lombok -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
