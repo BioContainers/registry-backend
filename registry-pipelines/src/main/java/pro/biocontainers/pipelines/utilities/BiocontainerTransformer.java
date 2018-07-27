@@ -1,8 +1,10 @@
 package pro.biocontainers.pipelines.utilities;
 
 import pro.biocontainers.mongodb.model.BioContainerTool;
+import pro.biocontainers.mongodb.model.BioContainerToolVersion;
 import pro.biocontainers.mongodb.model.ContainerImage;
 import pro.biocontainers.readers.IRegistryContainer;
+import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,5 +43,18 @@ public class BiocontainerTransformer {
                 .starred(container.isStarred())
                 .build();
 
+    }
+
+    /**
+     * Convert Docker Container to {@link BioContainerToolVersion}
+     * @param container {@link DockerContainer}
+     * @param accessionURL url
+     * @return BioContainerToolVersion
+     */
+    public static BioContainerToolVersion transformContainerToolVerionToBiocontainer(DockerContainer container, String accessionURL) {
+        return BioContainerToolVersion
+                .builder()
+                .name(container.getSoftwareName())
+                .build();
     }
 }

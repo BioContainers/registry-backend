@@ -1,5 +1,6 @@
 package pro.biocontainers.mongodb.model;
 
+import lombok.Builder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -26,6 +27,7 @@ import java.util.List;
  * Created by ypriverol (ypriverol@gmail.com) on 27/07/2018.
  */
 @Document(collection = "BioContainerToolVersion")
+@Builder
 public class BioContainerToolVersion implements ToolVersion {
 
     @Id

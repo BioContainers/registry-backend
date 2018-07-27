@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import pro.biocontainers.mongodb.config.MongoDBConfiguration;
+import pro.biocontainers.mongodb.model.BioContainerToolVersion;
 import pro.biocontainers.mongodb.service.BioContainersService;
 import pro.biocontainers.pipelines.configs.DataSourceConfiguration;
 import pro.biocontainers.pipelines.jobs.AbstractJob;
@@ -131,6 +132,13 @@ public class ImportContainersFromDockerHubJob extends AbstractJob {
                             });
 
                     log.info("Number of DockerFile recipes -- " + toolNames.size());
+
+                    toolNames.entrySet().stream().forEach( container -> {
+                        container.getValue().stream().forEach( containerVersion -> {
+                            BioContainerToolVersion mongoToolVersion = BiocontainerTransformer.transformContainerToolVerionToBiocontainer(containerVersion, dockerHubRegistry);
+                        });
+
+                    });
 
 
                     return RepeatStatus.FINISHED;
