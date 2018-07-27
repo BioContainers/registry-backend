@@ -1,7 +1,4 @@
-package pro.biocontainers.api.model;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+package pro.biocontainers.data.model;
 
 /**
  * Describes a class (type) of tool allowing us to categorize
@@ -25,13 +22,10 @@ public enum ToolClass {
     SERVICE("4", "Service", "A Service can be an API, Database, Web Service"),
     MULTIPLE_TOOL("5", "Multiple Tool", "Tool compose by multiple tool");
 
-    @JsonProperty("id")
     private String id;
 
-    @JsonProperty("name")
     private String name;
 
-    @JsonProperty("description")
     private String description;
 
     ToolClass(String id, String name,
