@@ -21,12 +21,16 @@ import lombok.Data;
 @Builder
 public class ContainerImage implements IContainerImage{
 
-
     private String accession;
+
     private String version;
+
     private String name;
+
     private String description;
+
     private Integer size;
+
     private String tag;
 
     @Override

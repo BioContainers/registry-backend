@@ -4,11 +4,11 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import pro.biocontainers.data.model.ContainerImage;
 import pro.biocontainers.data.model.DescriptorType;
 import pro.biocontainers.data.model.ToolDescriptor;
 import pro.biocontainers.data.model.ToolVersion;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -95,7 +95,7 @@ public class BioContainerToolVersion implements ToolVersion {
     }
 
     @Override
-    public List<ContainerImage> getImageName() {
+    public Collection<? extends ContainerImage> getImageName() {
         return this.containerImages;
     }
 
