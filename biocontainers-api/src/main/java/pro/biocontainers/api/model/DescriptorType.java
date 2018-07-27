@@ -12,6 +12,8 @@ public enum DescriptorType {
 
     WDL("WDL"),
 
+    GALAXY("GALAXY"),
+
     NFL("NFL");
 
     private String value;

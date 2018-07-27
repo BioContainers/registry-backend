@@ -20,6 +20,7 @@ public class ToolFile {
      * Gets or Sets fileType
      */
     public enum FileTypeEnum {
+
         TEST_FILE("TEST_FILE"),
 
         PRIMARY_DESCRIPTOR("PRIMARY_DESCRIPTOR"),

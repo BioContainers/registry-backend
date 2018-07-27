@@ -6,7 +6,8 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * A tool version describes a particular iteration of a tool as described by a reference to a specific image and/or documents.
+ * A tool version describes a particular iteration of a tool as described
+ * by a reference to a specific image and/or documents.
  */
 @Data
 public class ToolVersion {
