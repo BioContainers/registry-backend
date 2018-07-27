@@ -4,6 +4,7 @@ import pro.biocontainers.mongodb.model.BioContainerTool;
 import pro.biocontainers.mongodb.model.BioContainerToolVersion;
 import pro.biocontainers.mongodb.model.ContainerImage;
 import pro.biocontainers.readers.IRegistryContainer;
+import pro.biocontainers.readers.dockerhub.model.DockerHubContainer;
 import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
 
 import java.util.ArrayList;
@@ -51,7 +52,7 @@ public class BiocontainerTransformer {
      * @param accessionURL url
      * @return BioContainerToolVersion
      */
-    public static BioContainerToolVersion transformContainerToolVerionToBiocontainer(DockerContainer container, String accessionURL) {
+    public static BioContainerToolVersion transformContainerToolVerionToBiocontainer(DockerContainer container, List<DockerHubContainer> dockerHubContainer, String accessionURL) {
         return BioContainerToolVersion
                 .builder()
                 .name(container.getSoftwareName())

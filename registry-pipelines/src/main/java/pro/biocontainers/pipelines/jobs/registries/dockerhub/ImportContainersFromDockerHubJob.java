@@ -123,6 +123,7 @@ public class ImportContainersFromDockerHubJob extends AbstractJob {
                                     Set<DockerContainer> values = (toolNames.containsKey(nameValues[0]))? toolNames.get(nameValues[0]) :new HashSet<>() ;
                                     try {
                                         DockerContainer container = fileReaderService.parseDockerRecipe(nameValues[0], nameValues[1]);
+                                        container.setVersion(nameValues[1]);
                                         values.add(container);
                                         toolNames.put(nameValues[0], values);
                                     } catch (IOException e) {
@@ -135,7 +136,15 @@ public class ImportContainersFromDockerHubJob extends AbstractJob {
 
                     toolNames.entrySet().stream().forEach( container -> {
                         container.getValue().stream().forEach( containerVersion -> {
-                            BioContainerToolVersion mongoToolVersion = BiocontainerTransformer.transformContainerToolVerionToBiocontainer(containerVersion, dockerHubRegistry);
+                            List<DockerHubContainer> registryContainer = new ArrayList<>();
+                            for(Optional<DockerHubContainer> rContainer: registryContainers){
+
+                                if(rContainer.isPresent() && rContainer.get().getName().equalsIgnoreCase(containerVersion.getSoftwareName()))
+                                    registryContainer.add(rContainer.get());
+
+                                BioContainerToolVersion mongoToolVersion = BiocontainerTransformer.transformContainerToolVerionToBiocontainer(containerVersion,registryContainer, dockerHubRegistry);
+
+                            }
                         });
 
                     });
