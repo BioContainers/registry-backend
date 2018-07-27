@@ -1,17 +1,14 @@
 package pro.biocontainers.pipelines.utilities;
 
-import pro.biocontainers.mongodb.model.BioContainer;
+import pro.biocontainers.mongodb.model.BioContainerTool;
+import pro.biocontainers.mongodb.model.BioContainerToolVersion;
 import pro.biocontainers.mongodb.model.ContainerImage;
-import pro.biocontainers.mongodb.model.Tuple;
 import pro.biocontainers.readers.IRegistryContainer;
 import pro.biocontainers.readers.dockerhub.model.DockerHubContainer;
-import pro.biocontainers.readers.quayio.model.QuayIOContainer;
+import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * This code is licensed under the Apache License, Version 2.0 (the
@@ -28,7 +25,7 @@ import java.util.stream.Collectors;
  */
 public class BiocontainerTransformer {
 
-    public static BioContainer transformContainerToBiocontainer(IRegistryContainer container, String accessionURL) {
+    public static BioContainerTool transformContainerToBiocontainer(IRegistryContainer container, String accessionURL) {
         String accession = accessionURL.replace("%%name_space%%", container.getNameSpace()).replace("%%software_name%%", container.getName());
         List<ContainerImage> images = new ArrayList<>();
         container.getContainerTags().stream().forEach( x-> {
@@ -37,15 +34,28 @@ public class BiocontainerTransformer {
                     .tag(x.getKey())
                     .build());
         });
-        return  BioContainer.builder()
+        return  BioContainerTool.builder()
                 .name(container.getName())
-                .accession(accession)
+                .id(accession)
                 .description(container.getDescription())
-                .lastUpdate(container.getLastUpdated())
-                .pullCount(container.getPullCount())
-                .images(images)
+//                .lastUpdate(container.getLastUpdated())
+//                .pullCount(container.getPullCount())
+//                .images(images)
                 .starred(container.isStarred())
                 .build();
 
+    }
+
+    /**
+     * Convert Docker Container to {@link BioContainerToolVersion}
+     * @param container {@link DockerContainer}
+     * @param accessionURL url
+     * @return BioContainerToolVersion
+     */
+    public static BioContainerToolVersion transformContainerToolVerionToBiocontainer(DockerContainer container, List<DockerHubContainer> dockerHubContainer, String accessionURL) {
+        return BioContainerToolVersion
+                .builder()
+                .name(container.getSoftwareName())
+                .build();
     }
 }

@@ -108,6 +108,8 @@ public class DockerContainer implements IContainerRecipe {
 
     private Integer starCount;
 
+    private String version;
+
     private int index;
     private boolean isCurrentDockerfile;
 

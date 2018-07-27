@@ -1,5 +1,7 @@
 package pro.biocontainers.api.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Data;
 
@@ -18,9 +20,15 @@ import lombok.Data;
  */
 @Data
 @Builder
+@ApiModel(description = "Contact details of Biocontainer API service team")
 public class Contact {
 
+    @ApiModelProperty(value = "name")
     private final String name;
+
+    @ApiModelProperty(value = "URL")
     private final String url;
+
+    @ApiModelProperty(value = "email")
     private final String email;
 }

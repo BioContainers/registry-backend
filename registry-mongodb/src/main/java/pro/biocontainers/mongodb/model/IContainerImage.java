@@ -1,5 +1,7 @@
 package pro.biocontainers.mongodb.model;
 
+import pro.biocontainers.data.model.ContainerImage;
+
 /**
  * This code is licensed under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
@@ -13,7 +15,7 @@ package pro.biocontainers.mongodb.model;
  * <p>
  * Created by ypriverol (ypriverol@gmail.com) on 26/07/2018.
  */
-public interface IContainerImage {
+public interface IContainerImage extends ContainerImage {
 
     public String getAccession();
 

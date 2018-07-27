@@ -1,28 +1,21 @@
-package pro.biocontainers.api.model;
+package pro.biocontainers.data.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
-import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
 
 /**
  * ToolFile
  */
-@Data
-public class ToolFile {
-    @JsonProperty("path")
-    @ApiModelProperty(value = "Relative path of the file.  A descriptor's path can be used with the GA4GH .../{type}/descriptor/{relative_path} endpoint")
-    private String path;
 
-    @JsonProperty("file_type")
+public class ToolFile {
+
+    /** Path **/
+    public String getPath;
+
     private FileTypeEnum fileType;
 
     /**
      * Gets or Sets fileType
      */
     public enum FileTypeEnum {
-
         TEST_FILE("TEST_FILE"),
 
         PRIMARY_DESCRIPTOR("PRIMARY_DESCRIPTOR"),
@@ -40,12 +33,11 @@ public class ToolFile {
         }
 
         @Override
-        @JsonValue
         public String toString() {
             return String.valueOf(value);
         }
 
-        @JsonCreator
+
         public static FileTypeEnum fromValue(String text) {
             for (FileTypeEnum b : FileTypeEnum.values()) {
                 if (String.valueOf(b.value).equals(text)) {

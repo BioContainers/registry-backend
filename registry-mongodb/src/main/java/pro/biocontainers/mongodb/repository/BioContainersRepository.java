@@ -4,24 +4,24 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
-import pro.biocontainers.mongodb.model.BioContainer;
+import pro.biocontainers.mongodb.model.BioContainerTool;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface BioContainersRepository extends MongoRepository<BioContainer, ObjectId> {
+public interface BioContainersRepository extends MongoRepository<BioContainerTool, ObjectId> {
 
     @Override
-    <S extends BioContainer> List<S> saveAll(Iterable<S> iterable);
+    <S extends BioContainerTool> List<S> saveAll(Iterable<S> iterable);
 
     @Override
-    <S extends BioContainer> S save(S s);
+    <S extends BioContainerTool> S save(S s);
 
     @Override
-    Optional<BioContainer> findById(ObjectId objectId);
+    Optional<BioContainerTool> findById(ObjectId objectId);
 
     @Query("{'accession' : ?0}")
-    Optional<BioContainer> findByAccession(String accession);
+    Optional<BioContainerTool> findByAccession(String accession);
 
 }

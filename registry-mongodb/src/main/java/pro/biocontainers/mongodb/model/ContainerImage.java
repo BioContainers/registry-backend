@@ -17,16 +17,20 @@ import lombok.Data;
  * Created by ypriverol (ypriverol@gmail.com) on 26/07/2018.
  */
 
-@Data
+
 @Builder
 public class ContainerImage implements IContainerImage{
 
-
     private String accession;
+
     private String version;
+
     private String name;
+
     private String description;
+
     private Integer size;
+
     private String tag;
 
     @Override
@@ -50,4 +54,13 @@ public class ContainerImage implements IContainerImage{
     }
 
 
+    @Override
+    public String getTag() {
+        return this.tag;
+    }
+
+    @Override
+    public Integer getSize() {
+        return this.size;
+    }
 }

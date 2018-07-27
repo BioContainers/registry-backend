@@ -1,4 +1,4 @@
-package pro.biocontainers.api.controller;
+package pro.biocontainers.api.swagger;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,8 +18,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 public class HomeController {
-    @RequestMapping("${/api/v2/api-docs}/swagger")
+    @RequestMapping("${biocontainers.api.base-path}")
     public String home() {
+        return "redirect:/swagger-ui.html";
+    }
+
+    @RequestMapping("${biocontainers.api.base-path}/api-ui")
+    public String apiUi() {
         return "redirect:/swagger-ui.html";
     }
 }

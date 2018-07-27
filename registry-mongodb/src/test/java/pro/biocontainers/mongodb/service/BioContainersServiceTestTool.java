@@ -6,14 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-import pro.biocontainers.mongodb.config.MongoDBConfiguration;
-import pro.biocontainers.mongodb.model.BioContainer;
+import pro.biocontainers.mongodb.config.FongoTestConfig;
+import pro.biocontainers.mongodb.model.BioContainerTool;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {MongoDBConfiguration.class})
+@SpringBootTest(classes = {FongoTestConfig.class})
 @TestPropertySource(locations = "classpath:application-test.properties")
 
-public class BioContainersServiceLocalhostTest {
+public class BioContainersServiceTestTool {
 
     @Autowired
     BioContainersService containersService;
@@ -21,8 +21,8 @@ public class BioContainersServiceLocalhostTest {
     @Test
     public void indexContainer() {
 
-        BioContainer container = BioContainer.builder()
-                .accession("blast")
+        BioContainerTool container = BioContainerTool.builder()
+                .id("blast")
                 .name("blast")
                 .url("https://hub.docker.com/r/biocontainers/blast/")
                 .build();

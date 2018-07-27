@@ -11,9 +11,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
-import pro.biocontainers.api.configs.SwaggerConfig;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-@SpringBootApplication(scanBasePackageClasses = {SwaggerConfig.class})
+@EnableSwagger2
+@SpringBootApplication
 public class ApiApp implements CommandLineRunner {
 
     private final Logger logger = LoggerFactory.getLogger(ApiApp.class);
@@ -36,7 +37,6 @@ public class ApiApp implements CommandLineRunner {
             configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
             enable(SerializationFeature.INDENT_OUTPUT);
-
         }
     }
 
