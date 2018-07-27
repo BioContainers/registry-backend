@@ -3,6 +3,7 @@ package pro.biocontainers.api.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -11,6 +12,7 @@ import lombok.Data;
 @Data
 public class ToolFile {
     @JsonProperty("path")
+    @ApiModelProperty(value = "Relative path of the file.  A descriptor's path can be used with the GA4GH .../{type}/descriptor/{relative_path} endpoint")
     private String path;
 
     @JsonProperty("file_type")
