@@ -1,12 +1,7 @@
-package pro.biocontainers.api.configs;
+package pro.biocontainers.api.swagger;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import pro.biocontainers.api.model.Metadata;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -15,7 +10,6 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * This code is licensed under the Apache License, Version 2.0 (the
@@ -30,15 +24,15 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * <p>
  * Created by ypriverol (ypriverol@gmail.com) on 14/06/2018.
  */
-@EnableSwagger2
+
 @Configuration
-public class SwaggerConfig extends WebMvcConfigurationSupport {
+public class SwaggerConfig {
 
     private Metadata metadata;
 
     @Bean
-    Metadata getMetadata(){
-        this.metadata =  Metadata.builder()
+    Metadata getMetadata() {
+        this.metadata = Metadata.builder()
                 .apiVersion("v2")
                 .country("Europe")
                 .friendlyName("BioContainers RestFul API")
@@ -59,39 +53,19 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
     public Docket swaggerSpringMvcPlugin() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.any())
+                .apis(RequestHandlerSelectors.basePackage("pro.biocontainers.api.controller"))
                 .paths(PathSelectors.any())
-//                .paths(PathSelectors.regex("/v2/.*"))
-                .build().apiInfo(apiInfo());
+                .build()
+                .apiInfo(apiInfo());
     }
-
-//    /**
-//     * This function exclude all the paths we don't want to show in the swagger documentation.
-//     * @return List of paths
-//     */
-//    private Predicate<String> paths() {
-//        return Predicates
-//                .not(PathSelectors.regex("/error"))
-//                ;
-//    }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title(metadata.getFriendlyName())
                 .description(metadata.getDescription())
-                .contact(new Contact(metadata.getContact().getName(), metadata.getContact().getUrl(),metadata.getContact().getEmail()))
+                .contact(new Contact(metadata.getContact().getName(), metadata.getContact().getUrl(), metadata.getContact().getEmail()))
                 .license(metadata.getLicense())
                 .version(metadata.getVersion())
                 .build();
-    }
-
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addRedirectViewController("/api/v2/api-docs", "/swagger-ui.html").setKeepQueryParams(true);
-    }
-
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/api/**").addResourceLocations("classpath:/META-INF/resources/");
     }
 }

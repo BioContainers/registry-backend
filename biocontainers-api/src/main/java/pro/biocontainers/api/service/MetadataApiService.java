@@ -1,14 +1,14 @@
 package pro.biocontainers.api.service;
 
-import org.dummycreator.ClassBindings;
-import org.dummycreator.DummyCreator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pro.biocontainers.api.model.Metadata;
 
 @Service
 public class MetadataApiService {
 
-    private final DummyCreator dummyCreator = new DummyCreator(ClassBindings.defaultBindings());
+    @Autowired
+    private Metadata metadata;
 
     /**
      * Return some metadata that is useful for describing this registry.
@@ -16,7 +16,6 @@ public class MetadataApiService {
      * @return Metadata object describing this service.
      */
     public Metadata get() {
-        return dummyCreator.create(Metadata.class);
-
+        return metadata;
     }
 }

@@ -1,5 +1,6 @@
 package pro.biocontainers.api.controller;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,12 +12,14 @@ import pro.biocontainers.api.model.Metadata;
 import pro.biocontainers.api.service.MetadataApiService;
 
 @Controller
+@Api(value = "metadata", description = "Metadata API", tags = {"Metadata"})
+@RequestMapping("${biocontainers.api.base-path}/metadata")
 public class MetadataApiController {
     @Autowired
     private MetadataApiService service;
 
-    @ApiOperation(notes = "General Description of the API", value = "metadata", nickname = "metadata", tags = {"metadata"} )
-    @RequestMapping(value = "${registry.api.base-path}/metadata", produces = {"application/json", "text/plain"}, method = RequestMethod.GET)
+    @RequestMapping(value = "", produces = {"application/json", "text/plain"}, method = RequestMethod.GET)
+    @ApiOperation(notes = "General Description of the API", value = "metadata", nickname = "metadata")
     public ResponseEntity<Metadata> get() {
         return new ResponseEntity<>(service.get(), HttpStatus.OK);
     }
