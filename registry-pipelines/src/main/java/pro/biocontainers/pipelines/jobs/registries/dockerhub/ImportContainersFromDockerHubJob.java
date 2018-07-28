@@ -137,15 +137,15 @@ public class ImportContainersFromDockerHubJob extends AbstractJob {
                     toolNames.entrySet().stream().forEach( container -> {
                         container.getValue().stream().forEach( containerVersion -> {
                             List<DockerHubContainer> registryContainer = new ArrayList<>();
-                            for(Optional<DockerHubContainer> rContainer: registryContainers){
+                            for(Optional<DockerHubContainer> rContainer: registryContainers) {
 
-                                if(rContainer.isPresent() && rContainer.get().getName().equalsIgnoreCase(containerVersion.getSoftwareName()))
+                                if (rContainer.isPresent() && rContainer.get().getName().equalsIgnoreCase(containerVersion.getSoftwareName()))
                                     registryContainer.add(rContainer.get());
-
-                                BioContainerToolVersion mongoToolVersion = BiocontainerTransformer.transformContainerToolVerionToBiocontainer(containerVersion,registryContainer, dockerHubRegistry);
-                                mongoService.indexToolVersion(mongoToolVersion);
-
                             }
+                            Optional<BioContainerToolVersion> mongoToolVersion = BiocontainerTransformer.transformContainerToolVerionToBiocontainer(containerVersion,registryContainer, dockerHubRegistry);
+                            if(mongoToolVersion.isPresent())
+                                log.info("New BioContainerTool Version to store -- " + mongoToolVersion.get().getName());
+//                                mongoService.indexToolVersion(mongoToolVersion);
                         });
 
                     });

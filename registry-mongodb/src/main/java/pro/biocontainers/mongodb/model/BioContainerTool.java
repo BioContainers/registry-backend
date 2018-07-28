@@ -68,6 +68,12 @@ public class BioContainerTool implements Tool {
     @Field("toolVersions")
     private List<BioContainerToolVersion> toolVersions;
 
+    @Indexed(name = "lastUpdate")
+    Date lastUpdate;
+
+    @Indexed(name = "popularity")
+    Integer popularity;
+
     @Override
     public String getOrganization() {
         return this.organization;

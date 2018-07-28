@@ -36,7 +36,6 @@ public class BioContainerToolVersion implements ToolVersion {
     @Indexed(name = "name")
     String name;
 
-
     String url;
 
     /** Used in conjunction with a registry_url if provided to locate images **/
@@ -67,12 +66,6 @@ public class BioContainerToolVersion implements ToolVersion {
 
     @Indexed(name = "hashName")
     private String hashName;
-
-    @Indexed(name = "lastUpdate")
-    Date lastUpdate;
-
-    @Indexed(name = "popularity")
-    Integer popularity;
 
     @Override
     public String getName() {
