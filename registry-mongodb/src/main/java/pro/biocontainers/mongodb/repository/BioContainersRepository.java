@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface BioContainersRepository extends MongoRepository<BioContainerTool, ObjectId> {
+public interface BioContainersRepository extends MongoRepository<BioContainerTool, String> {
 
     @Override
     <S extends BioContainerTool> List<S> saveAll(Iterable<S> iterable);
@@ -19,7 +19,7 @@ public interface BioContainersRepository extends MongoRepository<BioContainerToo
     <S extends BioContainerTool> S save(S s);
 
     @Override
-    Optional<BioContainerTool> findById(ObjectId objectId);
+    Optional<BioContainerTool> findById(String objectId);
 
     @Query("{'accession' : ?0}")
     Optional<BioContainerTool> findByAccession(String accession);

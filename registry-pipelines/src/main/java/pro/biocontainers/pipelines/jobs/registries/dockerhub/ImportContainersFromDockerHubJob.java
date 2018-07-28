@@ -143,6 +143,7 @@ public class ImportContainersFromDockerHubJob extends AbstractJob {
                                     registryContainer.add(rContainer.get());
 
                                 BioContainerToolVersion mongoToolVersion = BiocontainerTransformer.transformContainerToolVerionToBiocontainer(containerVersion,registryContainer, dockerHubRegistry);
+                                mongoService.indexToolVersion(mongoToolVersion);
 
                             }
                         });
