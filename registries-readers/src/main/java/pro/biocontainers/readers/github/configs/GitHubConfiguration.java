@@ -16,7 +16,10 @@ public class GitHubConfiguration {
     @Value("${github.bioconda-containers-recipes}")
     String condaRecipeURL;
 
-    @Value("${github.api-containers-urls}")
-    String gitHubAPIFiles;
+    @Value("${github.docker-api-containers-urls}")
+    String gitHubAPIDockerFiles;
+
+    @Value("${githug.conda-api-containers-urls}")
+    String gitHubAPICondaFiles;
 
 }

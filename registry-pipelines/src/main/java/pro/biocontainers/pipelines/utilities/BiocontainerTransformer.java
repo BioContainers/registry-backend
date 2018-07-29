@@ -1,5 +1,6 @@
 package pro.biocontainers.pipelines.utilities;
 
+import pro.biocontainers.data.model.ContainerType;
 import pro.biocontainers.mongodb.model.BioContainerTool;
 import pro.biocontainers.mongodb.model.BioContainerToolVersion;
 import pro.biocontainers.mongodb.model.ContainerImage;
@@ -29,24 +30,25 @@ import java.util.stream.Collectors;
 public class BiocontainerTransformer {
 
     public static BioContainerTool transformContainerToBiocontainer(IRegistryContainer container, String accessionURL) {
-        String accession = accessionURL.replace("%%name_space%%", container.getNameSpace()).replace("%%software_name%%", container.getName());
-        List<ContainerImage> images = new ArrayList<>();
-        container.getContainerTags().stream().forEach( x-> {
-            images.add(ContainerImage.builder()
-                    .size(x.getValue())
-                    .tag(x.getKey())
-                    .build());
-        });
-        return  BioContainerTool.builder()
-                .name(container.getName())
-                .id(accession)
-                .description(container.getDescription())
-//                .lastUpdate(container.getLastUpdated())
-//                .pullCount(container.getPullCount())
-//                .images(images)
-                .starred(container.isStarred())
-                .build();
+//        String accession = accessionURL.replace("%%name_space%%", container.getNameSpace()).replace("%%software_name%%", container.getName());
+//        List<ContainerImage> images = new ArrayList<>();
+//        container.getContainerTags().stream().forEach( x-> {
+//            images.add(ContainerImage.builder()
+//                    .size(x.getValue())
+//                    .tag(x.getKey())
+//                    .build());
+//        });
+//        return  BioContainerTool.builder()
+//                .name(container.getName())
+//                .id(accession)
+//                .description(container.getDescription())
+////                .lastUpdate(container.getLastUpdated())
+////                .pullCount(container.getPullCount())
+////                .images(images)
+//                .starred(container.isStarred())
+//                .build();
 
+        return null;
     }
 
     /**
@@ -55,7 +57,9 @@ public class BiocontainerTransformer {
      * @param accessionURL url
      * @return BioContainerToolVersion
      */
-    public static Optional<BioContainerToolVersion> transformContainerToolVerionToBiocontainer(DockerContainer container, List<DockerHubContainer> dockerHubContainers, String accessionURL) {
+    public static Optional<BioContainerToolVersion> transformContainerToolVerionToBiocontainer(DockerContainer container,
+                                                                                               List<DockerHubContainer> dockerHubContainers,
+                                                                                               String accessionURL) {
         if(dockerHubContainers != null){
             List<DockerHubContainer> finalContainers = new ArrayList<>();
             for(DockerHubContainer hubContainer: dockerHubContainers){
@@ -67,16 +71,20 @@ public class BiocontainerTransformer {
             if(finalContainers.size() == 1){
                 DockerHubContainer registryContainer = finalContainers.get(0);
                 List<ContainerImage> containerImages = registryContainer.getContainerTags()
-                        .stream().map( x-> {
-                            return ContainerImage
-                                    .builder()
-                                    .size(x.getValue())
-                                    .tag(x.getKey())
-                                    .build();
-                        }).collect(Collectors.toList());
+                        .stream().map( x-> ContainerImage
+                                .builder()
+                                .size(x.getValue())
+                                .accession(x.getKey())
+                                .description(container.getDescription())
+                                .containerType(ContainerType.DOCKER)
+                                .accession(x.getKey())
+                                .build())
+                        .collect(Collectors.toList());
+
                 return Optional.of(BioContainerToolVersion
                         .builder()
                         .name(container.getSoftwareName())
+                        .version(container.getSoftwareVersion())
                         .hashName(GeneralUtils.getHashName(container.getSoftwareName()))
                         .containerImages(containerImages)
                         .build());

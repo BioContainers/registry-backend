@@ -27,13 +27,13 @@ import pro.biocontainers.pipelines.configs.JobRunnerTestConfiguration;
  * Created by ypriverol (ypriverol@gmail.com) on 25/07/2018.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {pro.biocontainers.pipelines.jobs.registries.dockerhub.ImportContainersFromDockerHubJob.class, JobRunnerTestConfiguration.class})
+@ContextConfiguration(classes = {ImportContainersFromDockerHubJob.class, JobRunnerTestConfiguration.class})
 @TestPropertySource(value = "classpath:application-test.properties")
 @Slf4j
 public class ImportContainersFromDockerHubJobTest {
 
     @Autowired
-    pro.biocontainers.pipelines.jobs.registries.dockerhub.ImportContainersFromDockerHubJob importJob;
+    ImportContainersFromDockerHubJob importJob;
 
     @Autowired
     private JobLauncherTestUtils jobLauncherTestUtils;

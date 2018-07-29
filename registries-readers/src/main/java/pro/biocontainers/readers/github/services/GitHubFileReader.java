@@ -55,6 +55,7 @@ public class GitHubFileReader {
      * @throws IOException
      */
     public DockerContainer parseDockerRecipe(String name, String version) throws IOException {
+
         String stringURL =config.getDockerRecipeURL().replace("%%software_name%%", name);
         if(version != null)
             stringURL = stringURL.replace("%%software_version%%", version);
@@ -78,9 +79,9 @@ public class GitHubFileReader {
      * Get the DockerFile 
      * @return
      */
-    public DockerFileNameList getDockerFiles() {
-        String url = config.getGitHubAPIFiles();
-        return restTemplate.getForObject(url, DockerFileNameList.class);
+    public GitHubFileNameList getDockerFiles() {
+        String url = config.getGitHubAPIDockerFiles();
+        return restTemplate.getForObject(url, GitHubFileNameList.class);
 
 
     }

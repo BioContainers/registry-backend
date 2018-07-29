@@ -36,6 +36,11 @@ public class BioContainerToolVersion implements ToolVersion {
     @Indexed(name = "name")
     String name;
 
+    @Field("description")
+    String description;
+
+    /** Main URL where the user can download the container Tool. **/
+    @Indexed(name = "url")
     String url;
 
     /** Used in conjunction with a registry_url if provided to locate images **/
@@ -58,6 +63,10 @@ public class BioContainerToolVersion implements ToolVersion {
 
     private Boolean isContainerRecipeAvailable;
 
+    @Field("urlRecipe")
+    private String urlRecipe;
+
+    @Field("version")
     private String version;
 
     private Boolean isVerified;
@@ -66,6 +75,9 @@ public class BioContainerToolVersion implements ToolVersion {
 
     @Indexed(name = "hashName")
     private String hashName;
+
+    @Indexed(name = "lastUpdate")
+    Date lastUpdate;
 
     @Override
     public String getName() {

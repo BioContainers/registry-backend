@@ -1,7 +1,6 @@
 package pro.biocontainers.readers.github.services;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
@@ -21,12 +20,12 @@ import java.util.List;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
-public class DockerFileNameList {
+public class GitHubFileNameList {
 
     String sha;
     String url;
-    List<DockerFileName> tree;
+    List<GitHubFileName> tree;
 
-    public DockerFileNameList() {
+    public GitHubFileNameList() {
     }
 }

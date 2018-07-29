@@ -28,7 +28,7 @@ public class BioContainerTool implements Tool {
     @Indexed(name = "name")
     String name;
 
-    /** Main URL where the user can download the container. **/
+    /** Main URL where the user can download the container Tool. **/
     @Indexed(name = "url")
     String url;
 
@@ -38,8 +38,8 @@ public class BioContainerTool implements Tool {
     @Indexed(name = "starred")
     Boolean starred;
 
-    @Indexed(name = "version")
-    String version;
+    @Indexed(name = "latestVersion")
+    String latestVersion;
 
     @Indexed(name = "toolClasses")
     private List<ToolClass> toolClasses;
@@ -68,9 +68,6 @@ public class BioContainerTool implements Tool {
     @Field("toolVersions")
     private List<BioContainerToolVersion> toolVersions;
 
-    @Indexed(name = "lastUpdate")
-    Date lastUpdate;
-
     @Indexed(name = "popularity")
     Integer popularity;
 
@@ -96,7 +93,7 @@ public class BioContainerTool implements Tool {
 
     @Override
     public String getMetaVersion() {
-        return this.version;
+        return this.latestVersion;
     }
 
     @Override
