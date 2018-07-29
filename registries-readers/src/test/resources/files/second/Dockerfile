@@ -1,53 +1,51 @@
+FROM ubuntu:16.04
 
-################## BASE IMAGE ######################
-FROM biocontainers/biocontainers:latest
+MAINTAINER Bertrand Neron <bneron@pasteur.fr>
 
-################## METADATA ######################
-LABEL base_image="biocontainers:latest"
-LABEL version="1.2.1"
-LABEL software="Stacks"
-LABEL software.version="1.41"
-LABEL about.summary="Stacks was developed to work with restriction enzyme-based data, such as RAD-seq, for the purpose of building genetic maps and conducting population"
-LABEL about.home="http://catchenlab.life.illinois.edu/stacks/"
-LABEL about.documentation="http://catchenlab.life.illinois.edu/stacks/"
-LABEL about.license_file="https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html"
-LABEL about.license="SPDX:GPL-2.0-only"
-LABEL about.tags="Genomics"
-LABEL extra.identifiers.biotools="Stacks"
+LABEL version="1" \
+    software="coregenebuilder" \ 
+    software.version="1.0" \ 
+    about.summary="CoreGeneBuilder can be used to extract a core genome (or a persistent genome) from a given set of bacterial genomes." \ 
+    about.home="https://github.com/C3BI-pasteur-fr/CoreGeneBuilder" \ 
+    base_image="ubuntu:16.04" \ 
+    about.license="SPDX:GPL-3.0-only" \
+    about.license_file="https://github.com/C3BI-pasteur-fr/CoreGeneBuilder/blob/master/COPYING" \ 
+    ANNOT.Vendor="Institut Pasteur" \
+    ANNOT.EDAM_Operation="['operation_2995', 'operation_0289', 'operation_0362', 'operation_0291']" \
+    ANNOT.EDAM_Topic="['topic_0623']" \
+    ANNOT.Requires="[blast+, muscle, biopython , R, prodigal, andi, ecamber, opscan, fasta2agp]" \
+    ANNOT.Provides="['coregenebuilder']"
+      
+RUN apt-get -y update && \
+    apt-get install -y --no-install-recommends \
+              ansible \
+              unzip \
+              time \
+              bc \
+              gawk \
+              libgcj16 && \
+    apt-get install -y python-pip && \
+    apt-get clean
 
+WORKDIR /tmp
 
-################## BEGIN INSTALLATION ###########################
-ENV STACKVERSION 1.41
+ADD https://github.com/C3BI-pasteur-fr/IFB-playbook/archive/coregenebuilder.zip .
 
-USER root
+RUN unzip coregenebuilder.zip
 
-RUN apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y libdbd-mysql-perl libsparsehash-dev samtools libbam-dev mysql-client --no-install-recommends
-RUN ln -s /usr/include/google /usr/include/sparsehash && \
-    perl -MCPAN -e 'my $c = "CPAN::HandleConfig"; $c->load(doit => 1, autoconfig => 1); $c->edit(prerequisites_policy => "follow"); $c->edit(build_requires_install_policy => "yes"); $c->commit' && \
-    perl -MCPAN -e 'force install Spreadsheet::WriteExcel' && \
-    wget http://catchenlab.life.illinois.edu/stacks/source/stacks-${STACKVERSION}.tar.gz && \
-    tar xzf stacks-${STACKVERSION}.tar.gz && \
-    cd stacks-${STACKVERSION} && \
-    ./configure --enable-sparsehash --enable-bam --with-bam-include-path=/usr/include/samtools --with-bam-lib-path=/usr/lib && \
-    make -j 8 && \
-    make install && \
-    rm -rf /usr/local/share/stacks/php && \
-    sed -i -e 's,$mysql_config;,$mysql_config;\nmy $cnf_secure = $cnf . (exists $ENV{"MYSQL_APP_PORT_3306_TCP_ADDR"} ? " --host=" . $ENV{"MYSQL_APP_PORT_3306_TCP_ADDR"} : (exists $ENV{"MYSQL_HOST"} ? " --host=" . $ENV{"MYSQL_HOST"} : q{})) . (exists $ENV{"MYSQL_APP_ENV_MYSQL_PASS"} ? " --password=" . $ENV{"MYSQL_APP_ENV_MYSQL_PASS"} : (exists $ENV{"MYSQL_PASS"} ? " --password=" . $ENV{"MYSQL_PASS"} : q{})) . (exists $ENV{"MYSQL_APP_ENV_MYSQL_USER"} ? " --user=" . $ENV{"MYSQL_APP_ENV_MYSQL_USER"} : (exists $ENV{"MYSQL_USER"} ? " --user=" . $ENV{"MYSQL_USER"} : q{}));,' -i -e 's,mysql --defaults-file=$cnf,mysql --defaults-file=$cnf_secure,g' /usr/local/bin/denovo_map.pl && \
-    sed -i -e 's,$mysql_config;,$mysql_config;\nmy $cnf_secure = $cnf . (exists $ENV{"MYSQL_APP_PORT_3306_TCP_ADDR"} ? " --host=" . $ENV{"MYSQL_APP_PORT_3306_TCP_ADDR"} : (exists $ENV{"MYSQL_HOST"} ? " --host=" . $ENV{"MYSQL_HOST"} : q{})) . (exists $ENV{"MYSQL_APP_ENV_MYSQL_PASS"} ? " --password=" . $ENV{"MYSQL_APP_ENV_MYSQL_PASS"} : (exists $ENV{"MYSQL_PASS"} ? " --password=" . $ENV{"MYSQL_PASS"} : q{})) . (exists $ENV{"MYSQL_APP_ENV_MYSQL_USER"} ? " --user=" . $ENV{"MYSQL_APP_ENV_MYSQL_USER"} : (exists $ENV{"MYSQL_USER"} ? " --user=" . $ENV{"MYSQL_USER"} : q{}));,' -i -e 's,mysql --defaults-file=$cnf,mysql --defaults-file=$cnf_secure,g' /usr/local/bin/ref_map.pl && \
-    sed -i -e 's,DBI:mysql:$db:mysql,DBI:mysql:$db:" . (exists $ENV{"MYSQL_APP_PORT_3306_TCP_ADDR"} ? ";host=" . $ENV{"MYSQL_APP_PORT_3306_TCP_ADDR"} : (exists $ENV{"MYSQL_HOST"} ? ";host=" . $ENV{"MYSQL_HOST"} : q{})) . (exists $ENV{"MYSQL_APP_ENV_MYSQL_PASS"} ? ";password=" . $ENV{"MYSQL_APP_ENV_MYSQL_PASS"} : (exists $ENV{"MYSQL_PASS"} ? ";password=" . $ENV{"MYSQL_PASS"} : q{})) . (exists $ENV{"MYSQL_APP_ENV_MYSQL_USER"} ? ";user=" . $ENV{"MYSQL_APP_ENV_MYSQL_USER"} : (exists $ENV{"MYSQL_USER"} ? ";user=" . $ENV{"MYSQL_USER"} : q{})) . ";mysql,g' /usr/local/bin/export_sql.pl && \
-    sed -i -e 's,DBI:mysql:$db:mysql,DBI:mysql:$db:" . (exists $ENV{"MYSQL_APP_PORT_3306_TCP_ADDR"} ? ";host=" . $ENV{"MYSQL_APP_PORT_3306_TCP_ADDR"} : (exists $ENV{"MYSQL_HOST"} ? ";host=" . $ENV{"MYSQL_HOST"} : q{})) . (exists $ENV{"MYSQL_APP_ENV_MYSQL_PASS"} ? ";password=" . $ENV{"MYSQL_APP_ENV_MYSQL_PASS"} : (exists $ENV{"MYSQL_PASS"} ? ";password=" . $ENV{"MYSQL_PASS"} : q{})) . (exists $ENV{"MYSQL_APP_ENV_MYSQL_USER"} ? ";user=" . $ENV{"MYSQL_APP_ENV_MYSQL_USER"} : (exists $ENV{"MYSQL_USER"} ? ";user=" . $ENV{"MYSQL_USER"} : q{})) . ";mysql,g' -i -e 's,$mysql_config;,$mysql_config;\nmy $cnf_secure = $cnf . (exists $ENV{"MYSQL_APP_PORT_3306_TCP_ADDR"} ? " --host=" . $ENV{"MYSQL_APP_PORT_3306_TCP_ADDR"} : (exists $ENV{"MYSQL_HOST"} ? " --host=" . $ENV{"MYSQL_HOST"} : q{})) . (exists $ENV{"MYSQL_APP_ENV_MYSQL_PASS"} ? " --password=" . $ENV{"MYSQL_APP_ENV_MYSQL_PASS"} : (exists $ENV{"MYSQL_PASS"} ? " --password=" . $ENV{"MYSQL_PASS"} : q{})) . (exists $ENV{"MYSQL_APP_ENV_MYSQL_USER"} ? " --user=" . $ENV{"MYSQL_APP_ENV_MYSQL_USER"} : (exists $ENV{"MYSQL_USER"} ? " --user=" . $ENV{"MYSQL_USER"} : q{}));,' -i -e 's,mysql --defaults-file=$cnf,mysql --defaults-file=$cnf_secure,g' /usr/local/bin/index_radabout.tags.pl && \
-    sed -i -e 's,$mysql_config;,$mysql_config;\nmy $cnf_secure = $cnf . (exists $ENV{"MYSQL_APP_PORT_3306_TCP_ADDR"} ? " --host=" . $ENV{"MYSQL_APP_PORT_3306_TCP_ADDR"} : (exists $ENV{"MYSQL_HOST"} ? " --host=" . $ENV{"MYSQL_HOST"} : q{})) . (exists $ENV{"MYSQL_APP_ENV_MYSQL_PASS"} ? " --password=" . $ENV{"MYSQL_APP_ENV_MYSQL_PASS"} : (exists $ENV{"MYSQL_PASS"} ? " --password=" . $ENV{"MYSQL_PASS"} : q{})) . (exists $ENV{"MYSQL_APP_ENV_MYSQL_USER"} ? " --user=" . $ENV{"MYSQL_APP_ENV_MYSQL_USER"} : (exists $ENV{"MYSQL_USER"} ? " --user=" . $ENV{"MYSQL_USER"} : q{}));,' -i -e 's,mysql --defaults-file=$cnf,mysql --defaults-file=$cnf_secure,g' /usr/local/bin/load_radabout.tags.pl && \
-    sed -i -e 's,DBI:mysql:$db:mysql,DBI:mysql:$db:" . (exists $ENV{"MYSQL_APP_PORT_3306_TCP_ADDR"} ? ";host=" . $ENV{"MYSQL_APP_PORT_3306_TCP_ADDR"} : (exists $ENV{"MYSQL_HOST"} ? ";host=" . $ENV{"MYSQL_HOST"} : q{})) . (exists $ENV{"MYSQL_APP_ENV_MYSQL_PASS"} ? ";password=" . $ENV{"MYSQL_APP_ENV_MYSQL_PASS"} : (exists $ENV{"MYSQL_PASS"} ? ";password=" . $ENV{"MYSQL_PASS"} : q{})) . (exists $ENV{"MYSQL_APP_ENV_MYSQL_USER"} ? ";user=" . $ENV{"MYSQL_APP_ENV_MYSQL_USER"} : (exists $ENV{"MYSQL_USER"} ? ";user=" . $ENV{"MYSQL_USER"} : q{})) . ";mysql,g' /usr/local/bin/load_sequences.pl && \
-    cd .. && \
-    echo -e "[client]\nport=3306\nlocal-infile=1\n" > /usr/local/share/stacks/sql/mysql.cnf && \
-    cp /usr/local/share/stacks/sql/mysql.cnf /home/biodocker/.my.cnf && \
-    rm -rf stacks-${STACKVERSION}.tar.gz stacks-${STACKVERSION}
+WORKDIR /tmp/IFB-playbook-coregenebuilder/coregenebuilder
 
-USER biodocker
+COPY inventory /tmp/IFB-playbook-coregenebuilder/coregenebuilder/Inventory/hosts
 
-WORKDIR /data/
+RUN ansible-playbook coregenebuilder.yml -i Inventory/ -c local
 
-##################### INSTALLATION END ##########################
+RUN useradd -m -d /root/mydisk -U cgb && \
+    chmod 755 /root
 
-MAINTAINER Michael Bekaert <michael.bekaert@stir.ac.uk>
+WORKDIR /root/mydisk
+
+USER cgb
+
+ENTRYPOINT ["coregenebuilder"]
+
+CMD ["-h"]

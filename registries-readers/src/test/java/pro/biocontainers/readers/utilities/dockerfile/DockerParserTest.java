@@ -35,7 +35,7 @@ public class DockerParserTest {
         File rawDockerfile2 = new File( Objects.requireNonNull(DockerParserTest.class.getClassLoader().getResource("files/second/Dockerfile")).toURI());
         parser = new DockerParser(rawDockerfile2.getParent(), rawDockerfile2.getAbsolutePath());
         DockerContainer dockerfileDockerContainer2 = parser.getParsedDockerfileObject(rawDockerfile2);
-        Assert.assertEquals("Number of labels is 10", 11, dockerfileDockerContainer2.labels.size());
-        Assert.assertTrue("The version of the software is -- 1.41", dockerfileDockerContainer2.getSoftwareVersion().equalsIgnoreCase("1.41"));
+        Assert.assertEquals("Number of labels is 10", 13, dockerfileDockerContainer2.labels.size());
+        Assert.assertTrue("The version of the software is -- 1.41", dockerfileDockerContainer2.getSoftwareVersion().equalsIgnoreCase("1.0"));
     }
 }

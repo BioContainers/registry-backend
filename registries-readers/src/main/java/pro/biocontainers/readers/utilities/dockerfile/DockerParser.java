@@ -227,6 +227,7 @@ public class DockerParser {
         boolean hc = false;
         boolean concatFlag = false;
         while ((line = reader.readLine()) != null) {
+            //line = line.replace("\\S+", "\\");
             if (doesLineHaveAnInstruction(line) && line.contains(" \\")) {
                 newLine = "";
                 newLine += line;
@@ -311,41 +312,41 @@ public class DockerParser {
     }
 
     public static boolean doesLineHaveAnInstruction(String line) {
-        if (line.contains("ADD")) {
+        if (line.trim().startsWith("ADD")) {
             return true;
-        } else if (line.contains("FROM")) {
+        } else if (line.trim().startsWith("FROM")) {
             return true;
-        } else if (line.contains("CMD")) {
+        } else if (line.trim().startsWith("CMD")) {
             return true;
-        } else if (line.contains("COPY")) {
+        } else if (line.trim().startsWith("COPY")) {
             return true;
-        } else if (line.contains("ENTRYPOINT")) {
+        } else if (line.trim().startsWith("ENTRYPOINT")) {
             return true;
-        } else if (line.contains("ENV")) {
+        } else if (line.trim().startsWith("ENV")) {
             return true;
-        } else if (line.contains("EXPOSE")) {
+        } else if (line.trim().startsWith("EXPOSE")) {
             return true;
-        } else if (line.contains("FROM")) {
+        } else if (line.trim().startsWith("FROM")) {
             return true;
-        } else if (line.contains("HEALTHCHECK")) {
+        } else if (line.trim().startsWith("HEALTHCHECK")) {
             return true;
         } else if (line.contains("INSTRUCTION")) {
             return true;
-        } else if (line.contains("LABEL")) {
+        } else if (line.trim().startsWith("LABEL")) {
             return true;
         } else if (line.contains("MAINTAINER")) {
             return true;
-        } else if (line.contains("ONBUILD")) {
+        } else if (line.trim().startsWith("ONBUILD")) {
             return true;
-        } else if (line.contains("RUN")) {
+        } else if (line.trim().startsWith("RUN")) {
             return true;
-        } else if (line.contains("STOPSIGNAL")) {
+        } else if (line.trim().startsWith("STOPSIGNAL")) {
             return true;
-        } else if (line.contains("USER")) {
+        } else if (line.trim().startsWith("USER")) {
             return true;
-        } else if (line.contains("VOLUME")) {
+        } else if (line.trim().startsWith("VOLUME")) {
             return true;
-        } else if (line.contains("WORKDIR")) {
+        } else if (line.trim().startsWith("WORKDIR")) {
             return true;
 
         } else return line.startsWith("#");
@@ -373,31 +374,31 @@ public class DockerParser {
     }
 
     private boolean areMultipleInstructionsInOneLineAllowed(String instructionToCheck) {
-        if (instructionToCheck.contains("ENV")) {
+        if (instructionToCheck.trim().startsWith("ENV")) {
             return false;
-        } else if (instructionToCheck.contains("ADD")) {
+        } else if (instructionToCheck.trim().startsWith("ADD")) {
             return false;
-        } else if (instructionToCheck.contains("COPY")) {
+        } else if (instructionToCheck.trim().startsWith("COPY")) {
             return false;
-        } else if (instructionToCheck.contains("USER")) {
+        } else if (instructionToCheck.trim().startsWith("USER")) {
             return false;
-        } else if (instructionToCheck.contains("WORKDIR")) {
+        } else if (instructionToCheck.trim().startsWith("WORKDIR")) {
             return false;
-        } else if (instructionToCheck.contains("ARG")) {
+        } else if (instructionToCheck.trim().startsWith("ARG")) {
             return false;
-        } else return !instructionToCheck.contains("ONBUILD");
+        } else return !instructionToCheck.trim().startsWith("ONBUILD");
     }
 
     public boolean isSingleInstruction(String instructionToCheck) {
-        if (instructionToCheck.contains("FROM")) {
+        if (instructionToCheck.trim().startsWith(("FROM"))) {
             return true;
-        } else if (instructionToCheck.contains("CMD")) {
+        } else if (instructionToCheck.trim().startsWith("CMD")) {
             return true;
-        } else if (instructionToCheck.contains("ENTRYPOINT")) {
+        } else if (instructionToCheck.trim().startsWith("ENTRYPOINT")) {
             return true;
-        } else if (instructionToCheck.contains("HEALTHCHECK")) {
+        } else if (instructionToCheck.trim().startsWith("HEALTHCHECK")) {
             return true;
-        } else return instructionToCheck.contains("STOPSIGNAL");
+        } else return instructionToCheck.trim().startsWith("STOPSIGNAL");
     }
 
 
