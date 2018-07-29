@@ -1,16 +1,18 @@
 package pro.biocontainers.pipelines.utilities;
 
+import lombok.extern.log4j.Log4j;
 import pro.biocontainers.data.model.ContainerType;
+import pro.biocontainers.data.model.Tuple;
 import pro.biocontainers.mongodb.model.BioContainerTool;
 import pro.biocontainers.mongodb.model.BioContainerToolVersion;
 import pro.biocontainers.mongodb.model.ContainerImage;
 import pro.biocontainers.readers.IRegistryContainer;
-import pro.biocontainers.readers.Tuple;
 import pro.biocontainers.readers.dockerhub.model.DockerHubContainer;
 import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * This code is licensed under the Apache License, Version 2.0 (the
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
  * <p>
  * Created by ypriverol (ypriverol@gmail.com) on 25/07/2018.
  */
+@Log4j
 public class BiocontainerTransformer {
 
     public static BioContainerTool transformContainerToBiocontainer(IRegistryContainer container, String accessionURL) {
@@ -80,14 +83,21 @@ public class BiocontainerTransformer {
                         .accession(y.getKey())
                         .description(container.getDescription())
                         .containerType(ContainerType.DOCKER)
+                        .lastUpdate(x.getLastUpdated())
                         .tag(y.getKey())
                         .build();
                 containerImages.add(containerImage);
             }));
         }
 
-        Date lastUpdate = finalContainers.stream().sorted(Comparator.comparing(DockerHubContainer::getLastUpdated)).findFirst().get().getLastUpdated();
+        List<DockerHubContainer> finalUpdates = finalContainers.stream().filter(x -> x.getLastUpdated() != null)
+                .sorted(Comparator.comparing(DockerHubContainer::getLastUpdated)).collect(Collectors.toList());
+        Date finalUpdate = null;
+        if(finalContainers != null && finalContainers.stream().findFirst().isPresent())
+            finalUpdate = finalContainers.stream().findFirst().get().getLastUpdated();
 
+        if(container.getSoftwareName() == null)
+            log.error("Not name for contain -- ");
         return Optional
                 .of(BioContainerToolVersion
                         .builder()
@@ -96,9 +106,16 @@ public class BiocontainerTransformer {
                         .description(container.getDescription())
                         .isContainerRecipeAvailable(true)
                         .isVerified(false)
-                        .lastUpdate(lastUpdate)
+                        .lastUpdate(finalUpdate)
                         .hashName(GeneralUtils.getHashName(container.getSoftwareName()))
                         .containerImages(containerImages)
+                        .license(container.getLicense())
+                        .additionalIdentifiers(container
+                                .getExternalIds()
+                                .entrySet()
+                                .stream()
+                                .map(x -> { return new Tuple<>(x.getKey(), x.getValue());})
+                                .collect(Collectors.toList()))
                         .build());
 
 

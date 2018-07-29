@@ -3,8 +3,8 @@ package pro.biocontainers.readers.quayio.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import pro.biocontainers.data.model.Tuple;
 import pro.biocontainers.readers.IRegistryContainer;
-import pro.biocontainers.readers.Tuple;
 
 import java.util.Date;
 import java.util.List;

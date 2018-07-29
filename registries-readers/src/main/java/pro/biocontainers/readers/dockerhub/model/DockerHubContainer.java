@@ -3,8 +3,8 @@ package pro.biocontainers.readers.dockerhub.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.extern.log4j.Log4j;
+import pro.biocontainers.data.model.Tuple;
 import pro.biocontainers.readers.IRegistryContainer;
-import pro.biocontainers.readers.Tuple;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -75,7 +75,10 @@ public class DockerHubContainer implements IRegistryContainer {
 
     @Override
     public List<Tuple<String, Integer>> getContainerTags() {
-        return tags.stream().map(x -> new Tuple<>(x.getName(), x.getFull_size().intValue())).collect(Collectors.toList());
+        return tags.
+                stream()
+                .map(x -> new Tuple<>(x.getName(), x.getFull_size().intValue()))
+                .collect(Collectors.toList());
     }
 
     @Override

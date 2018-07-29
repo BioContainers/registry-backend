@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import pro.biocontainers.data.model.DescriptorType;
 import pro.biocontainers.data.model.ToolDescriptor;
 import pro.biocontainers.data.model.ToolVersion;
+import pro.biocontainers.data.model.Tuple;
 
 import java.util.Collection;
 import java.util.Date;
@@ -29,7 +30,6 @@ import java.util.List;
  */
 @Document(collection = "BioContainerToolVersion")
 @Builder
-
 @CompoundIndex(def = "{'name':1, 'version':1}", name = "name_version")
 public class BioContainerToolVersion implements ToolVersion {
 
@@ -45,6 +45,12 @@ public class BioContainerToolVersion implements ToolVersion {
     /** Main URL where the user can download the container Tool. **/
     @Indexed(name = "url")
     String url;
+
+    @Field("license")
+    String license;
+
+    @Field("additionalIdentifiers")
+    List<Tuple<String, List<String>>> additionalIdentifiers;
 
     /** Used in conjunction with a registry_url if provided to locate images **/
     @Indexed(name = "imageId")

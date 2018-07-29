@@ -653,6 +653,7 @@ public class DockerParser {
     public List<Label> parseAndGetLabelInstruction(String command) {
         List<Label> labels = new ArrayList<>();
         List<String> parts = new ArrayList<>();
+
         Pattern regex = Pattern.compile("[^\\s\"']+|\"([^\"]*)\"|'([^']*)'");
         Matcher regexMatcher = regex.matcher(command);
         while (regexMatcher.find()) {
@@ -667,6 +668,7 @@ public class DockerParser {
                 parts.add(regexMatcher.group());
             }
         }
+
         List<String> newParts = new ArrayList<>();
         for (String part : parts) {
             String[] valuekeyJoint = part.split("=");
@@ -681,21 +683,7 @@ public class DockerParser {
         }
 
 
-//        for (int i = 0; i < parts.size(); i++) {
-//            String[] split = parts.get(i).split("=");
-//            String key = split[0];
-//            String value = split[1];
-//
-//            Pattern p = Pattern.compile("\"(.*?)\"");
-//            Matcher m = p.matcher(value);
-//
-//            while (m.find()) {
-//                value = m.group(1);
-//            }
-//
-//            labels.add(new Label(dockerfile, key, value));
-//        }
-        this.labels = labels;
+        this.labels.addAll(labels);
         return labels;
     }
 

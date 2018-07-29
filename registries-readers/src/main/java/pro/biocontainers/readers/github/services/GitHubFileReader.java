@@ -56,9 +56,7 @@ public class GitHubFileReader {
      */
     public DockerContainer parseDockerRecipe(String name, String version) throws IOException {
 
-        String stringURL =config.getDockerRecipeURL().replace("%%software_name%%", name);
-        if(version != null)
-            stringURL = stringURL.replace("%%software_version%%", version);
+        String stringURL =config.getDockerRecipeURL().replace("%%software_tool_version%%", name + "/" + version);
         URL url = new URL(stringURL);
 
         File tempDir = Files.createTempDir();

@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 import pro.biocontainers.data.model.ContainerType;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -44,6 +45,8 @@ public class ContainerImage implements IContainerImage{
 
     /** Number of downloads **/
     private Integer downloads;
+
+    private Date lastUpdate;
 
     @Override
     public String getAccession() {
