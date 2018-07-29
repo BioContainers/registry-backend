@@ -19,8 +19,6 @@ public interface IContainerImage extends ContainerImage {
 
     public String getAccession();
 
-    public String getVersion();
-
     public String getDescription();
 
 }

@@ -17,7 +17,7 @@ import java.util.List;
 
 @Builder
 @Data
-@Document(collection = "BioContainerTools")
+@Document(collection = "BioContainerTool")
 public class BioContainerTool implements Tool {
 
     /** Native Identifier from MongoDB */
@@ -25,7 +25,7 @@ public class BioContainerTool implements Tool {
     @Field("id")
     String id;
 
-    @Indexed(name = "name")
+    @Indexed(name = "name", unique = true)
     String name;
 
     /** Main URL where the user can download the container Tool. **/

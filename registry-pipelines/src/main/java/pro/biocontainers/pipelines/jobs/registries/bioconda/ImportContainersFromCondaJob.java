@@ -122,7 +122,7 @@ public class ImportContainersFromCondaJob extends AbstractJob {
 //                                if (rContainer.isPresent() && rContainer.get().getName().equalsIgnoreCase(containerVersion.getSoftwareName()))
 //                                    registryContainer.add(rContainer.get());
 //                            }
-//                            Optional<BioContainerToolVersion> mongoToolVersion = BiocontainerTransformer.transformContainerToolVerionToBiocontainer(containerVersion,registryContainer, dockerHubRegistry);
+//                            Optional<BioContainerToolVersion> mongoToolVersion = BiocontainerTransformer.transformContainerToolVersionToBiocontainer(containerVersion,registryContainer, dockerHubRegistry);
 //                            if(mongoToolVersion.isPresent())
 //                                log.info("New BioContainerTool Version to store -- " + mongoToolVersion.get().getName());
 ////                                mongoService.indexToolVersion(mongoToolVersion);

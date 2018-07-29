@@ -122,8 +122,6 @@ public class ImportContainersFromDockerHubJob extends AbstractJob {
                                     try {
                                         DockerContainer container = fileReaderService.parseDockerRecipe(nameValues[0], nameValues[1]);
                                         container.setVersion(nameValues[1]);
-
-                                        container.setPublicRecipeURL();
                                         values.add(container);
                                         toolNames.put(nameValues[0], values);
                                     } catch (IOException e) {
@@ -152,10 +150,11 @@ public class ImportContainersFromDockerHubJob extends AbstractJob {
                                 if (rContainer.isPresent() && rContainer.get().getName().equalsIgnoreCase(containerVersion.getSoftwareName()))
                                     registryContainer.add(rContainer.get());
                             }
-                            Optional<BioContainerToolVersion> mongoToolVersion = BiocontainerTransformer.transformContainerToolVerionToBiocontainer(containerVersion,registryContainer, dockerHubRegistry);
-                            if(mongoToolVersion.isPresent())
+                            Optional<BioContainerToolVersion> mongoToolVersion = BiocontainerTransformer.transformContainerToolVersionToBiocontainer(containerVersion,registryContainer, dockerHubRegistry);
+                            if(mongoToolVersion.isPresent()){
+                                mongoService.indexToolVersion(mongoToolVersion.get());
                                 log.info("New BioContainerTool Version to store -- " + mongoToolVersion.get().getName());
-//                                mongoService.indexToolVersion(mongoToolVersion);
+                            }
                         });
 
                     });

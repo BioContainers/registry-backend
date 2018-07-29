@@ -9,9 +9,7 @@ import pro.biocontainers.readers.Tuple;
 import pro.biocontainers.readers.dockerhub.model.DockerHubContainer;
 import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -57,40 +55,53 @@ public class BiocontainerTransformer {
      * @param accessionURL url
      * @return BioContainerToolVersion
      */
-    public static Optional<BioContainerToolVersion> transformContainerToolVerionToBiocontainer(DockerContainer container,
-                                                                                               List<DockerHubContainer> dockerHubContainers,
-                                                                                               String accessionURL) {
+    public static Optional<BioContainerToolVersion> transformContainerToolVersionToBiocontainer(DockerContainer container,
+                                                                                                List<DockerHubContainer> dockerHubContainers, String accessionURL) {
+        // Parse the DockerContainers
+        List<DockerHubContainer> finalContainers = new ArrayList<>();
         if(dockerHubContainers != null){
-            List<DockerHubContainer> finalContainers = new ArrayList<>();
             for(DockerHubContainer hubContainer: dockerHubContainers){
-                List<Tuple<String, Integer>> sameVersions = hubContainer.getContainerTags().parallelStream().filter(x -> x.getKey().toLowerCase().contains(container.getVersion())).collect(Collectors.toList());
+                List<Tuple<String, Integer>> sameVersions = hubContainer
+                        .getContainerTags()
+                        .parallelStream()
+                        .filter(x -> x.getKey().toLowerCase().contains(container.getVersion()))
+                        .collect(Collectors.toList());
                 if(sameVersions.size() > 0){
                     finalContainers.add(hubContainer);
                 }
             }
-            if(finalContainers.size() == 1){
-                DockerHubContainer registryContainer = finalContainers.get(0);
-                List<ContainerImage> containerImages = registryContainer.getContainerTags()
-                        .stream().map( x-> ContainerImage
-                                .builder()
-                                .size(x.getValue())
-                                .accession(x.getKey())
-                                .description(container.getDescription())
-                                .containerType(ContainerType.DOCKER)
-                                .accession(x.getKey())
-                                .build())
-                        .collect(Collectors.toList());
+        }
 
-                return Optional.of(BioContainerToolVersion
+        List<ContainerImage> containerImages = new ArrayList<>();
+        if(finalContainers.size() > 0){
+            finalContainers.forEach(x -> x.getContainerTags().forEach(y -> {
+                ContainerImage containerImage = ContainerImage.builder()
+                        .size(y.getValue())
+                        .accession(y.getKey())
+                        .description(container.getDescription())
+                        .containerType(ContainerType.DOCKER)
+                        .tag(y.getKey())
+                        .build();
+                containerImages.add(containerImage);
+            }));
+        }
+
+        Date lastUpdate = finalContainers.stream().sorted(Comparator.comparing(DockerHubContainer::getLastUpdated)).findFirst().get().getLastUpdated();
+
+        return Optional
+                .of(BioContainerToolVersion
                         .builder()
                         .name(container.getSoftwareName())
                         .version(container.getSoftwareVersion())
+                        .description(container.getDescription())
+                        .isContainerRecipeAvailable(true)
+                        .isVerified(false)
+                        .lastUpdate(lastUpdate)
                         .hashName(GeneralUtils.getHashName(container.getSoftwareName()))
                         .containerImages(containerImages)
                         .build());
-            }
-        }
-        return Optional.empty();
+
+
 
     }
 }

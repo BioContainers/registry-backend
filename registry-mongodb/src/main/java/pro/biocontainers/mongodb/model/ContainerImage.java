@@ -28,7 +28,7 @@ public class ContainerImage implements IContainerImage{
     private String accession;
 
     /** Tag **/
-    private String version;
+    private String tag;
 
     /** Container Type **/
     private ContainerType containerType;
@@ -48,11 +48,6 @@ public class ContainerImage implements IContainerImage{
     @Override
     public String getAccession() {
         return this.accession;
-    }
-
-    @Override
-    public String getVersion() {
-        return this.version;
     }
 
     @Override
