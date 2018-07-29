@@ -106,14 +106,8 @@ public class ImportContainersFromDockerHubJob extends AbstractJob {
         return stepBuilderFactory
                 .get(PipelineConstants.StepNames.READ_DOCKERHUB_REGISTRY_LIST.name())
                 .tasklet((stepContribution, chunkContext) -> {
-                    DockerHubQueryService service = new DockerHubQueryService(restTemplateBuilder(), dockerHubConfig);
-                    List<Optional<DockerHubContainer>> registryContainers = service.getAllContainers("biocontainers")
-                            .getRepositories()
-                            .stream()
-                            .map(x -> service.getContainer("biocontainers", x.getName()))
-                            .collect(Collectors.toList());
 
-                    log.info("Number of containers to be inserted -- " + registryContainers.size());
+                    /** Read containers recipes from BioContainers GitHub **/
 
                     GitHubFileNameList dockerfileList = fileReaderService.getDockerFiles();
                     Map<String, Set<DockerContainer>> toolNames = new ConcurrentHashMap<>();
@@ -128,6 +122,8 @@ public class ImportContainersFromDockerHubJob extends AbstractJob {
                                     try {
                                         DockerContainer container = fileReaderService.parseDockerRecipe(nameValues[0], nameValues[1]);
                                         container.setVersion(nameValues[1]);
+
+                                        container.setPublicRecipeURL();
                                         values.add(container);
                                         toolNames.put(nameValues[0], values);
                                     } catch (IOException e) {
@@ -137,6 +133,16 @@ public class ImportContainersFromDockerHubJob extends AbstractJob {
                             });
 
                     log.info("Number of DockerFile recipes -- " + toolNames.size());
+
+                    DockerHubQueryService service = new DockerHubQueryService(restTemplateBuilder(), dockerHubConfig);
+                    List<Optional<DockerHubContainer>> registryContainers = service.getAllContainers("biocontainers")
+                            .getRepositories()
+                            .stream()
+                            .map(x -> service.getContainer("biocontainers", x.getName()))
+                            .collect(Collectors.toList());
+
+                    log.info("Number of containers to be inserted -- " + registryContainers.size());
+
 
                     toolNames.entrySet().stream().forEach( container -> {
                         container.getValue().stream().forEach( containerVersion -> {

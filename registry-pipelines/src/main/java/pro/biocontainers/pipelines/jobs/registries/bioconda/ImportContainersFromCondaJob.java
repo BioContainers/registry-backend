@@ -80,39 +80,39 @@ public class ImportContainersFromCondaJob extends AbstractJob {
         return stepBuilderFactory
                 .get(PipelineConstants.StepNames.READ_QUAYIO_REGISTRY_LIST.name())
                 .tasklet((stepContribution, chunkContext) -> {
-                    QueryQuayIOService service = new QueryQuayIOService(restTemplateBuilder(), quayIOConfiguration);
-                    List<Optional<QuayIOContainer>> registryContainers = service
-                            .getListContainers("biocontainers").getRepositories()
-                            .parallelStream()
-                            .map(x -> {
-                                return service.getContainer(x.getNamespace(), x.getName());
-                            })
-                            .collect(Collectors.toList());
+//                    QueryQuayIOService service = new QueryQuayIOService(restTemplateBuilder(), quayIOConfiguration);
+//                    List<Optional<QuayIOContainer>> registryContainers = service
+//                            .getListContainers("biocontainers").getRepositories()
+//                            .parallelStream()
+//                            .map(x -> {
+//                                return service.getContainer(x.getNamespace(), x.getName());
+//                            })
+//                            .collect(Collectors.toList());
+//
+//                    log.info("Number of containers to be inserted -- " + registryContainers.size());
+//
+//                    GitHubFileNameList dockerfileList = fileReaderService.getDockerFiles();
+//                    Map<String, Set<DockerContainer>> toolNames = new ConcurrentHashMap<>();
+//
+//                    dockerfileList.getTree().parallelStream()
+//                            .filter( x-> x.getPath().toLowerCase().contains(PipelineConstants.DOCKERFILE.toLowerCase()))
+//                            .forEach( fileName -> {
+//                                String name = fileName.getPath();
+//                                String[] nameValues = name.split("\\/");
+//                                if(nameValues.length > 1){
+//                                    Set<DockerContainer> values = (toolNames.containsKey(nameValues[0]))? toolNames.get(nameValues[0]) :new HashSet<>() ;
+//                                    try {
+//                                        DockerContainer container = fileReaderService.parseDockerRecipe(nameValues[0], nameValues[1]);
+//                                        container.setVersion(nameValues[1]);
+//                                        values.add(container);
+//                                        toolNames.put(nameValues[0], values);
+//                                    } catch (IOException e) {
+//                                        e.printStackTrace();
+//                                    }
+//                                }
+//                            });
 
-                    log.info("Number of containers to be inserted -- " + registryContainers.size());
-
-                    GitHubFileNameList dockerfileList = fileReaderService.getDockerFiles();
-                    Map<String, Set<DockerContainer>> toolNames = new ConcurrentHashMap<>();
-
-                    dockerfileList.getTree().parallelStream()
-                            .filter( x-> x.getPath().toLowerCase().contains(PipelineConstants.DOCKERFILE.toLowerCase()))
-                            .forEach( fileName -> {
-                                String name = fileName.getPath();
-                                String[] nameValues = name.split("\\/");
-                                if(nameValues.length > 1){
-                                    Set<DockerContainer> values = (toolNames.containsKey(nameValues[0]))? toolNames.get(nameValues[0]) :new HashSet<>() ;
-                                    try {
-                                        DockerContainer container = fileReaderService.parseDockerRecipe(nameValues[0], nameValues[1]);
-                                        container.setVersion(nameValues[1]);
-                                        values.add(container);
-                                        toolNames.put(nameValues[0], values);
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            });
-
-                    log.info("Number of DockerFile recipes -- " + toolNames.size());
+//                    log.info("Number of DockerFile recipes -- " + toolNames.size());
 
 //                    toolNames.entrySet().stream().forEach( container -> {
 //                        container.getValue().stream().forEach( containerVersion -> {

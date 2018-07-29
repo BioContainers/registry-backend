@@ -31,6 +31,10 @@ public class DockerContainer implements IContainerRecipe {
 
     private Long repoId;
 
+    private String publicRecipeURL;
+
+    private String publicReadableURL;
+
     public Dockerfile getDockerfile() {
         return dockerfile;
     }
