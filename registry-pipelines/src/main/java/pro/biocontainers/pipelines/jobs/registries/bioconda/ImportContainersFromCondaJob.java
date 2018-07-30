@@ -111,7 +111,7 @@ public class ImportContainersFromCondaJob extends AbstractJob {
 
                     QueryQuayIOService service = new QueryQuayIOService(restTemplateBuilder(), quayIOConfiguration);
                     List<Optional<QuayIOContainer>> registryContainers = service.getListContainers("biocontainers")
-                            .getRepositories()
+                            .getShortContainersList()
                             .stream()
                             .map(x -> service.getContainer("biocontainers", x.getName()))
                             .collect(Collectors.toList());

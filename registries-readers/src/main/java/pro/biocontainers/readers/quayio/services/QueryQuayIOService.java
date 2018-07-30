@@ -20,7 +20,9 @@ public class QueryQuayIOService {
     private QuayIOConfiguration configuration;
 
     public QueryQuayIOService(RestTemplateBuilder builder, QuayIOConfiguration configuration) {
-        restTemplate = builder.build();
+        restTemplate = builder.
+                setReadTimeout(30000)
+                .build();
         this.configuration = configuration;
         String accessToken = configuration.getAccessToken();
         if (accessToken != null) {
