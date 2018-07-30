@@ -7,6 +7,7 @@ import pro.biocontainers.readers.ExternalID;
 import pro.biocontainers.readers.IContainerRecipe;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This code is licensed under the Apache License, Version 2.0 (the
@@ -47,10 +48,10 @@ public class CondaRecipe implements IContainerRecipe {
     Map<String, String> about;
 
     @JsonProperty("extra")
-    Map<String, Object> extras;
+    Map<String, Object> extras = new ConcurrentHashMap<>();
 
     @JsonProperty(value = "source")
-    Map<String, Object> sources;
+    Map<String, Object> sources = new ConcurrentHashMap<>();
 
     /** Version of the software **/
     private String softwareVersion;
@@ -66,7 +67,7 @@ public class CondaRecipe implements IContainerRecipe {
 
     private String license;
     private String docURL;
-    private Map<String, List<String>> identifiers;
+    private Map<String, List<String>> identifiers = new ConcurrentHashMap<>();
 
     public Map<String, Object> getExtras() {
         return extras;

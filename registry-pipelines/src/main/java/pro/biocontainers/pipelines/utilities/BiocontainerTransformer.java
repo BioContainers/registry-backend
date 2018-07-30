@@ -95,7 +95,7 @@ public class BiocontainerTransformer {
                 .sorted(Comparator.comparing(QuayIOContainer::getLastUpdated)).collect(Collectors.toList());
 
         Date finalUpdate = null;
-        if(finalUpdates.stream().findFirst().isPresent())
+        if(finalUpdates.size() > 0 && finalUpdates.stream().findFirst().isPresent())
             finalUpdate = finalUpdates.stream().findFirst().get().getLastUpdated();
 
         if(container.getSoftwareName() == null)
