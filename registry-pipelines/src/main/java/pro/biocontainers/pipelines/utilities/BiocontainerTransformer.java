@@ -76,7 +76,7 @@ public class BiocontainerTransformer {
             }
         }
 
-        List<ContainerImage> containerImages = new ArrayList<>();
+        Set<ContainerImage> containerImages = new HashSet<>();
         if(finalContainers.size() > 0){
             finalContainers.forEach(x -> x.getContainerTags().forEach(y -> {
                 ContainerImage containerImage = ContainerImage.builder()
@@ -148,7 +148,7 @@ public class BiocontainerTransformer {
             }
         }
 
-        List<ContainerImage> containerImages = new ArrayList<>();
+        Set<ContainerImage> containerImages = new HashSet<>();
         if(finalContainers.size() > 0){
             finalContainers.forEach(x -> x.getContainerTags().forEach(y -> {
                 ContainerImage containerImage = ContainerImage.builder()
