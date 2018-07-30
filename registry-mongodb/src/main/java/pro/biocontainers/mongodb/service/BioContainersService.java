@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import pro.biocontainers.mongodb.model.BioContainerTool;
+import pro.biocontainers.mongodb.model.BioContainerToolVersion;
 import pro.biocontainers.mongodb.repository.BioContainersRepository;
+import pro.biocontainers.mongodb.repository.BioContainersToolVersionRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +18,9 @@ public class BioContainersService {
 
     @Autowired
     BioContainersRepository repository;
+
+    @Autowired
+    BioContainersToolVersionRepository versionRepository;
 
     /**
      * This method index a new Container using as import the container object.
@@ -44,10 +49,19 @@ public class BioContainersService {
         try {
             if(bioContainerTool.getId() != null){
                 repository.save(bioContainerTool);
-                log.info("The following container has been updated -- " + bioContainerTool.getId().toString());
+                log.info("The following container has been updated -- " + bioContainerTool.getId());
             }
         }catch(DuplicateKeyException ex){
             log.error("A BioContainerTool with similar accession already exists!!!");
         }
+    }
+
+    public Optional<BioContainerToolVersion> indexToolVersion(BioContainerToolVersion mongoToolVersion) {
+        try {
+            mongoToolVersion = versionRepository.save(mongoToolVersion);
+        }catch(DuplicateKeyException ex){
+            log.error("A BioContainerTool Version with similar accession already exists!!!");
+        }
+        return Optional.of(mongoToolVersion);
     }
 }

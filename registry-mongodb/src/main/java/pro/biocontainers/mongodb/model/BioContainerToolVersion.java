@@ -2,12 +2,14 @@ package pro.biocontainers.mongodb.model;
 
 import lombok.Builder;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import pro.biocontainers.data.model.DescriptorType;
 import pro.biocontainers.data.model.ToolDescriptor;
 import pro.biocontainers.data.model.ToolVersion;
+import pro.biocontainers.data.model.Tuple;
 
 import java.util.Collection;
 import java.util.Date;
@@ -28,6 +30,7 @@ import java.util.List;
  */
 @Document(collection = "BioContainerToolVersion")
 @Builder
+@CompoundIndex(def = "{'name':1, 'version':1}", name = "name_version")
 public class BioContainerToolVersion implements ToolVersion {
 
     @Id
@@ -36,8 +39,18 @@ public class BioContainerToolVersion implements ToolVersion {
     @Indexed(name = "name")
     String name;
 
+    @Field("description")
+    String description;
 
+    /** Main URL where the user can download the container Tool. **/
+    @Indexed(name = "url")
     String url;
+
+    @Field("license")
+    String license;
+
+    @Field("additionalIdentifiers")
+    List<Tuple<String, List<String>>> additionalIdentifiers;
 
     /** Used in conjunction with a registry_url if provided to locate images **/
     @Indexed(name = "imageId")
@@ -59,6 +72,10 @@ public class BioContainerToolVersion implements ToolVersion {
 
     private Boolean isContainerRecipeAvailable;
 
+    @Field("urlRecipe")
+    private String urlRecipe;
+
+    @Field("version")
     private String version;
 
     private Boolean isVerified;
@@ -70,9 +87,6 @@ public class BioContainerToolVersion implements ToolVersion {
 
     @Indexed(name = "lastUpdate")
     Date lastUpdate;
-
-    @Indexed(name = "popularity")
-    Integer popularity;
 
     @Override
     public String getName() {

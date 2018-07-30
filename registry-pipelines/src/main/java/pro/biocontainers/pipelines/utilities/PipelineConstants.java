@@ -21,7 +21,8 @@ public class PipelineConstants {
 
 
     public enum JobNames {
-        READ_DOCKERHUB_CONTAINERS_JOB("Read all the containers from dockerhub"),
+        READ_DOCKERHUB_CONTAINERS_JOB("Read all containers from dockerhub"),
+        READ_QUAYIO_CONTAINERS_JOB("Read all containers from quay.io"),
         ANNOTATE_CONTAINERS_JOB("Annotate all the containers from Recipes");
 
         String name;

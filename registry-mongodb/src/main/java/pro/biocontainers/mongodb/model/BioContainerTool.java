@@ -2,7 +2,6 @@ package pro.biocontainers.mongodb.model;
 
 import lombok.Builder;
 import lombok.Data;
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -12,26 +11,22 @@ import pro.biocontainers.data.model.ToolClass;
 import pro.biocontainers.data.model.ToolVersion;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 @Builder
 @Data
-@Document(collection = "BioContainerTools")
+@Document(collection = "BioContainerTool")
 public class BioContainerTool implements Tool {
 
     /** Native Identifier from MongoDB */
     @Id
-    @Field("uui")
-    ObjectId uui;
-
-    @Indexed(name = "id")
+    @Field("id")
     String id;
 
-    @Indexed(name = "name")
+    @Indexed(name = "name", unique = true)
     String name;
 
-    /** Main URL where the user can download the container. **/
+    /** Main URL where the user can download the container Tool. **/
     @Indexed(name = "url")
     String url;
 
@@ -41,8 +36,8 @@ public class BioContainerTool implements Tool {
     @Indexed(name = "starred")
     Boolean starred;
 
-    @Indexed(name = "version")
-    String version;
+    @Indexed(name = "latestVersion")
+    String latestVersion;
 
     @Indexed(name = "toolClasses")
     private List<ToolClass> toolClasses;
@@ -71,6 +66,9 @@ public class BioContainerTool implements Tool {
     @Field("toolVersions")
     private List<BioContainerToolVersion> toolVersions;
 
+    @Indexed(name = "popularity")
+    Integer popularity;
+
     @Override
     public String getOrganization() {
         return this.organization;
@@ -93,7 +91,7 @@ public class BioContainerTool implements Tool {
 
     @Override
     public String getMetaVersion() {
-        return this.version;
+        return this.latestVersion;
     }
 
     @Override

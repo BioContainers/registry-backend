@@ -14,6 +14,10 @@ public enum ExternalID {
         this.name = value;
     }
 
+    public String getName(){
+        return this.name;
+    }
+
     public static Optional<ExternalID> findValue(String value){
         if(value.equalsIgnoreCase("pubmed"))
             return Optional.of(PUBMED);

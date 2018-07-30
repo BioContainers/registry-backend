@@ -1,8 +1,9 @@
 package pro.biocontainers.readers;
 
+import pro.biocontainers.data.model.Tuple;
+
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * This code is licensed under the Apache License, Version 2.0 (the

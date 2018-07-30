@@ -21,15 +21,10 @@ import pro.biocontainers.readers.dockerhub.DockerHubConfiguration;
 import pro.biocontainers.readers.dockerhub.model.DockerHubContainer;
 import pro.biocontainers.readers.dockerhub.services.DockerHubQueryService;
 import pro.biocontainers.readers.github.configs.GitHubConfiguration;
-import pro.biocontainers.readers.github.services.DockerFileNameList;
+import pro.biocontainers.readers.github.services.GitHubFileNameList;
 import pro.biocontainers.readers.github.services.GitHubFileReader;
-import pro.biocontainers.readers.quayio.QuayIOConfiguration;
-import pro.biocontainers.readers.quayio.model.QuayIOContainer;
-import pro.biocontainers.readers.quayio.services.QueryQuayIOService;
 import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
-import pro.biocontainers.readers.utilities.dockerfile.models.Dockerfile;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -79,6 +74,15 @@ public class ImportContainersFromDockerHubJob extends AbstractJob {
     @Value("${public-url.quayio}")
     String quayIOHubRegistry;
 
+    @Value("${biocontainers-registry}")
+    String bioContainersURL;
+
+    @Value("${biocontainers-registry-version}")
+    String bioContainersVersionURL;
+
+    @Value("${biocontainers-registry-image}")
+    String bioContainersImageURL;
+
 
     @Bean
     public RestTemplateBuilder getRestTemplate() {
@@ -102,16 +106,10 @@ public class ImportContainersFromDockerHubJob extends AbstractJob {
         return stepBuilderFactory
                 .get(PipelineConstants.StepNames.READ_DOCKERHUB_REGISTRY_LIST.name())
                 .tasklet((stepContribution, chunkContext) -> {
-                    DockerHubQueryService service = new DockerHubQueryService(restTemplateBuilder(), dockerHubConfig);
-                    List<Optional<DockerHubContainer>> registryContainers = service.getAllContainers("biocontainers")
-                            .getRepositories()
-                            .stream()
-                            .map(x -> service.getContainer("biocontainers", x.getName()))
-                            .collect(Collectors.toList());
 
-                    log.info("Number of containers to be inserted -- " + registryContainers.size());
+                    /** Read containers recipes from BioContainers GitHub **/
 
-                    DockerFileNameList dockerfileList = fileReaderService.getDockerFiles();
+                    GitHubFileNameList dockerfileList = fileReaderService.getDockerFiles();
                     Map<String, Set<DockerContainer>> toolNames = new ConcurrentHashMap<>();
 
                     dockerfileList.getTree().parallelStream()
@@ -120,7 +118,7 @@ public class ImportContainersFromDockerHubJob extends AbstractJob {
                                 String name = fileName.getPath();
                                 String[] nameValues = name.split("\\/");
                                 if(nameValues.length > 1){
-                                    Set<DockerContainer> values = (toolNames.containsKey(nameValues[0]))? toolNames.get(nameValues[0]) :new HashSet<>() ;
+                                    Set<DockerContainer> values = (toolNames.containsKey(nameValues[0])) ? toolNames.get(nameValues[0]) :new HashSet<>() ;
                                     try {
                                         DockerContainer container = fileReaderService.parseDockerRecipe(nameValues[0], nameValues[1]);
                                         container.setVersion(nameValues[1]);
@@ -134,17 +132,29 @@ public class ImportContainersFromDockerHubJob extends AbstractJob {
 
                     log.info("Number of DockerFile recipes -- " + toolNames.size());
 
-                    toolNames.entrySet().stream().forEach( container -> {
-                        container.getValue().stream().forEach( containerVersion -> {
-                            List<DockerHubContainer> registryContainer = new ArrayList<>();
-                            for(Optional<DockerHubContainer> rContainer: registryContainers){
-                                if(rContainer.isPresent() && rContainer.get().getName().equalsIgnoreCase(containerVersion.getSoftwareName()))
-                                    registryContainer.add(rContainer.get());
-                            }
-                            BioContainerToolVersion mongoToolVersion = BiocontainerTransformer.transformContainerToolVerionToBiocontainer(containerVersion,registryContainer, dockerHubRegistry);
-                        });
-                    });
+                    DockerHubQueryService service = new DockerHubQueryService(restTemplateBuilder(), dockerHubConfig);
+                    List<Optional<DockerHubContainer>> registryContainers = service.getAllContainers("biocontainers")
+                            .getRepositories()
+                            .stream()
+                            .map(x -> service.getContainer("biocontainers", x.getName()))
+                            .collect(Collectors.toList());
 
+                    log.info("Number of containers to be inserted -- " + registryContainers.size());
+
+
+                    toolNames.forEach((key, value) -> value.stream().forEach(containerVersion -> {
+                        List<DockerHubContainer> registryContainer = new ArrayList<>();
+                        for (Optional<DockerHubContainer> rContainer : registryContainers) {
+
+                            if (rContainer.isPresent() && rContainer.get().getName().equalsIgnoreCase(containerVersion.getSoftwareName()))
+                                registryContainer.add(rContainer.get());
+                        }
+                        Optional<BioContainerToolVersion> mongoToolVersion = BiocontainerTransformer.transformContainerToolVersionToBiocontainer(containerVersion, registryContainer, "");
+                        if (mongoToolVersion.isPresent()) {
+                            mongoService.indexToolVersion(mongoToolVersion.get());
+                            log.info("New BioContainerTool Version to store -- " + mongoToolVersion.get().getName());
+                        }
+                    }));
 
                     return RepeatStatus.FINISHED;
                 })

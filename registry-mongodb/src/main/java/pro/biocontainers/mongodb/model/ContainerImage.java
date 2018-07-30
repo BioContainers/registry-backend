@@ -1,7 +1,10 @@
 package pro.biocontainers.mongodb.model;
 
 import lombok.Builder;
-import lombok.Data;
+import pro.biocontainers.data.model.ContainerType;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * This code is licensed under the Apache License, Version 2.0 (the
@@ -21,17 +24,28 @@ import lombok.Data;
 @Builder
 public class ContainerImage implements IContainerImage{
 
+    /** This is the Container Tag in Conda or BioContainers to be added**/
     private String accession;
 
-    private String version;
+    /** Tag **/
+    private String tag;
 
-    private String name;
+    /** Container Type **/
+    private ContainerType containerType;
 
+    /** List of binaries URLs **/
+    private List<String> binariesURLs;
+
+    /** Description of the Container Image **/
     private String description;
 
+    /** Size **/
     private Integer size;
 
-    private String tag;
+    /** Number of downloads **/
+    private Integer downloads;
+
+    private Date lastUpdate;
 
     @Override
     public String getAccession() {
@@ -39,24 +53,13 @@ public class ContainerImage implements IContainerImage{
     }
 
     @Override
-    public String getVersion() {
-        return this.version;
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
     public String getDescription() {
         return this.description;
     }
 
-
     @Override
     public String getTag() {
-        return this.tag;
+        return this.accession;
     }
 
     @Override

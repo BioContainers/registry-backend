@@ -1,4 +1,4 @@
-package pro.biocontainers.readers;
+package pro.biocontainers.data.model;
 
 import java.io.Serializable;
 
@@ -9,7 +9,7 @@ import java.io.Serializable;
  * @version $Id$
  */
 
-public class Tuple <K, V> implements Serializable {
+public class Tuple<K, V> implements Serializable {
     private K key;
     private V value;
 

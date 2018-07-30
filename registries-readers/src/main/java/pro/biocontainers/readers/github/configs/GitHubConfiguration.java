@@ -10,13 +10,16 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource(value = {"classpath:application.properties"})
 public class GitHubConfiguration {
 
-    @Value("${github.docker-containers-recipes}")
+    @Value("${github.docker-containers-recipes-readable}")
     String dockerRecipeURL;
 
-    @Value("${github.bioconda-containers-recipes}")
+    @Value("${github.bioconda-containers-recipes-readable}")
     String condaRecipeURL;
 
-    @Value("${github.api-containers-urls}")
-    String gitHubAPIFiles;
+    @Value("${github.docker-api-containers-urls}")
+    String gitHubAPIDockerFiles;
+
+    @Value("${githug.conda-api-containers-urls}")
+    String gitHubAPICondaFiles;
 
 }

@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Created by ypriverol (ypriverol@gmail.com) on 26/07/2018.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DockerFileName {
+public class GitHubFileName {
 
     @JsonProperty(value = "path")
     String path;
@@ -32,7 +32,7 @@ public class DockerFileName {
     @JsonProperty( value = "url")
     String url;
 
-    public DockerFileName() {
+    public GitHubFileName() {
     }
 
     public String getPath() {

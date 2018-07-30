@@ -2,7 +2,6 @@ package pro.biocontainers.data.model;
 
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * A tool version describes a particular iteration of a tool as described by a reference to a specific

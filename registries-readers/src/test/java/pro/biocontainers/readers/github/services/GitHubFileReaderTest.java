@@ -7,15 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import pro.biocontainers.readers.github.configs.GitHubConfiguration;
 import pro.biocontainers.readers.utilities.conda.model.CondaRecipe;
 import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
 
 import java.io.IOException;
-
-import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {GitHubConfiguration.class})
@@ -55,7 +52,7 @@ public class GitHubFileReaderTest {
     @Test
     public void getDockerFiles(){
         GitHubFileReader reader = new GitHubFileReader(config, restTemplateBuilder());
-        DockerFileNameList files = reader.getDockerFiles();
+        GitHubFileNameList files = reader.getDockerFiles();
         Assert.assertTrue(files.tree.size() > 0 );
     }
 

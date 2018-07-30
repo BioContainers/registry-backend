@@ -24,20 +24,14 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import pro.biocontainers.mongodb.config.MongoDBConfiguration;
 import pro.biocontainers.mongodb.service.BioContainersService;
 import pro.biocontainers.pipelines.configs.DataSourceConfiguration;
 import pro.biocontainers.pipelines.jobs.AbstractJob;
 import pro.biocontainers.pipelines.utilities.PipelineConstants;
 import pro.biocontainers.readers.github.configs.GitHubConfiguration;
-import pro.biocontainers.readers.github.services.DockerFileNameList;
+import pro.biocontainers.readers.github.services.GitHubFileNameList;
 import pro.biocontainers.readers.github.services.GitHubFileReader;
-import pro.biocontainers.readers.utilities.conda.model.CondaRecipe;
-import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
-
-import java.io.IOException;
-import java.util.*;
 
 @Configuration
 @Slf4j
@@ -87,7 +81,7 @@ public class AnnotateContainersFromRecipeJob extends AbstractJob {
         return stepBuilderFactory
                 .get(PipelineConstants.StepNames.ANNOTATE_DOCKERHUB_RECIPE.name())
                 .tasklet((stepContribution, chunkContext) -> {
-                    DockerFileNameList files = fileReaderService.getDockerFiles();
+                    GitHubFileNameList files = fileReaderService.getDockerFiles();
 //                    Map<String, Set<String>> toolMap = new HashMap<>();
 //                    files.getTree()
 //                            .stream()

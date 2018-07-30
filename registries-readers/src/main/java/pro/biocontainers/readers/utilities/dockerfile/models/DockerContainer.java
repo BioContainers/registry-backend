@@ -31,6 +31,10 @@ public class DockerContainer implements IContainerRecipe {
 
     private Long repoId;
 
+    private String publicRecipeURL;
+
+    private String publicReadableURL;
+
     public Dockerfile getDockerfile() {
         return dockerfile;
     }
@@ -179,10 +183,10 @@ public class DockerContainer implements IContainerRecipe {
         if(labels != null){
             for(Label label: labels){
                 for(ExternalID extId: ExternalID.values()){
-                    if(label.key.contains(extId.name())){
-                        List<String> values = (identifiers.containsKey(extId.name())) ?identifiers.get(extId.name()):new ArrayList<>();
+                    if(label.key.contains(extId.getName())){
+                        List<String> values = (identifiers.containsKey(extId.getName())) ?identifiers.get(extId.getName()):new ArrayList<>();
                         values.add(label.value);
-                        identifiers.put(extId.name(), values);
+                        identifiers.put(extId.getName(), values);
                     }
                 }
             }

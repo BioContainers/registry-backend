@@ -9,7 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A tool (or described tool) is defined as a tuple of a descriptor file (which potentially consists of multiple files), a set of container images, and a set of instructions for creating those images.
+ * A tool (or described tool) is defined as a tuple of a descriptor
+ * file (which potentially consists of multiple files), a set of container images,
+ * and a set of instructions for creating those images.
+ *
+ *
  */
 @Data
 @ApiModel(description = "A tool (or described tool) is defined as a tuple of a descriptor file (which potentially consists of multiple files), a set of container images, and a set of instructions for creating those images.")
