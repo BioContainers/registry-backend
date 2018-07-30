@@ -15,8 +15,13 @@ import java.util.stream.Collectors;
 @Service
 public class ToolsApiService {
 
-    @Autowired
+//    BioContainersService service;
+
     BioContainersService service;
+
+    public ToolsApiService(BioContainersService service) {
+        this.service = service;
+    }
 
     private final DummyCreator dummyCreator = new DummyCreator(ClassBindings.defaultBindings());
 

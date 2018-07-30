@@ -1,5 +1,7 @@
-package pro.biocontainers.api.swagger;
+package pro.biocontainers.api.configs;
 
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import pro.biocontainers.api.model.Metadata;
@@ -54,9 +56,17 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("pro.biocontainers.api.controller"))
-                .paths(PathSelectors.any())
+                .paths(paths())
                 .build()
                 .apiInfo(apiInfo());
+    }
+
+    /**
+     * This function exclude all the paths we don't want to show in the swagger documentation.
+     * @return List of paths
+     */
+    private Predicate<String> paths() {
+        return Predicates.not(PathSelectors.regex("/error"));
     }
 
     private ApiInfo apiInfo() {
