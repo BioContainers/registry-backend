@@ -17,8 +17,8 @@ import pro.biocontainers.data.model.ContainerImage;
  */
 public interface IContainerImage extends ContainerImage {
 
-    public String getAccession();
+    String getAccession();
 
-    public String getDescription();
+    String getDescription();
 
 }

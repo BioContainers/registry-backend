@@ -49,7 +49,7 @@ public class BioContainersService {
         try {
             if(bioContainerTool.getId() != null){
                 repository.save(bioContainerTool);
-                log.info("The following container has been updated -- " + bioContainerTool.getId().toString());
+                log.info("The following container has been updated -- " + bioContainerTool.getId());
             }
         }catch(DuplicateKeyException ex){
             log.error("A BioContainerTool with similar accession already exists!!!");

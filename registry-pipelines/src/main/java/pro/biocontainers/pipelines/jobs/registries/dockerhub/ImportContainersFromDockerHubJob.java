@@ -142,22 +142,19 @@ public class ImportContainersFromDockerHubJob extends AbstractJob {
                     log.info("Number of containers to be inserted -- " + registryContainers.size());
 
 
-                    toolNames.entrySet().stream().forEach( container -> {
-                        container.getValue().stream().forEach( containerVersion -> {
-                            List<DockerHubContainer> registryContainer = new ArrayList<>();
-                            for(Optional<DockerHubContainer> rContainer: registryContainers) {
+                    toolNames.forEach((key, value) -> value.stream().forEach(containerVersion -> {
+                        List<DockerHubContainer> registryContainer = new ArrayList<>();
+                        for (Optional<DockerHubContainer> rContainer : registryContainers) {
 
-                                if (rContainer.isPresent() && rContainer.get().getName().equalsIgnoreCase(containerVersion.getSoftwareName()))
-                                    registryContainer.add(rContainer.get());
-                            }
-                            Optional<BioContainerToolVersion> mongoToolVersion = BiocontainerTransformer.transformContainerToolVersionToBiocontainer(containerVersion,registryContainer, dockerHubRegistry);
-                            if(mongoToolVersion.isPresent()){
-                                mongoService.indexToolVersion(mongoToolVersion.get());
-                                log.info("New BioContainerTool Version to store -- " + mongoToolVersion.get().getName());
-                            }
-                        });
-
-                    });
+                            if (rContainer.isPresent() && rContainer.get().getName().equalsIgnoreCase(containerVersion.getSoftwareName()))
+                                registryContainer.add(rContainer.get());
+                        }
+                        Optional<BioContainerToolVersion> mongoToolVersion = BiocontainerTransformer.transformContainerToolVersionToBiocontainer(containerVersion, registryContainer, dockerHubRegistry);
+                        if (mongoToolVersion.isPresent()) {
+                            mongoService.indexToolVersion(mongoToolVersion.get());
+                            log.info("New BioContainerTool Version to store -- " + mongoToolVersion.get().getName());
+                        }
+                    }));
 
 
                     return RepeatStatus.FINISHED;

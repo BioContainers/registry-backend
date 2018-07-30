@@ -16,17 +16,8 @@ import pro.biocontainers.pipelines.configs.DataSourceConfiguration;
 import pro.biocontainers.pipelines.jobs.AbstractJob;
 import pro.biocontainers.pipelines.utilities.PipelineConstants;
 import pro.biocontainers.readers.github.configs.GitHubConfiguration;
-import pro.biocontainers.readers.github.services.GitHubFileNameList;
 import pro.biocontainers.readers.github.services.GitHubFileReader;
 import pro.biocontainers.readers.quayio.QuayIOConfiguration;
-import pro.biocontainers.readers.quayio.model.QuayIOContainer;
-import pro.biocontainers.readers.quayio.services.QueryQuayIOService;
-import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
-
-import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 @Configuration
 @Slf4j

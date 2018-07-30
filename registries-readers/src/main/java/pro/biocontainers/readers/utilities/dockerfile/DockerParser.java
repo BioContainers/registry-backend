@@ -146,7 +146,7 @@ public class DockerParser {
                 if (commentFlag && header) {
                     Comment c = new Comment(dockerContainer, "standalone", newLine);
                     comments.add(c);
-                } else if (commentFlag && !header) {
+                } else if (commentFlag) {
                     Comment c = new Comment(dockerContainer, "header", newLine);
                     comments.add(c);
                     header = true;

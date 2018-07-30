@@ -12,7 +12,6 @@ import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * This code is licensed under the Apache License, Version 2.0 (the
@@ -93,7 +92,7 @@ public class BiocontainerTransformer {
         List<DockerHubContainer> finalUpdates = finalContainers.stream().filter(x -> x.getLastUpdated() != null)
                 .sorted(Comparator.comparing(DockerHubContainer::getLastUpdated)).collect(Collectors.toList());
         Date finalUpdate = null;
-        if(finalContainers != null && finalContainers.stream().findFirst().isPresent())
+        if(finalContainers.stream().findFirst().isPresent())
             finalUpdate = finalContainers.stream().findFirst().get().getLastUpdated();
 
         if(container.getSoftwareName() == null)
@@ -114,7 +113,7 @@ public class BiocontainerTransformer {
                                 .getExternalIds()
                                 .entrySet()
                                 .stream()
-                                .map(x -> { return new Tuple<>(x.getKey(), x.getValue());})
+                                .map(x -> new Tuple<>(x.getKey(), x.getValue()))
                                 .collect(Collectors.toList()))
                         .build());
 

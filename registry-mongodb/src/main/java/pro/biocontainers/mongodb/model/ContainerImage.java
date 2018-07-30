@@ -1,7 +1,6 @@
 package pro.biocontainers.mongodb.model;
 
 import lombok.Builder;
-import lombok.Data;
 import pro.biocontainers.data.model.ContainerType;
 
 import java.util.Date;

@@ -2,7 +2,6 @@ package pro.biocontainers.mongodb.model;
 
 import lombok.Builder;
 import lombok.Data;
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -12,7 +11,6 @@ import pro.biocontainers.data.model.ToolClass;
 import pro.biocontainers.data.model.ToolVersion;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 @Builder

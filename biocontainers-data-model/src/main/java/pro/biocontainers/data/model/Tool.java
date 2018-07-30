@@ -1,11 +1,7 @@
 package pro.biocontainers.data.model;
 
 
-import lombok.Data;
-
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * A tool (or described tool) is defined as a tuple of a descriptor file (which potentially consists of multiple files),

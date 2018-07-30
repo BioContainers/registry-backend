@@ -24,7 +24,7 @@ public class ApiApp implements CommandLineRunner {
         logger.info("===== SERVER STARTED =======");
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         new SpringApplicationBuilder(ApiApp.class).run(args);
     }
 
