@@ -1,4 +1,4 @@
-package pro.biocontainers.api.swagger;
+package pro.biocontainers.api.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

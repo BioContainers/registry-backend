@@ -11,12 +11,17 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
+import pro.biocontainers.api.configs.SimpleCORSFilter;
 import pro.biocontainers.api.configs.SwaggerConfig;
+import pro.biocontainers.api.controller.MetadataApiController;
 import pro.biocontainers.mongodb.config.MongoDBConfiguration;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @EnableSwagger2
-@SpringBootApplication(scanBasePackageClasses = {MongoDBConfiguration.class, SwaggerConfig.class})
+@SpringBootApplication(scanBasePackageClasses = {MongoDBConfiguration.class,
+        SwaggerConfig.class,
+        SimpleCORSFilter.class,
+        MetadataApiController.class})
 public class ApiApp implements CommandLineRunner {
 
     private final Logger logger = LoggerFactory.getLogger(ApiApp.class);

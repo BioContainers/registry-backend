@@ -3,6 +3,7 @@ package pro.biocontainers.api.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import pro.biocontainers.api.model.*;
 import pro.biocontainers.api.service.ToolsApiService;
+import pro.biocontainers.mongodb.service.BioContainersService;
 
 import java.util.List;
 
@@ -22,9 +24,10 @@ public class ToolsApiController {
 
     private ToolsApiService serviceTool;
 
-    @Autowired
-    public ToolsApiController(ToolsApiService serviceTool){
-        this.serviceTool = serviceTool;
+    @Bean
+    public ToolsApiService getServiceTool(BioContainersService mongoService){
+        this.serviceTool = new ToolsApiService(mongoService);
+        return serviceTool;
     }
 
     /**
