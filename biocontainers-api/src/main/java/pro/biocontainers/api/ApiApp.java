@@ -9,12 +9,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
+import pro.biocontainers.api.swagger.SwaggerConfig;
+import pro.biocontainers.mongodb.config.MongoDBConfiguration;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @EnableSwagger2
-@SpringBootApplication
+@SpringBootApplication(scanBasePackageClasses = {MongoDBConfiguration.class, SwaggerConfig.class})
 public class ApiApp implements CommandLineRunner {
 
     private final Logger logger = LoggerFactory.getLogger(ApiApp.class);

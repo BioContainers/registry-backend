@@ -2,15 +2,21 @@ package pro.biocontainers.api.service;
 
 import org.dummycreator.ClassBindings;
 import org.dummycreator.DummyCreator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pro.biocontainers.api.model.*;
+import pro.biocontainers.mongodb.model.BioContainerToolVersion;
+import pro.biocontainers.mongodb.service.BioContainersService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ToolsApiService {
 
+    @Autowired
+    BioContainersService service;
 
     private final DummyCreator dummyCreator = new DummyCreator(ClassBindings.defaultBindings());
 
@@ -57,11 +63,19 @@ public class ToolsApiService {
 
     public List<ToolVersion> getVersions(String id) {
 
-        ArrayList<ToolVersion> toolVersions = new ArrayList<>();
-        toolVersions.add(dummyCreator.create(ToolVersion.class));
-        toolVersions.add(dummyCreator.create(ToolVersion.class));
-        toolVersions.add(dummyCreator.create(ToolVersion.class));
-        return toolVersions;
+        List<BioContainerToolVersion> mongoVersions = service.findVersions(id);
+        List<ToolVersion> versions = new ArrayList<>();
+        if(versions != null && versions.size() > 0){
+            versions = mongoVersions.stream().map(x -> {
+                return ToolVersion
+                        .builder()
+                        .metaVersion(x.getMetaVersion())
+                        .name(x.getName())
+                        .id(x.getId())
+                        .build();
+            }).collect(Collectors.toList());
+        }
+        return versions;
     }
 
     /**

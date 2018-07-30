@@ -61,7 +61,7 @@ public class BioContainerToolVersion implements ToolVersion {
     private String registryURL;
 
     /** Container Images **/
-    @Indexed(name = "containerImages")
+    @Field("containerImages")
     private Set<ContainerImage> containerImages;
 
     /** Descriptor Types **/

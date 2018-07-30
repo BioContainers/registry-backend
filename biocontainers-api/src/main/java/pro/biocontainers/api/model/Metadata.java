@@ -13,6 +13,7 @@ import lombok.Data;
 @Builder
 @ApiModel(description = "Describes this registry to better allow for mirroring and indexing.")
 public class Metadata {
+
     @ApiModelProperty(required = true, value = "The version of this registry")
     @JsonProperty("version")
     private String version;

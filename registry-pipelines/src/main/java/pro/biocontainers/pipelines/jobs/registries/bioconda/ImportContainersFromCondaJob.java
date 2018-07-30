@@ -127,7 +127,7 @@ public class ImportContainersFromCondaJob extends AbstractJob {
                                         registryContainer.add(rContainer.get());
                                 }
 
-                                Optional<BioContainerToolVersion> mongoToolVersion = BiocontainerTransformer.transformCondaToolVersionToBiocontainer(containerVersion, registryContainer, "quay.io");
+                                Optional<BioContainerToolVersion> mongoToolVersion = BiocontainerTransformer.transformCondaToolVersionToBiocontainer(containerVersion, registryContainer, "quay.io/biocontainers");
                         if (mongoToolVersion.isPresent()) {
                             mongoService.indexToolVersion(mongoToolVersion.get());
                             log.info("New BioContainerTool Version to store -- " + mongoToolVersion.get().getName());

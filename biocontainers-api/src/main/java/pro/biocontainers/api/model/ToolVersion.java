@@ -3,6 +3,7 @@ package pro.biocontainers.api.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
  * by a reference to a specific image and/or documents.
  */
 @Data
+@Builder
 @ApiModel(description = "A tool version describes a particular iteration of a tool as described by a reference to a specific image and/or documents.")
 public class ToolVersion {
     @JsonProperty("name")

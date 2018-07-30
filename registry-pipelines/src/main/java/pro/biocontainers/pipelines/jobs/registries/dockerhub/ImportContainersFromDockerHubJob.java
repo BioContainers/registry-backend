@@ -149,7 +149,7 @@ public class ImportContainersFromDockerHubJob extends AbstractJob {
                             if (rContainer.isPresent() && rContainer.get().getName().equalsIgnoreCase(containerVersion.getSoftwareName()))
                                 registryContainer.add(rContainer.get());
                         }
-                        Optional<BioContainerToolVersion> mongoToolVersion = BiocontainerTransformer.transformContainerToolVersionToBiocontainer(containerVersion, registryContainer, "");
+                        Optional<BioContainerToolVersion> mongoToolVersion = BiocontainerTransformer.transformContainerToolVersionToBiocontainer(containerVersion, registryContainer, "biocontainers");
                         if (mongoToolVersion.isPresent()) {
                             mongoService.indexToolVersion(mongoToolVersion.get());
                             log.info("New BioContainerTool Version to store -- " + mongoToolVersion.get().getName());

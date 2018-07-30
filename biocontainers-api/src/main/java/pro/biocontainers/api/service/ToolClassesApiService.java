@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import pro.biocontainers.api.model.ToolClass;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -19,11 +20,6 @@ public class ToolClassesApiService {
      * @return A list of potential tool classes.
      */
     public List<ToolClass> get() {
-
-        ArrayList<ToolClass> toolClasses = new ArrayList<>();
-        toolClasses.add(dummyCreator.create(ToolClass.class));
-        toolClasses.add(dummyCreator.create(ToolClass.class));
-        toolClasses.add(dummyCreator.create(ToolClass.class));
-        return toolClasses;
+        return Arrays.asList(ToolClass.values());
     }
 }

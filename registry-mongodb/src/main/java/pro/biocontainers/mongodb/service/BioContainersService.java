@@ -64,4 +64,8 @@ public class BioContainersService {
         }
         return Optional.of(mongoToolVersion);
     }
+
+    public List<BioContainerToolVersion> findVersions(String id) {
+        return versionRepository.findSoftwareName(id);
+    }
 }

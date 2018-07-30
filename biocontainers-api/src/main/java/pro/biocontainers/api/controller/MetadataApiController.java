@@ -15,6 +15,7 @@ import pro.biocontainers.api.service.MetadataApiService;
 @Api(value = "metadata", description = "Metadata API", tags = {"Metadata"})
 @RequestMapping("${biocontainers.api.base-path}/metadata")
 public class MetadataApiController {
+
     @Autowired
     private MetadataApiService service;
 
