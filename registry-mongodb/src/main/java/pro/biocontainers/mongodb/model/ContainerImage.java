@@ -68,6 +68,22 @@ public class ContainerImage implements IContainerImage{
         return this.size;
     }
 
+    public ContainerType getContainerType() {
+        return containerType;
+    }
+
+    public List<String> getBinariesURLs() {
+        return binariesURLs;
+    }
+
+    public Integer getDownloads() {
+        return downloads;
+    }
+
+    public Date getLastUpdate() {
+        return lastUpdate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

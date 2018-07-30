@@ -5,7 +5,9 @@ import org.dummycreator.DummyCreator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pro.biocontainers.api.model.*;
+import pro.biocontainers.data.model.ContainerType;
 import pro.biocontainers.mongodb.model.BioContainerToolVersion;
+import pro.biocontainers.mongodb.model.ContainerImage;
 import pro.biocontainers.mongodb.service.BioContainersService;
 
 import java.util.ArrayList;
@@ -70,13 +72,15 @@ public class ToolsApiService {
 
         List<BioContainerToolVersion> mongoVersions = service.findVersions(id);
         List<ToolVersion> versions = new ArrayList<>();
-        if(versions != null && versions.size() > 0){
+        if(mongoVersions != null && mongoVersions.size() > 0){
             versions = mongoVersions.stream().map(x -> {
+                List<? extends ContainerImage> dockerImages = x.getImageName().stream().filter(y -> ((ContainerImage) y).getContainerType() == ContainerType.DOCKER).collect(Collectors.toList());
                 return ToolVersion
                         .builder()
                         .metaVersion(x.getMetaVersion())
                         .name(x.getName())
-                        .id(x.getId())
+                        .id(x.getMetaVersion())
+                        .containerfile(!dockerImages.isEmpty())
                         .build();
             }).collect(Collectors.toList());
         }
