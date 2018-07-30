@@ -14,6 +14,7 @@ import pro.biocontainers.data.model.Tuple;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This code is licensed under the Apache License, Version 2.0 (the
@@ -61,7 +62,7 @@ public class BioContainerToolVersion implements ToolVersion {
 
     /** Container Images **/
     @Indexed(name = "containerImages")
-    private List<ContainerImage> containerImages;
+    private Set<ContainerImage> containerImages;
 
     /** Descriptor Types **/
     private List<DescriptorType> descriptorTypes;

@@ -88,17 +88,20 @@ public class CondaRecipe implements IContainerRecipe {
 
         }
 
-        if(about.containsKey(HOME))
-            this.homeURL = about.get(HOME);
+        if(about != null){
+            if(about.containsKey(HOME))
+                this.homeURL = about.get(HOME);
 
-        if(about.containsKey(SUMMARY))
-            this.description = about.get(SUMMARY);
+            if(about.containsKey(SUMMARY))
+                this.description = about.get(SUMMARY);
 
-        if(about.containsKey(LICENSE))
-            this.license = about.get(LICENSE);
+            if(about.containsKey(LICENSE))
+                this.license = about.get(LICENSE);
 
-        if(about.containsKey(DOC_URL))
-            this.docURL = about.get(DOC_URL);
+            if(about.containsKey(DOC_URL))
+                this.docURL = about.get(DOC_URL);
+        }
+
 
         if(extras != null && extras.containsKey(IDENTIFIERS)){
             this.identifiers = new HashMap<>();

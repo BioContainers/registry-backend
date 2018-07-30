@@ -8,6 +8,8 @@ import pro.biocontainers.mongodb.model.BioContainerToolVersion;
 import pro.biocontainers.mongodb.model.ContainerImage;
 import pro.biocontainers.readers.IRegistryContainer;
 import pro.biocontainers.readers.dockerhub.model.DockerHubContainer;
+import pro.biocontainers.readers.quayio.model.QuayIOContainer;
+import pro.biocontainers.readers.utilities.conda.model.CondaRecipe;
 import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
 
 import java.util.*;
@@ -56,6 +58,78 @@ public class BiocontainerTransformer {
      * @param container {@link DockerContainer}
      * @return BioContainerToolVersion
      */
+    public static Optional<BioContainerToolVersion> transformCondaToolVersionToBiocontainer(CondaRecipe container,
+                                                                                                List<QuayIOContainer> dockerQUAYIOContainers,
+                                                                                                String accessionCommand) {
+        // Parse the DockerContainers
+        List<QuayIOContainer> finalContainers = new ArrayList<>();
+        if(dockerQUAYIOContainers != null){
+            for(QuayIOContainer hubContainer: dockerQUAYIOContainers){
+                List<Tuple<String, Integer>> sameVersions = hubContainer
+                        .getContainerTags()
+                        .parallelStream()
+                        .filter(x -> x.getKey().toLowerCase().contains(container.getSoftwareVersion()))
+                        .collect(Collectors.toList());
+                if(sameVersions.size() > 0){
+                    finalContainers.add(hubContainer);
+                }
+            }
+        }
+
+        List<ContainerImage> containerImages = new ArrayList<>();
+        if(finalContainers.size() > 0){
+            finalContainers.forEach(x -> x.getContainerTags().forEach(y -> {
+                ContainerImage containerImage = ContainerImage.builder()
+                        .size(y.getValue())
+                        .accession(buildDockerCommand(container.getSoftwareName(), y.getKey(), accessionCommand))
+                        .description(container.getDescription())
+                        .containerType(ContainerType.DOCKER)
+                        .lastUpdate(x.getLastUpdated())
+                        .tag(y.getKey())
+                        .build();
+                containerImages.add(containerImage);
+            }));
+        }
+
+        List<QuayIOContainer> finalUpdates = finalContainers.stream().filter(x -> x.getLastUpdated() != null)
+                .sorted(Comparator.comparing(QuayIOContainer::getLastUpdated)).collect(Collectors.toList());
+
+        Date finalUpdate = null;
+        if(finalUpdates.stream().findFirst().isPresent())
+            finalUpdate = finalUpdates.stream().findFirst().get().getLastUpdated();
+
+        if(container.getSoftwareName() == null)
+            log.error("Not name for contain -- ");
+        return Optional
+                .of(BioContainerToolVersion
+                        .builder()
+                        .name(container.getSoftwareName())
+                        .version(container.getSoftwareVersion())
+                        .description(container.getDescription())
+                        .isContainerRecipeAvailable(true)
+                        .isVerified(false)
+                        .lastUpdate(finalUpdate)
+                        .hashName(GeneralUtils.getHashName(container.getSoftwareName()))
+                        .containerImages(containerImages)
+                        .license(container.getLicense())
+                        .additionalIdentifiers(container
+                                .getExternalIds()
+                                .entrySet()
+                                .stream()
+                                .map(x -> new Tuple<>(x.getKey(), x.getValue()))
+                                .collect(Collectors.toList()))
+                        .build());
+
+
+
+    }
+
+
+    /**
+     * Convert Docker Container to {@link BioContainerToolVersion}
+     * @param container {@link DockerContainer}
+     * @return BioContainerToolVersion
+     */
     public static Optional<BioContainerToolVersion> transformContainerToolVersionToBiocontainer(DockerContainer container,
                                                                                                 List<DockerHubContainer> dockerHubContainers,
                                                                                                 String accessionCommand) {
@@ -91,12 +165,14 @@ public class BiocontainerTransformer {
 
         List<DockerHubContainer> finalUpdates = finalContainers.stream().filter(x -> x.getLastUpdated() != null)
                 .sorted(Comparator.comparing(DockerHubContainer::getLastUpdated)).collect(Collectors.toList());
+
         Date finalUpdate = null;
-        if(finalContainers.stream().findFirst().isPresent())
+        if(finalUpdates.stream().findFirst().isPresent())
             finalUpdate = finalContainers.stream().findFirst().get().getLastUpdated();
 
         if(container.getSoftwareName() == null)
             log.error("Not name for contain -- ");
+
         return Optional
                 .of(BioContainerToolVersion
                         .builder()

@@ -5,6 +5,7 @@ import pro.biocontainers.data.model.ContainerType;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This code is licensed under the Apache License, Version 2.0 (the
@@ -65,5 +66,18 @@ public class ContainerImage implements IContainerImage{
     @Override
     public Integer getSize() {
         return this.size;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ContainerImage that = (ContainerImage) o;
+        return Objects.equals(accession, that.accession);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(accession);
     }
 }

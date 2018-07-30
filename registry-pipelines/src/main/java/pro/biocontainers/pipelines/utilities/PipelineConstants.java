@@ -4,6 +4,8 @@ public class PipelineConstants {
 
     public static final String QUAYIO = "quay.io";
     public static final String DOCKERFILE = "Dockerfile";
+    public static final String META_YAML  = "meta.yaml";
+    public static final String META_YML   = "meta.yml";
 
     public enum StepNames {
 

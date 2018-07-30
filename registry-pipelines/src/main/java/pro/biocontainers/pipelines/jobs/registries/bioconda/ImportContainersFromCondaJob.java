@@ -10,14 +10,29 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.yaml.snakeyaml.reader.ReaderException;
 import pro.biocontainers.mongodb.config.MongoDBConfiguration;
+import pro.biocontainers.mongodb.model.BioContainerToolVersion;
 import pro.biocontainers.mongodb.service.BioContainersService;
 import pro.biocontainers.pipelines.configs.DataSourceConfiguration;
 import pro.biocontainers.pipelines.jobs.AbstractJob;
+import pro.biocontainers.pipelines.utilities.BiocontainerTransformer;
 import pro.biocontainers.pipelines.utilities.PipelineConstants;
+import pro.biocontainers.readers.dockerhub.model.DockerHubContainer;
+import pro.biocontainers.readers.dockerhub.services.DockerHubQueryService;
 import pro.biocontainers.readers.github.configs.GitHubConfiguration;
+import pro.biocontainers.readers.github.services.GitHubFileNameList;
 import pro.biocontainers.readers.github.services.GitHubFileReader;
 import pro.biocontainers.readers.quayio.QuayIOConfiguration;
+import pro.biocontainers.readers.quayio.model.QuayIOContainer;
+import pro.biocontainers.readers.quayio.services.QueryQuayIOService;
+import pro.biocontainers.readers.utilities.conda.model.CondaRecipe;
+import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Configuration
 @Slf4j
@@ -71,55 +86,55 @@ public class ImportContainersFromCondaJob extends AbstractJob {
         return stepBuilderFactory
                 .get(PipelineConstants.StepNames.READ_QUAYIO_REGISTRY_LIST.name())
                 .tasklet((stepContribution, chunkContext) -> {
-//                    QueryQuayIOService service = new QueryQuayIOService(restTemplateBuilder(), quayIOConfiguration);
-//                    List<Optional<QuayIOContainer>> registryContainers = service
-//                            .getListContainers("biocontainers").getRepositories()
-//                            .parallelStream()
-//                            .map(x -> {
-//                                return service.getContainer(x.getNamespace(), x.getName());
-//                            })
-//                            .collect(Collectors.toList());
-//
-//                    log.info("Number of containers to be inserted -- " + registryContainers.size());
-//
-//                    GitHubFileNameList dockerfileList = fileReaderService.getDockerFiles();
-//                    Map<String, Set<DockerContainer>> toolNames = new ConcurrentHashMap<>();
-//
-//                    dockerfileList.getTree().parallelStream()
-//                            .filter( x-> x.getPath().toLowerCase().contains(PipelineConstants.DOCKERFILE.toLowerCase()))
-//                            .forEach( fileName -> {
-//                                String name = fileName.getPath();
-//                                String[] nameValues = name.split("\\/");
-//                                if(nameValues.length > 1){
-//                                    Set<DockerContainer> values = (toolNames.containsKey(nameValues[0]))? toolNames.get(nameValues[0]) :new HashSet<>() ;
-//                                    try {
-//                                        DockerContainer container = fileReaderService.parseDockerRecipe(nameValues[0], nameValues[1]);
-//                                        container.setVersion(nameValues[1]);
-//                                        values.add(container);
-//                                        toolNames.put(nameValues[0], values);
-//                                    } catch (IOException e) {
-//                                        e.printStackTrace();
-//                                    }
-//                                }
-//                            });
 
-//                    log.info("Number of DockerFile recipes -- " + toolNames.size());
 
-//                    toolNames.entrySet().stream().forEach( container -> {
-//                        container.getValue().stream().forEach( containerVersion -> {
-//                            List<DockerHubContainer> registryContainer = new ArrayList<>();
-//                            for(Optional<DockerHubContainer> rContainer: registryContainers) {
-//
-//                                if (rContainer.isPresent() && rContainer.get().getName().equalsIgnoreCase(containerVersion.getSoftwareName()))
-//                                    registryContainer.add(rContainer.get());
-//                            }
-//                            Optional<BioContainerToolVersion> mongoToolVersion = BiocontainerTransformer.transformContainerToolVersionToBiocontainer(containerVersion,registryContainer, dockerHubRegistry);
-//                            if(mongoToolVersion.isPresent())
-//                                log.info("New BioContainerTool Version to store -- " + mongoToolVersion.get().getName());
-////                                mongoService.indexToolVersion(mongoToolVersion);
-//                        });
-//
-//                    });
+                    GitHubFileNameList condaFileList = fileReaderService.getCondaFiles();
+                    Map<String, Set<CondaRecipe>> toolNames = new ConcurrentHashMap<>();
+
+                    condaFileList.getTree().parallelStream()
+                            .filter( x-> (x.getPath().toLowerCase().contains(PipelineConstants.META_YAML.toLowerCase()) || x.getPath().toLowerCase().contains(PipelineConstants.META_YML.toLowerCase())))
+                            .forEach( fileName -> {
+                                String name = fileName.getPath();
+                                String[] nameValues = name.split("\\/");
+                                if(nameValues.length > 1){
+                                    Set<CondaRecipe> values = (toolNames.containsKey(nameValues[1])) ? toolNames.get(nameValues[1]) :new HashSet<>() ;
+                                    try {
+                                        CondaRecipe container = fileReaderService.parseCondaRecipe(fileName.getPath());
+                                        values.add(container);
+                                        toolNames.put(nameValues[1], values);
+                                    } catch (IOException | ReaderException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                    log.info("The Number of Conda Recipes -- " + toolNames.size());
+
+                    QueryQuayIOService service = new QueryQuayIOService(restTemplateBuilder(), quayIOConfiguration);
+                    List<Optional<QuayIOContainer>> registryContainers = service.getListContainers("biocontainers")
+                            .getRepositories()
+                            .stream()
+                            .map(x -> service.getContainer("biocontainers", x.getName()))
+                            .collect(Collectors.toList());
+
+                    log.info("Number of containers to be inserted -- " + registryContainers.size());
+
+
+                    toolNames.forEach((key, value) -> value.stream()
+                            .forEach(containerVersion -> {
+                                List<QuayIOContainer> registryContainer = new ArrayList<>();
+                                for (Optional<QuayIOContainer> rContainer : registryContainers) {
+                                    if (rContainer.isPresent() && rContainer.get().getName().equalsIgnoreCase(containerVersion.getSoftwareName()))
+                                        registryContainer.add(rContainer.get());
+                                }
+
+                                Optional<BioContainerToolVersion> mongoToolVersion = BiocontainerTransformer.transformCondaToolVersionToBiocontainer(containerVersion, registryContainer, "quay.io");
+                        if (mongoToolVersion.isPresent()) {
+                            mongoService.indexToolVersion(mongoToolVersion.get());
+                            log.info("New BioContainerTool Version to store -- " + mongoToolVersion.get().getName());
+                        }
+                    }));
+
+
 
 
                     return RepeatStatus.FINISHED;
