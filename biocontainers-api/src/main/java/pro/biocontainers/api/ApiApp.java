@@ -13,7 +13,13 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import pro.biocontainers.api.configs.SimpleCORSFilter;
 import pro.biocontainers.api.configs.SwaggerConfig;
+import pro.biocontainers.api.controller.HomeController;
 import pro.biocontainers.api.controller.MetadataApiController;
+import pro.biocontainers.api.controller.ToolClassesApiController;
+import pro.biocontainers.api.controller.ToolsApiController;
+import pro.biocontainers.api.service.MetadataApiService;
+import pro.biocontainers.api.service.ToolClassesApiService;
+import pro.biocontainers.api.service.ToolsApiService;
 import pro.biocontainers.mongodb.config.MongoDBConfiguration;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
@@ -21,7 +27,13 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @SpringBootApplication(scanBasePackageClasses = {MongoDBConfiguration.class,
         SwaggerConfig.class,
         SimpleCORSFilter.class,
-        MetadataApiController.class})
+        MetadataApiController.class,
+        HomeController.class,
+        ToolClassesApiController.class,
+        ToolsApiController.class,
+        MetadataApiService.class,
+        ToolClassesApiService.class,
+        ToolsApiService.class})
 public class ApiApp implements CommandLineRunner {
 
     private final Logger logger = LoggerFactory.getLogger(ApiApp.class);

@@ -16,13 +16,8 @@ import pro.biocontainers.api.service.MetadataApiService;
 @Api(value = "metadata", description = "Metadata API", tags = {"Metadata"})
 public class MetadataApiController {
 
+    @Autowired
     private MetadataApiService service;
-
-    @Bean
-    public MetadataApiService getService(Metadata metadata){
-        this.service = new MetadataApiService(metadata);
-        return this.service;
-    }
 
     @RequestMapping(value = "${biocontainers.api.base-path}/metadata", produces = {"application/json", "text/plain"}, method = RequestMethod.GET)
     @ApiOperation(notes = "General Description of the API", value = "metadata", nickname = "metadata")

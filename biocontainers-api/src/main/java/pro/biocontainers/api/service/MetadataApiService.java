@@ -8,12 +8,8 @@ import pro.biocontainers.api.model.Metadata;
 @Service
 public class MetadataApiService {
 
-    private Metadata metadata;
-
     @Autowired
-    public MetadataApiService(Metadata metadata){
-        this.metadata = metadata;
-    }
+    private Metadata metadata;
 
     /**
      * Return some metadata that is useful for describing this registry.
