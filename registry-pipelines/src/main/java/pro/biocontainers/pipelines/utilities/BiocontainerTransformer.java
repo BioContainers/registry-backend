@@ -11,6 +11,7 @@ import pro.biocontainers.readers.dockerhub.model.DockerHubContainer;
 import pro.biocontainers.readers.quayio.model.QuayIOContainer;
 import pro.biocontainers.readers.utilities.conda.model.CondaRecipe;
 import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
+import pro.biocontainers.readers.utilities.dockerfile.models.commands.Label;
 import pro.biocontainers.readers.utilities.dockerfile.models.commands.Maintainer;
 
 import java.util.*;
@@ -79,14 +80,15 @@ public class BiocontainerTransformer {
 
         Set<ContainerImage> containerImages = new HashSet<>();
         //Todo: See how to check where the contributors of the containers are stored.
-        List<String> maintainers = Collections.singletonList("BioConda Team <https://github.com/bioconda>");
+        List<String> maintainers = new ArrayList<>();
+        maintainers.add("BioConda Team <https://github.com/bioconda>");
         maintainers.addAll(container.getMaintainers());
 
         if(finalContainers.size() > 0){
             finalContainers.forEach(x -> x.getContainerTags().forEach(y -> {
                 ContainerImage containerImage = ContainerImage.builder()
                         .size(y.getValue())
-                        .accession(buildDockerCommand(container.getSoftwareName(), y.getKey(), accessionCommand))
+                        .fullTag(buildDockerCommand(container.getSoftwareName(), y.getKey(), accessionCommand))
                         .description(container.getDescription())
                         .containerType(ContainerType.DOCKER)
                         .lastUpdate(x.getLastUpdated())
@@ -112,12 +114,13 @@ public class BiocontainerTransformer {
                         .name(container.getSoftwareName())
                         .version(container.getSoftwareVersion())
                         .description(container.getDescription())
-                        .isContainerRecipeAvailable(true)
-                        .isVerified(false)
                         .lastUpdate(finalUpdate)
                         .hashName(GeneralUtils.getHashName(container.getSoftwareName()))
                         .containerImages(containerImages)
                         .license(container.getLicense())
+                        .docURL(container.getDocURL())
+                        .homeURL(container.getHomeURL())
+                        .text(container.toString())
                         .additionalIdentifiers(container
                                 .getExternalIds()
                                 .entrySet()
@@ -154,13 +157,18 @@ public class BiocontainerTransformer {
         }
 
         Set<ContainerImage> containerImages = new HashSet<>();
-        List<String> maintainers = Collections.singletonList("BioContainers Team <https://github.com/BioContainers>");
-        maintainers.addAll(container.getMaintainer().stream().map(Maintainer::getMaintainername).collect(Collectors.toList()));
+        List<String> maintainers = new ArrayList<>();
+        maintainers.add("BioContainers Team <https://github.com/BioContainers>");
+        List<String> containerMaintainers = (container.getMaintainer() != null && container.getMaintainer().size() >0)? container.getMaintainer()
+                .stream().map(Maintainer::getMaintainername)
+                .collect(Collectors.toList()): Collections.emptyList();
+        maintainers.addAll(containerMaintainers);
+
         if(finalContainers.size() > 0){
             finalContainers.forEach(x -> x.getContainerTags().forEach(y -> {
                 ContainerImage containerImage = ContainerImage.builder()
                         .size(y.getValue())
-                        .accession(buildDockerCommand(container.getSoftwareName(), y.getKey(), accessionCommand))
+                        .fullTag(buildDockerCommand(container.getSoftwareName(), y.getKey(), accessionCommand))
                         .description(container.getDescription())
                         .containerType(ContainerType.DOCKER)
                         .lastUpdate(x.getLastUpdated())
@@ -187,12 +195,15 @@ public class BiocontainerTransformer {
                         .name(container.getSoftwareName())
                         .version(container.getSoftwareVersion())
                         .description(container.getDescription())
-                        .isContainerRecipeAvailable(true)
-                        .isVerified(false)
                         .lastUpdate(finalUpdate)
                         .hashName(GeneralUtils.getHashName(container.getSoftwareName()))
                         .containerImages(containerImages)
                         .license(container.getLicense())
+                        .homeURL(container.getHomeURL())
+                        .docURL(container.getDocumentationURL())
+                        .license(container.getLicense())
+                        .text(generateText(container.getLabels().stream().map(Label::getValue).collect(Collectors.toList())))
+
                         .additionalIdentifiers(container
                                 .getExternalIds()
                                 .entrySet()
@@ -200,9 +211,14 @@ public class BiocontainerTransformer {
                                 .map(x -> new Tuple<>(x.getKey(), x.getValue()))
                                 .collect(Collectors.toList()))
                         .build());
+    }
 
-
-
+    private static String generateText(List<String> collect) {
+        StringBuilder text = new StringBuilder();
+        collect.forEach(x-> {
+            text.append(x + " ");
+        });
+        return text.toString().trim();
     }
 
     /**

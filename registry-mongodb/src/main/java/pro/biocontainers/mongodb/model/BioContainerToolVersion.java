@@ -76,6 +76,9 @@ public class BioContainerToolVersion implements ToolVersion {
     @Indexed(name = "lastUpdate")
     Date lastUpdate;
 
+    @Field("text")
+    String text;
+
     @Override
     public String getName() {
         return this.name;

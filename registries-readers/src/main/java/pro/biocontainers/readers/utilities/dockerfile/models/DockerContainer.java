@@ -214,4 +214,11 @@ public class DockerContainer implements IContainerRecipe {
         }
         return value;
     }
+
+    @Override
+    public String toString() {
+        return "DockerContainer{" +
+                "labels=" + labels +
+                '}';
+    }
 }

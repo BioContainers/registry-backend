@@ -152,4 +152,25 @@ public class CondaRecipe implements IContainerRecipe {
     public void setMaintainers(Collection<? extends String> maintainers) {
         this.maintainers = maintainers;
     }
+
+    @Override
+    public String toString() {
+        return "CondaRecipe{" +
+                "recipeProperties=" + recipeProperties +
+                ", requirements=" + requirements +
+                ", tests=" + tests +
+                ", about=" + about +
+                ", extras=" + extras +
+                ", sources=" + sources +
+                ", softwareVersion='" + softwareVersion + '\'' +
+                ", softwareName='" + softwareName + '\'' +
+                ", binaryURL='" + binaryURL + '\'' +
+                ", homeURL='" + homeURL + '\'' +
+                ", description='" + description + '\'' +
+                ", license='" + license + '\'' +
+                ", docURL='" + docURL + '\'' +
+                ", identifiers=" + identifiers +
+                ", maintainers=" + maintainers +
+                '}';
+    }
 }
