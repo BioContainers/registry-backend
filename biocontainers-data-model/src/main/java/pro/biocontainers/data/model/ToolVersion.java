@@ -25,7 +25,7 @@ public interface ToolVersion {
     String getId();
 
     /** The docker path to the image (and version) for this tool **/
-    String getImage();
+    String getLatestImage();
 
     /** A URL to a Singularity registry is provided when a specific type of
      image does not use ids in the Docker format. Used along with
@@ -33,7 +33,7 @@ public interface ToolVersion {
     String getRegistryUrl();
 
     /** Used in conjunction with a registry_url if provided to locate images **/
-    Collection<? extends ContainerImage> getImageName();
+    Collection<? extends ContainerImage> getImages();
 
     /** Descriptor Type **/
     Collection<? extends DescriptorType> getDescriptorTypes();

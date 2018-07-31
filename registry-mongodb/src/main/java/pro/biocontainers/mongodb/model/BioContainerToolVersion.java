@@ -106,7 +106,7 @@ public class BioContainerToolVersion implements ToolVersion {
 
     /** Image in a registry **/
     @Override
-    public String getImage() {
+    public String getLatestImage() {
         return this.imageId;
     }
 
@@ -116,7 +116,7 @@ public class BioContainerToolVersion implements ToolVersion {
     }
 
     @Override
-    public Collection<? extends ContainerImage> getImageName() {
+    public Collection<? extends ContainerImage> getImages() {
         return this.containerImages;
     }
 

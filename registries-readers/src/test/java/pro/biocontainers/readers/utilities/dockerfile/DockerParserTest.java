@@ -38,5 +38,6 @@ public class DockerParserTest {
         Assert.assertEquals("Number of labels is 10", 14, dockerfileDockerContainer2.labels.size());
         Assert.assertTrue("The version of the software is -- 1.41", dockerfileDockerContainer2.getSoftwareVersion().equalsIgnoreCase("1.0"));
         Assert.assertTrue("The identifiers in bio.tools -- ", dockerfileDockerContainer2.getExternalIds().size() == 1);
+        Assert.assertTrue("The maintainer number is 1 ", dockerfileDockerContainer2.getMaintainer().size() == 1);
     }
 }

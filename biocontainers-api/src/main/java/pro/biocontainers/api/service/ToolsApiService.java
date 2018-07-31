@@ -11,6 +11,7 @@ import pro.biocontainers.mongodb.model.ContainerImage;
 import pro.biocontainers.mongodb.service.BioContainersService;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -74,13 +75,23 @@ public class ToolsApiService {
         List<ToolVersion> versions = new ArrayList<>();
         if(mongoVersions != null && mongoVersions.size() > 0){
             versions = mongoVersions.stream().map(x -> {
-                List<? extends ContainerImage> dockerImages = x.getImageName().stream().filter(y -> ((ContainerImage) y).getContainerType() == ContainerType.DOCKER).collect(Collectors.toList());
+                List<? extends ContainerImage> dockerImages = ((List<ContainerImage>) x.getImages())
+                        .stream()
+                        .sorted(Comparator.comparing(ContainerImage::getLastUpdate))
+                        .collect(Collectors.toList());
+
+                ContainerImage latestImage = dockerImages.stream().findFirst().get();
+
                 return ToolVersion
                         .builder()
                         .metaVersion(x.getMetaVersion())
                         .name(x.getName())
                         .id(x.getMetaVersion())
-                        .containerfile(!dockerImages.isEmpty())
+                        .containerfile(latestImage.getContainerType() == ContainerType.DOCKER)
+                        .verified(true)
+                        .latestImage(latestImage.getAccession())
+                        .imageName(x.getName() + "/" + x.getMetaVersion() + "/" + latestImage.getTag())
+                        .images(dockerImages.stream().map(ContainerImage::getTag).collect(Collectors.toList()))
                         .build();
             }).collect(Collectors.toList());
         }
@@ -205,5 +216,9 @@ public class ToolsApiService {
         toolTests.add(dummyCreator.create(ToolTests.class));
         return toolTests;
 
+    }
+
+    public List<pro.biocontainers.api.model.ContainerImage> getContainerImages(String id, String versionId) {
+        return null;
     }
 }

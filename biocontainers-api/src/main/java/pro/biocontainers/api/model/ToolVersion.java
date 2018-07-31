@@ -28,9 +28,14 @@ public class ToolVersion {
     @ApiModelProperty(example = "v1", required = true, value = "An identifier of the version of this tool for this particular tool registry")
     private String id;
 
-    @JsonProperty("image")
+    @JsonProperty("latest_image")
     @ApiModelProperty(example = "quay.io/seqware/seqware_full/1.1", value = "The docker path to the image (and version) for this tool")
-    private String image;
+    private String latestImage;
+
+    @JsonProperty("images")
+    @ApiModelProperty(example = "{1.1--python, 1.1--deb}", value = "The docker path to the image (and version) for this tool")
+    private List<String> images;
+
 
     @JsonProperty("registry_url")
     @ApiModelProperty(value = "A URL to a Singularity registry is provided when a specific type of image does not use ids in the Docker format. Used along with image_name to locate a specific image.")

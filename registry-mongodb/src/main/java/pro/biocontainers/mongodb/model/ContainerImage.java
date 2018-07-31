@@ -48,6 +48,9 @@ public class ContainerImage implements IContainerImage{
 
     private Date lastUpdate;
 
+    /** Maintainer of the Container / DockerFile **/
+    private List<String> maintainer;
+
     @Override
     public String getAccession() {
         return this.accession;

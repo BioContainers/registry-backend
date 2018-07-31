@@ -11,6 +11,7 @@ import pro.biocontainers.readers.dockerhub.model.DockerHubContainer;
 import pro.biocontainers.readers.quayio.model.QuayIOContainer;
 import pro.biocontainers.readers.utilities.conda.model.CondaRecipe;
 import pro.biocontainers.readers.utilities.dockerfile.models.DockerContainer;
+import pro.biocontainers.readers.utilities.dockerfile.models.commands.Maintainer;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -77,6 +78,10 @@ public class BiocontainerTransformer {
         }
 
         Set<ContainerImage> containerImages = new HashSet<>();
+        //Todo: See how to check where the contributors of the containers are stored.
+        List<String> maintainers = Collections.singletonList("BioConda Team <https://github.com/bioconda>");
+        maintainers.addAll(container.getMaintainers());
+
         if(finalContainers.size() > 0){
             finalContainers.forEach(x -> x.getContainerTags().forEach(y -> {
                 ContainerImage containerImage = ContainerImage.builder()
@@ -86,6 +91,7 @@ public class BiocontainerTransformer {
                         .containerType(ContainerType.DOCKER)
                         .lastUpdate(x.getLastUpdated())
                         .tag(y.getKey())
+                        .maintainer(maintainers)
                         .build();
                 containerImages.add(containerImage);
             }));
@@ -124,7 +130,6 @@ public class BiocontainerTransformer {
 
     }
 
-
     /**
      * Convert Docker Container to {@link BioContainerToolVersion}
      * @param container {@link DockerContainer}
@@ -149,6 +154,8 @@ public class BiocontainerTransformer {
         }
 
         Set<ContainerImage> containerImages = new HashSet<>();
+        List<String> maintainers = Collections.singletonList("BioContainers Team <https://github.com/BioContainers>");
+        maintainers.addAll(container.getMaintainer().stream().map(Maintainer::getMaintainername).collect(Collectors.toList()));
         if(finalContainers.size() > 0){
             finalContainers.forEach(x -> x.getContainerTags().forEach(y -> {
                 ContainerImage containerImage = ContainerImage.builder()
@@ -157,6 +164,7 @@ public class BiocontainerTransformer {
                         .description(container.getDescription())
                         .containerType(ContainerType.DOCKER)
                         .lastUpdate(x.getLastUpdated())
+                        .maintainer(maintainers)
                         .tag(y.getKey())
                         .build();
                 containerImages.add(containerImage);

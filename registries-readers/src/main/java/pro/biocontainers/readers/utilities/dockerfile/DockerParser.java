@@ -23,7 +23,7 @@ public class DockerParser {
     public String localPath;
 
     public From from;
-    public Maintainer maintainer;
+    public List<Maintainer> maintainer = new ArrayList<>();
     public Cmd cmd;
     public EntryPoint entryPoint;
     public StopSignal stopSignal;
@@ -330,11 +330,11 @@ public class DockerParser {
             return true;
         } else if (line.trim().startsWith("HEALTHCHECK")) {
             return true;
-        } else if (line.contains("INSTRUCTION")) {
+        } else if (line.trim().startsWith("INSTRUCTION")) {
             return true;
         } else if (line.trim().startsWith("LABEL")) {
             return true;
-        } else if (line.contains("MAINTAINER")) {
+        } else if (line.trim().startsWith("MAINTAINER")) {
             return true;
         } else if (line.trim().startsWith("ONBUILD")) {
             return true;
@@ -469,6 +469,8 @@ public class DockerParser {
                 return (List<T>) parseAndGetLabelInstruction(command);
             case "VOLUME":
                 return (List<T>) parseAndGetVolumeInstruction(command);
+            case "MAINTAINER":
+                return (List<T>) parseAndGetMaintainerInstruction(command);
         }
         return null;
     }
@@ -877,9 +879,9 @@ public class DockerParser {
 
     }
 
-    public Instruction parseAndGetMaintainerInstruction(String user) {
-        maintainer = new Maintainer(dockerfile, user);
-        return new Maintainer(dockerfile, user);
+    public List<Instruction> parseAndGetMaintainerInstruction(String user) {
+        maintainer.add(new Maintainer(dockerfile, user));
+        return Collections.singletonList(new  Maintainer(dockerfile, user));
     }
 
     public Env parseAndGetEnvInstruction(String command) {

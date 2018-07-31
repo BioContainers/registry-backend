@@ -82,7 +82,7 @@ public class DockerContainer implements IContainerRecipe {
 
     public StopSignal stopSignals;
 
-    public Maintainer maintainer;
+    public List<Maintainer> maintainer;
 
     private int instructions;
 
