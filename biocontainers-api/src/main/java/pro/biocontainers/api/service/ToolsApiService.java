@@ -13,6 +13,7 @@ import pro.biocontainers.mongodb.service.BioContainersService;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -218,7 +219,26 @@ public class ToolsApiService {
 
     }
 
+    /**
+     * Return the ContainerImages for an specific software version
+     * @param id Software ID
+     * @param versionId Tool version ID
+     * @return Container Images
+     */
     public List<pro.biocontainers.api.model.ContainerImage> getContainerImages(String id, String versionId) {
-        return null;
+        List<BioContainerToolVersion> mongoVersions = service.findVersions(id);
+        Optional<BioContainerToolVersion> container = mongoVersions.stream().filter(x -> x.getMetaVersion().equalsIgnoreCase(versionId)).findFirst();
+        List<pro.biocontainers.api.model.ContainerImage> images = new ArrayList<>();
+        if (container.isPresent()) {
+            images = container.get().getImages().stream().map(x -> pro.biocontainers.api.model.ContainerImage
+                    .builder()
+                    .accession(((ContainerImage) x).getAccession())
+                    .tag(((ContainerImage) x).getTag())
+                    .downloads(((ContainerImage) x).getDownloads())
+                    .lastUpdate(((ContainerImage) x).getLastUpdate())
+                    .build()).collect(Collectors.toList());
+
+        }
+        return images;
     }
 }

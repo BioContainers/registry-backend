@@ -21,7 +21,6 @@ import java.util.Objects;
  * Created by ypriverol (ypriverol@gmail.com) on 26/07/2018.
  */
 
-
 @Builder
 public class ContainerImage implements IContainerImage{
 
@@ -50,6 +49,10 @@ public class ContainerImage implements IContainerImage{
 
     /** Maintainer of the Container / DockerFile **/
     private List<String> maintainer;
+
+    private String recipeURL;
+
+    private String readableRecipeURL;
 
     @Override
     public String getAccession() {

@@ -207,13 +207,8 @@ public class ToolsApiController {
     }
 
     /**
-     * Get a list of test JSONs (these allow you to execute the tool successfully)
-     * suitable for use with this descriptor type.
+     * Get a list of Container Images for and specific tool version
      *
-     * @param type      The type of the underlying descriptor. Allowable values include
-     *                  "CWL", "WDL", "NFL", "PLAIN_CWL", "PLAIN_WDL", "PLAIN_NFL". For
-     *                  example, "CWL" would return an list of ToolTests objects while
-     *                  "PLAIN_CWL" would return a bare JSON list with the content of the tests.
      * @param id        A unique identifier of the tool, scoped to this registry, for example `123456`.
      * @param versionId An identifier of the tool version for this particular tool registry for example `v1`.
      * @return The tool test JSON response.
