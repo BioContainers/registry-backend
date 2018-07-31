@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import pro.biocontainers.api.model.*;
 import pro.biocontainers.data.model.ContainerType;
 import pro.biocontainers.mongodb.model.BioContainerToolVersion;
+import pro.biocontainers.mongodb.model.ContainerFile;
 import pro.biocontainers.mongodb.model.ContainerImage;
 import pro.biocontainers.mongodb.service.BioContainersService;
 
@@ -121,14 +122,21 @@ public class ToolsApiService {
      * @return An array of the tool containerfile.
      */
     public List<ToolContainerfile> getContainerfile(String id, String versionId) {
-
-        ArrayList<ToolContainerfile> toolContainerfiles = new ArrayList<>();
-        toolContainerfiles.add(dummyCreator.create(ToolContainerfile.class));
-        toolContainerfiles.add(dummyCreator.create(ToolContainerfile.class));
-        toolContainerfiles.add(dummyCreator.create(ToolContainerfile.class));
-        return toolContainerfiles;
-
-    }
+        List<BioContainerToolVersion> mongoVersions = service.findVersions(id);
+        List<BioContainerToolVersion> containers = mongoVersions.stream().filter(x -> x.getMetaVersion().equalsIgnoreCase(versionId)).collect(Collectors.toList());
+        List<ToolContainerfile> images = new ArrayList<>();
+        containers.stream().forEach( x-> {
+            x.getImages().forEach( y-> {
+                ContainerFile file = (ContainerFile) y.getContainerFile();
+                images.add(ToolContainerfile
+                        .builder()
+                        .containerfile(file.getContainerfile())
+                        .url(file.getURL())
+                .build());
+            });
+            });
+        return images;
+        }
 
     /**
      * Returns the descriptor for the specified tool (examples include CWL, WDL, or Nextflow documents).

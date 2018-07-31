@@ -69,8 +69,6 @@ public class ContainerImage implements IContainerImage{
     /** Additional Metadata **/
     private String additionalMetadata;
 
-
-
     @Override
     public String getAccession() {
         return this.tag;
@@ -118,5 +116,13 @@ public class ContainerImage implements IContainerImage{
     @Override
     public int hashCode() {
         return Objects.hash(tag);
+    }
+
+    public ContainerFile getContainerFile() {
+        return containerFile;
+    }
+
+    public void setContainerFile(ContainerFile containerFile) {
+        this.containerFile = containerFile;
     }
 }
