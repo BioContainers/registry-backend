@@ -108,8 +108,13 @@ public class ToolsApiService {
      * @return A tool version.
      */
     public ToolVersion getByVersionId(String id, String versionId) {
-
-        return dummyCreator.create(ToolVersion.class);
+        BioContainerToolVersion container = service.findVersions(id).stream().filter(x -> x.getMetaVersion().equalsIgnoreCase(versionId)).findAny().get();
+        return ToolVersion.builder()
+                .id(container.getMetaVersion())
+                .verified(true)
+                .containerfile(container.getImages().stream().filter(x -> ((ContainerImage) x).getContainerType() == ContainerType.DOCKER).count() > 0)
+                .name(container.getName())
+                .build();
     }
 
     /**
