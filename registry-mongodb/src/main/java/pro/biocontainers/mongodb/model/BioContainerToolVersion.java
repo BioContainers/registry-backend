@@ -11,10 +11,8 @@ import pro.biocontainers.data.model.ToolDescriptor;
 import pro.biocontainers.data.model.ToolVersion;
 import pro.biocontainers.data.model.Tuple;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * This code is licensed under the Apache License, Version 2.0 (the
@@ -35,7 +33,11 @@ import java.util.Set;
 public class BioContainerToolVersion implements ToolVersion {
 
     @Id
-    String id;
+    @Field("uui")
+    String uui;
+
+    @Field("version")
+    String version;
 
     @Indexed(name = "name")
     String name;
@@ -44,21 +46,18 @@ public class BioContainerToolVersion implements ToolVersion {
     String description;
 
     /** Main URL where the user can download the container Tool. **/
-    @Indexed(name = "url")
-    String url;
+    @Field("homeURL")
+    String homeURL;
+
+    /** Main URL where the user can download the container Tool. **/
+    @Field("docURL")
+    String docURL;
 
     @Field("license")
     String license;
 
     @Field("additionalIdentifiers")
     List<Tuple<String, List<String>>> additionalIdentifiers;
-
-    /** Used in conjunction with a registry_url if provided to locate images **/
-    @Indexed(name = "imageId")
-    private String imageId;
-
-    @Indexed(name = "registryURL")
-    private String registryURL;
 
     /** Container Images **/
     @Field("containerImages")
@@ -70,18 +69,6 @@ public class BioContainerToolVersion implements ToolVersion {
     /** Descriptors **/
     @Field("descriptors")
     private List<ToolDescriptor> descriptors;
-
-    private Boolean isContainerRecipeAvailable;
-
-    @Field("urlRecipe")
-    private String urlRecipe;
-
-    @Field("version")
-    private String version;
-
-    private Boolean isVerified;
-
-    private String verifiedSource;
 
     @Indexed(name = "hashName")
     private String hashName;
@@ -95,24 +82,15 @@ public class BioContainerToolVersion implements ToolVersion {
     }
 
     @Override
-    public String getUrl() {
-        return this.url;
-    }
-
-    @Override
     public String getId() {
-        return this.id;
+        return this.version;
     }
 
-    /** Image in a registry **/
     @Override
     public String getLatestImage() {
-        return this.imageId;
-    }
-
-    @Override
-    public String getRegistryUrl() {
-        return this.registryURL;
+        List<ContainerImage> images = getImages().stream().sorted(Comparator.comparing(ContainerImage::getLastUpdate)).collect(Collectors.toList());
+        ContainerImage image = images.stream().findFirst().get();
+        return image.getAccession();
     }
 
     @Override
@@ -127,22 +105,12 @@ public class BioContainerToolVersion implements ToolVersion {
 
     @Override
     public Boolean getContainerFile() {
-        return this.isContainerRecipeAvailable;
+        return null;
     }
 
     @Override
     public String getMetaVersion() {
         return this.version;
-    }
-
-    @Override
-    public Boolean isVerified() {
-        return this.isVerified;
-    }
-
-    @Override
-    public String getVerifiedSource() {
-        return this.verifiedSource;
     }
 
     @Override

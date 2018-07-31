@@ -18,6 +18,7 @@ import pro.biocontainers.data.model.ToolContainerfile;
 public class ContainerFile implements ToolContainerfile {
 
     private String containerFile;
+
     private String readableContainerFile;
 
     @Override
