@@ -50,9 +50,23 @@ public class ContainerImage implements IContainerImage{
     /** Maintainer of the Container / DockerFile **/
     private List<String> maintainer;
 
+    /** Recipe URL (it can be the folder that container all scripts, etc)**/
     private String recipeURL;
 
+    /** Public Readable Recipe for Conda or DockerFile **/
     private String readableRecipeURL;
+
+    /** License for the software use **/
+    private String license;
+
+    /** Software home URL **/
+    private String softwareURL;
+
+    /** Software Documentation web pages **/
+    private String documentationURL;
+
+    /** Additional Metadata **/
+    private String addtionalMetadata;
 
     @Override
     public String getAccession() {
