@@ -68,6 +68,7 @@ public class CondaRecipe implements IContainerRecipe {
     private String license;
     private String docURL;
     private Map<String, List<String>> identifiers = new ConcurrentHashMap<>();
+    private Collection<? extends String> maintainers = new ArrayList<>();
 
     public Map<String, Object> getExtras() {
         return extras;
@@ -102,7 +103,6 @@ public class CondaRecipe implements IContainerRecipe {
             if(about.containsKey(DOC_URL))
                 this.docURL = about.get(DOC_URL);
         }
-
 
         if(extras != null && extras.containsKey(IDENTIFIERS)){
             this.identifiers = new HashMap<>();
@@ -143,5 +143,34 @@ public class CondaRecipe implements IContainerRecipe {
     @Override
     public String getSoftwareVersion() {
         return this.softwareVersion;
+    }
+
+    public Collection<? extends String> getMaintainers() {
+        return this.maintainers;
+    }
+
+    public void setMaintainers(Collection<? extends String> maintainers) {
+        this.maintainers = maintainers;
+    }
+
+    @Override
+    public String toString() {
+        return "CondaRecipe{" +
+                "recipeProperties=" + recipeProperties +
+                ", requirements=" + requirements +
+                ", tests=" + tests +
+                ", about=" + about +
+                ", extras=" + extras +
+                ", sources=" + sources +
+                ", softwareVersion='" + softwareVersion + '\'' +
+                ", softwareName='" + softwareName + '\'' +
+                ", binaryURL='" + binaryURL + '\'' +
+                ", homeURL='" + homeURL + '\'' +
+                ", description='" + description + '\'' +
+                ", license='" + license + '\'' +
+                ", docURL='" + docURL + '\'' +
+                ", identifiers=" + identifiers +
+                ", maintainers=" + maintainers +
+                '}';
     }
 }

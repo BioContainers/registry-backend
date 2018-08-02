@@ -24,7 +24,6 @@ public class BioContainersServiceLocalhostTestTool {
         BioContainerTool container = BioContainerTool.builder()
                 .id("blast")
                 .name("blast")
-                .url("https://hub.docker.com/r/biocontainers/blast/")
                 .build();
 
         containersService.indexContainer(container);

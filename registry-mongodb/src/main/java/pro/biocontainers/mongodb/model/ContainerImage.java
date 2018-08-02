@@ -2,6 +2,7 @@ package pro.biocontainers.mongodb.model;
 
 import lombok.Builder;
 import pro.biocontainers.data.model.ContainerType;
+import pro.biocontainers.data.model.ToolContainerfile;
 
 import java.util.Date;
 import java.util.List;
@@ -16,20 +17,19 @@ import java.util.Objects;
  * <p>
  * ==Overview==
  * <p>
- * This class
+ * This Container Image
  * <p>
  * Created by ypriverol (ypriverol@gmail.com) on 26/07/2018.
  */
 
-
 @Builder
 public class ContainerImage implements IContainerImage{
 
-    /** This is the Container Tag in Conda or BioContainers to be added**/
-    private String accession;
-
     /** Tag **/
     private String tag;
+
+    /** Full Tag quay.io/biocontainers/abaca:1.2--python **/
+    String fullTag;
 
     /** Container Type **/
     private ContainerType containerType;
@@ -48,9 +48,30 @@ public class ContainerImage implements IContainerImage{
 
     private Date lastUpdate;
 
+    /** Maintainer of the Container / DockerFile **/
+    private List<String> maintainer;
+
+    /** Recipe URL (it can be the folder that container all scripts, etc)**/
+    private String containerFileProject;
+
+    /** Public Readable Recipe for Conda or DockerFile **/
+    private ContainerFile containerFile;
+
+    /** License for the software use **/
+    private String license;
+
+    /** Software home URL **/
+    private String softwareURL;
+
+    /** Software Documentation web pages **/
+    private String documentationURL;
+
+    /** Additional Metadata **/
+    private String additionalMetadata;
+
     @Override
     public String getAccession() {
-        return this.accession;
+        return this.tag;
     }
 
     @Override
@@ -60,7 +81,7 @@ public class ContainerImage implements IContainerImage{
 
     @Override
     public String getTag() {
-        return this.accession;
+        return this.tag;
     }
 
     @Override
@@ -89,11 +110,19 @@ public class ContainerImage implements IContainerImage{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ContainerImage that = (ContainerImage) o;
-        return Objects.equals(accession, that.accession);
+        return Objects.equals(tag, that.tag);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(accession);
+        return Objects.hash(tag);
+    }
+
+    public ContainerFile getContainerFile() {
+        return containerFile;
+    }
+
+    public void setContainerFile(ContainerFile containerFile) {
+        this.containerFile = containerFile;
     }
 }

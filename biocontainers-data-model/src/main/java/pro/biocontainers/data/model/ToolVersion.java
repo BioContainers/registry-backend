@@ -17,23 +17,15 @@ public interface ToolVersion {
 
     /** Get description of the Version **/
 
-    /** The URL for this tool in this registry **/
-    String getUrl();
-
     /** An identifier of the version of this tool
      * for this particular tool registry **/
     String getId();
 
     /** The docker path to the image (and version) for this tool **/
-    String getImage();
-
-    /** A URL to a Singularity registry is provided when a specific type of
-     image does not use ids in the Docker format. Used along with
-     image_name to locate a specific image. **/
-    String getRegistryUrl();
+    String getLatestImage();
 
     /** Used in conjunction with a registry_url if provided to locate images **/
-    Collection<? extends ContainerImage> getImageName();
+    Collection<? extends ContainerImage> getImages();
 
     /** Descriptor Type **/
     Collection<? extends DescriptorType> getDescriptorTypes();
@@ -45,11 +37,6 @@ public interface ToolVersion {
      fields like the description, author, etc. are updated. **/
     String getMetaVersion();
 
-    /** Verified **/
-    Boolean isVerified();
-
-    /** Source of Verification **/
-    String getVerifiedSource();
 
     /** Get the name in a hash useful for searching strategies*/
     String getHashName();

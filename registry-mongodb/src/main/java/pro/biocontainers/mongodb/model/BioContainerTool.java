@@ -20,18 +20,23 @@ public class BioContainerTool implements Tool {
 
     /** Native Identifier from MongoDB */
     @Id
+    @Field("uui")
+    String uui;
+
+    /** Id of the software **/
     @Field("id")
     String id;
 
-    @Indexed(name = "name", unique = true)
+    /** Nmae of the software can be duplicated **/
+    @Indexed(name = "name")
     String name;
-
-    /** Main URL where the user can download the container Tool. **/
-    @Indexed(name = "url")
-    String url;
 
     @Field(value = "description")
     String description;
+
+    /** Main URL where the user software can be found **/
+    @Indexed(name = "urlHome")
+    String urlHome;
 
     @Indexed(name = "starred")
     Boolean starred;
@@ -68,6 +73,14 @@ public class BioContainerTool implements Tool {
 
     @Indexed(name = "popularity")
     Integer popularity;
+
+    @Field("registryURL")
+    private String registryURL;
+
+    @Override
+    public String getUrl() {
+        return registryURL;
+    }
 
     @Override
     public String getOrganization() {

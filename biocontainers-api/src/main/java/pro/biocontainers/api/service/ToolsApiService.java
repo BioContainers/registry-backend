@@ -7,11 +7,14 @@ import org.springframework.stereotype.Service;
 import pro.biocontainers.api.model.*;
 import pro.biocontainers.data.model.ContainerType;
 import pro.biocontainers.mongodb.model.BioContainerToolVersion;
+import pro.biocontainers.mongodb.model.ContainerFile;
 import pro.biocontainers.mongodb.model.ContainerImage;
 import pro.biocontainers.mongodb.service.BioContainersService;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -74,13 +77,23 @@ public class ToolsApiService {
         List<ToolVersion> versions = new ArrayList<>();
         if(mongoVersions != null && mongoVersions.size() > 0){
             versions = mongoVersions.stream().map(x -> {
-                List<? extends ContainerImage> dockerImages = x.getImageName().stream().filter(y -> ((ContainerImage) y).getContainerType() == ContainerType.DOCKER).collect(Collectors.toList());
+                List<? extends ContainerImage> dockerImages = ((List<ContainerImage>) x.getImages())
+                        .stream()
+                        .sorted(Comparator.comparing(ContainerImage::getLastUpdate))
+                        .collect(Collectors.toList());
+
+                ContainerImage latestImage = dockerImages.stream().findFirst().get();
+
                 return ToolVersion
                         .builder()
                         .metaVersion(x.getMetaVersion())
                         .name(x.getName())
                         .id(x.getMetaVersion())
-                        .containerfile(!dockerImages.isEmpty())
+                        .containerfile(latestImage.getContainerType() == ContainerType.DOCKER)
+                        .verified(true)
+                        .latestImage(latestImage.getAccession())
+                        .imageName(x.getName() + "/" + x.getMetaVersion() + "/" + latestImage.getTag())
+                        .images(dockerImages.stream().map(ContainerImage::getTag).collect(Collectors.toList()))
                         .build();
             }).collect(Collectors.toList());
         }
@@ -95,8 +108,13 @@ public class ToolsApiService {
      * @return A tool version.
      */
     public ToolVersion getByVersionId(String id, String versionId) {
-
-        return dummyCreator.create(ToolVersion.class);
+        BioContainerToolVersion container = service.findVersions(id).stream().filter(x -> x.getMetaVersion().equalsIgnoreCase(versionId)).findAny().get();
+        return ToolVersion.builder()
+                .id(container.getMetaVersion())
+                .verified(true)
+                .containerfile(container.getImages().stream().filter(x -> ((ContainerImage) x).getContainerType() == ContainerType.DOCKER).count() > 0)
+                .name(container.getName())
+                .build();
     }
 
     /**
@@ -109,14 +127,21 @@ public class ToolsApiService {
      * @return An array of the tool containerfile.
      */
     public List<ToolContainerfile> getContainerfile(String id, String versionId) {
-
-        ArrayList<ToolContainerfile> toolContainerfiles = new ArrayList<>();
-        toolContainerfiles.add(dummyCreator.create(ToolContainerfile.class));
-        toolContainerfiles.add(dummyCreator.create(ToolContainerfile.class));
-        toolContainerfiles.add(dummyCreator.create(ToolContainerfile.class));
-        return toolContainerfiles;
-
-    }
+        List<BioContainerToolVersion> mongoVersions = service.findVersions(id);
+        List<BioContainerToolVersion> containers = mongoVersions.stream().filter(x -> x.getMetaVersion().equalsIgnoreCase(versionId)).collect(Collectors.toList());
+        List<ToolContainerfile> images = new ArrayList<>();
+        containers.stream().forEach( x-> {
+            x.getImages().forEach( y-> {
+                ContainerFile file = (ContainerFile) y.getContainerFile();
+                images.add(ToolContainerfile
+                        .builder()
+                        .containerfile(file.getContainerfile())
+                        .url(file.getURL())
+                .build());
+            });
+            });
+        return images;
+        }
 
     /**
      * Returns the descriptor for the specified tool (examples include CWL, WDL, or Nextflow documents).
@@ -205,5 +230,28 @@ public class ToolsApiService {
         toolTests.add(dummyCreator.create(ToolTests.class));
         return toolTests;
 
+    }
+
+    /**
+     * Return the ContainerImages for an specific software version
+     * @param id Software ID
+     * @param versionId Tool version ID
+     * @return Container Images
+     */
+    public List<pro.biocontainers.api.model.ContainerImage> getContainerImages(String id, String versionId) {
+        List<BioContainerToolVersion> mongoVersions = service.findVersions(id);
+        Optional<BioContainerToolVersion> container = mongoVersions.stream().filter(x -> x.getMetaVersion().equalsIgnoreCase(versionId)).findFirst();
+        List<pro.biocontainers.api.model.ContainerImage> images = new ArrayList<>();
+        if (container.isPresent()) {
+            images = container.get().getImages().stream().map(x -> pro.biocontainers.api.model.ContainerImage
+                    .builder()
+                    .accession(((ContainerImage) x).getAccession())
+                    .tag(((ContainerImage) x).getTag())
+                    .downloads(((ContainerImage) x).getDownloads())
+                    .lastUpdate(((ContainerImage) x).getLastUpdate())
+                    .build()).collect(Collectors.toList());
+
+        }
+        return images;
     }
 }

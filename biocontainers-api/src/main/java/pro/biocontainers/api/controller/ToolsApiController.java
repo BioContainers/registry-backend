@@ -205,4 +205,20 @@ public class ToolsApiController {
 
         return new ResponseEntity<>(serviceTool.getTests(type, id, versionId), HttpStatus.OK);
     }
+
+    /**
+     * Get a list of Container Images for and specific tool version
+     *
+     * @param id        A unique identifier of the tool, scoped to this registry, for example `123456`.
+     * @param versionId An identifier of the tool version for this particular tool registry for example `v1`.
+     * @return The tool test JSON response.
+     */
+    @RequestMapping(value = "/{id}/versions/{version_id}/containers", produces = {"application/json", "text/plain"}, method = RequestMethod.GET)
+    @ApiOperation(value = "Get a list of test JSONs", nickname = "toolsIdVersionsVersionIdTypeTestsGet", notes = "Get a list of test JSONs (these allow you to execute the tool successfully) suitable for use with this descriptor type.", response = ContainerImage.class, responseContainer = "array")
+    public ResponseEntity<List<ContainerImage>> getTests(
+                                                    @PathVariable("id") String id,
+                                                    @PathVariable("version_id") String versionId) {
+
+        return new ResponseEntity<>(serviceTool.getContainerImages(id, versionId), HttpStatus.OK);
+    }
 }

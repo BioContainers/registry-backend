@@ -3,6 +3,7 @@ package pro.biocontainers.api.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -11,6 +12,7 @@ import lombok.Data;
  */
 @ApiModel(description = "A containerfile is a document that describes how to build a particular container image. Examples include Dockerfiles for creating Docker images and Singularity recipes for Singularity images")
 @Data
+@Builder
 public class ToolContainerfile {
     @ApiModelProperty(required = true, value = "The container specification for this tool.")
     @JsonProperty("containerfile")
