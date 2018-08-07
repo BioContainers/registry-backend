@@ -68,4 +68,8 @@ public class BioContainersService {
     public List<BioContainerToolVersion> findVersions(String id) {
         return versionRepository.findSoftwareName(id);
     }
+
+    public List<BioContainerToolVersion> findAllToolVersion(){
+        return versionRepository.findAll();
+    }
 }
