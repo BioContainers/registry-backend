@@ -69,10 +69,10 @@ public class BioContainerTool implements Tool {
     private String verifiedSource;
 
     @Field("toolVersions")
-    private List<BioContainerToolVersion> toolVersions;
+    private List<String> toolVersions;
 
-    @Indexed(name = "popularity")
-    Integer popularity;
+    @Field("externalIdentifiers")
+    private List<String> externalIdentifiers;
 
     @Field("registryURL")
     private String registryURL;
@@ -137,8 +137,4 @@ public class BioContainerTool implements Tool {
         return false;
     }
 
-    @Override
-    public Collection<? extends ToolVersion> getVersions() {
-        return this.toolVersions;
-    }
 }

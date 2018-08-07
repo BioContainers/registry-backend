@@ -53,7 +53,5 @@ public interface Tool {
     /** Reports whether this tool has been signed. **/
     Boolean getSigned();
 
-    /** A list of versions for this tool **/
-    Collection<? extends ToolVersion> getVersions();
 }
 

@@ -79,6 +79,9 @@ public class BioContainerToolVersion implements ToolVersion {
     @Field("text")
     String text;
 
+    @Field("downloads")
+    Integer downloads;
+
     @Override
     public String getName() {
         return this.name;
@@ -119,5 +122,9 @@ public class BioContainerToolVersion implements ToolVersion {
     @Override
     public String getHashName() {
         return this.hashName;
+    }
+
+    public List<Tuple<String, List<String>>> getAdditionalIdentifiers() {
+        return additionalIdentifiers;
     }
 }

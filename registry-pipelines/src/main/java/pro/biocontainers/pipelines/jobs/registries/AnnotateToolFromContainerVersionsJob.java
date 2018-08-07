@@ -61,7 +61,9 @@ public class AnnotateToolFromContainerVersionsJob extends AbstractJob {
                 .tasklet((stepContribution, chunkContext) -> {
 
                     List<BioContainerToolVersion> allVersions = mongoService.findAllToolVersion();
-                    allVersions.stream().forEach();
+                    allVersions.stream().forEach( x-> {
+                       externalIdentifiers =  x.getAdditionalIdentifiers();
+                    });
 
 
                     return RepeatStatus.FINISHED;
