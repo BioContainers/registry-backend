@@ -99,11 +99,6 @@ public class BioContainerTool implements Tool {
     }
 
     @Override
-    public String getAuthor() {
-        return this.author;
-    }
-
-    @Override
     public String getMetaVersion() {
         return this.latestVersion;
     }

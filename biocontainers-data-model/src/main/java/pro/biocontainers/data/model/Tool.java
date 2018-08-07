@@ -26,11 +26,6 @@ public interface Tool {
 
     String getDescription();
 
-    /** Contact information for the author of this tool entry in the registry.
-     * (More complex authorship information is handled by the descriptor)
-     * **/
-    String getAuthor();
-
     /** The version of this tool in the registry. Iterates when fields like the description, author, etc. are updated. **/
     String getMetaVersion();
 

@@ -39,6 +39,7 @@ import pro.biocontainers.readers.github.services.GitHubFileReader;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Configuration
 @Slf4j
@@ -70,7 +71,9 @@ public class AnnotateToolFromContainerVersionsJob extends AbstractJob {
                         if(externalIdentifiers != null && externalIdentifiers.stream().filter(y -> y.getKey().equalsIgnoreCase(ExternalID.BIOTOOLS.getName())).count() >0){
                             BioContainerTool tool = BioContainerTool.builder()
                                     .author(new HashSet<>(x.getMaintainers()))
+                                    .name(externalIdentifiers.stream().filter(y -> y.getKey().equalsIgnoreCase(ExternalID.BIOTOOLS.getName())).findFirst().get().getValue().get(0))
                                     .build();
+                            log.info(tool.toString());
                         }
                     });
 
