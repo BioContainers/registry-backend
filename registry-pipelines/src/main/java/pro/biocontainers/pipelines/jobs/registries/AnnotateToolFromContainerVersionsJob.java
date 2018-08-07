@@ -24,16 +24,20 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import pro.biocontainers.data.model.Tuple;
 import pro.biocontainers.mongodb.config.MongoDBConfiguration;
+import pro.biocontainers.mongodb.model.BioContainerTool;
 import pro.biocontainers.mongodb.model.BioContainerToolVersion;
 import pro.biocontainers.mongodb.service.BioContainersService;
 import pro.biocontainers.pipelines.configs.DataSourceConfiguration;
 import pro.biocontainers.pipelines.jobs.AbstractJob;
 import pro.biocontainers.pipelines.utilities.PipelineConstants;
+import pro.biocontainers.readers.ExternalID;
 import pro.biocontainers.readers.github.configs.GitHubConfiguration;
 import pro.biocontainers.readers.github.services.GitHubFileNameList;
 import pro.biocontainers.readers.github.services.GitHubFileReader;
 
+import java.util.HashSet;
 import java.util.List;
 
 @Configuration
@@ -62,7 +66,12 @@ public class AnnotateToolFromContainerVersionsJob extends AbstractJob {
 
                     List<BioContainerToolVersion> allVersions = mongoService.findAllToolVersion();
                     allVersions.stream().forEach( x-> {
-                       externalIdentifiers =  x.getAdditionalIdentifiers();
+                        List<Tuple<String, List<String>>> externalIdentifiers =  x.getAdditionalIdentifiers();
+                        if(externalIdentifiers != null && externalIdentifiers.stream().filter(y -> y.getKey().equalsIgnoreCase(ExternalID.BIOTOOLS.getName())).count() >0){
+                            BioContainerTool tool = BioContainerTool.builder()
+                                    .author(new HashSet<>(x.getMaintainers()))
+                                    .build();
+                        }
                     });
 
 

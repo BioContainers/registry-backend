@@ -12,6 +12,7 @@ import pro.biocontainers.data.model.ToolVersion;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Builder
 @Data
@@ -51,7 +52,7 @@ public class BioContainerTool implements Tool {
     private String organization;
 
     @Field("author")
-    private String author;
+    private Set<String> author;
 
     @Field("otherTools")
     private List<String> otherTools;

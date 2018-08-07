@@ -127,4 +127,32 @@ public class BioContainerToolVersion implements ToolVersion {
     public List<Tuple<String, List<String>>> getAdditionalIdentifiers() {
         return additionalIdentifiers;
     }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getHomeURL() {
+        return homeURL;
+    }
+
+    public String getDocURL() {
+        return docURL;
+    }
+
+    public String getLicense() {
+        return license;
+    }
+
+    /**
+     * Get all maintainers
+     * @return
+     */
+    public List<String> getMaintainers(){
+        return containerImages.stream()
+                .map(result -> result.getMaintainer())
+                .flatMap(List::stream)
+                .map(String::new)
+                .collect(Collectors.toList());
+    }
 }
