@@ -39,6 +39,7 @@ import pro.biocontainers.readers.github.services.GitHubFileReader;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Configuration
@@ -72,7 +73,20 @@ public class AnnotateToolFromContainerVersionsJob extends AbstractJob {
                             BioContainerTool tool = BioContainerTool.builder()
                                     .author(new HashSet<>(x.getMaintainers()))
                                     .name(externalIdentifiers.stream().filter(y -> y.getKey().equalsIgnoreCase(ExternalID.BIOTOOLS.getName())).findFirst().get().getValue().get(0))
+                                    .id(externalIdentifiers.stream().filter(y -> y.getKey().equalsIgnoreCase(ExternalID.BIOTOOLS.getName())).findFirst().get().getValue().get(0))
+                                    .urlHome(x.getHomeURL())
+                                    .description(x.getDescription())
+                                    .license(x.getLicense())
                                     .build();
+                            tool.addVersion(x.getMetaVersion());
+                            Optional<BioContainerTool> currentToolOptional = mongoService.findToolByAccession(tool.getId());
+                            if(currentToolOptional.isPresent()){
+                                BioContainerTool currentTool = currentToolOptional.get();
+                                currentTool.addVersion(tool.getMetaVersion());
+                                mongoService.updateContainer(currentTool);
+                            }else
+                                mongoService.indexContainer(tool);
+
                             log.info(tool.toString());
                         }
                     });

@@ -72,4 +72,8 @@ public class BioContainersService {
     public List<BioContainerToolVersion> findAllToolVersion(){
         return versionRepository.findAll();
     }
+
+    public Optional<BioContainerTool> findToolByAccession(String id) {
+        return repository.findByAccession(id);
+    }
 }
