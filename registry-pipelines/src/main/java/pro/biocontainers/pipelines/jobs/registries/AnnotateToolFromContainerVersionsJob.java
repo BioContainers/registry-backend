@@ -69,18 +69,29 @@ public class AnnotateToolFromContainerVersionsJob extends AbstractJob {
                     List<BioContainerToolVersion> allVersions = mongoService.findAllToolVersion();
                     allVersions.stream().forEach( x-> {
                         List<Tuple<String, List<String>>> externalIdentifiers =  x.getAdditionalIdentifiers();
-                        if(externalIdentifiers != null && externalIdentifiers.stream().filter(y -> y.getKey().equalsIgnoreCase(ExternalID.BIOTOOLS.getName())).count() >0){
-                            BioContainerTool tool = BioContainerTool.builder()
+                        String id = x.getName();
+                        if(externalIdentifiers != null && externalIdentifiers.stream().filter(y -> y.getKey().equalsIgnoreCase(ExternalID.BIOTOOLS.getName())).count() >0) {
+                          id = externalIdentifiers.stream().filter(y -> y.getKey().equalsIgnoreCase(ExternalID.BIOTOOLS.getName())).findFirst().get().getValue().get(0);
+                          if(id.split("/").length > 1){
+                              String[] idClean = id.split("/");
+                              id = idClean[idClean.length -1];
+                          }
+
+                        }
+                        BioContainerTool tool = BioContainerTool.builder()
                                     .author(new HashSet<>(x.getMaintainers()))
-                                    .name(externalIdentifiers.stream().filter(y -> y.getKey().equalsIgnoreCase(ExternalID.BIOTOOLS.getName())).findFirst().get().getValue().get(0))
-                                    .id(externalIdentifiers.stream().filter(y -> y.getKey().equalsIgnoreCase(ExternalID.BIOTOOLS.getName())).findFirst().get().getValue().get(0))
+                                    .name(id)
+                                    .id(id)
                                     .urlHome(x.getHomeURL())
                                     .description(x.getDescription())
                                     .license(x.getLicense())
                                     .build();
-                            tool.addVersion(x.getMetaVersion());
-                            Optional<BioContainerTool> currentToolOptional = mongoService.findToolByAccession(tool.getId());
-                            if(currentToolOptional.isPresent()){
+
+                        tool.addVersion(x.getMetaVersion());
+
+                        Optional<BioContainerTool> currentToolOptional = mongoService.findToolByAccession(tool.getId());
+
+                        if(currentToolOptional.isPresent()){
                                 BioContainerTool currentTool = currentToolOptional.get();
                                 currentTool.addVersion(tool.getMetaVersion());
                                 mongoService.updateContainer(currentTool);
@@ -88,7 +99,6 @@ public class AnnotateToolFromContainerVersionsJob extends AbstractJob {
                                 mongoService.indexContainer(tool);
 
                             log.info(tool.toString());
-                        }
                     });
 
 
