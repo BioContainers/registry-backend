@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pro.biocontainers.api.model.*;
 import pro.biocontainers.data.model.ContainerType;
+import pro.biocontainers.mongodb.model.BioContainerTool;
 import pro.biocontainers.mongodb.model.BioContainerToolVersion;
 import pro.biocontainers.mongodb.model.ContainerFile;
 import pro.biocontainers.mongodb.model.ContainerImage;
@@ -45,10 +46,19 @@ public class ToolsApiService {
     public List<Tool> get(String id, String registry, String organization, String name,
                           String toolname, String description, String author) {
 
-        ArrayList<Tool> tools = new ArrayList<>();
-        tools.add(dummyCreator.create(Tool.class));
-        tools.add(dummyCreator.create(Tool.class));
-        tools.add(dummyCreator.create(Tool.class));
+        List<Tool> tools = new ArrayList<>();
+        if((id == null && registry == null && organization == null && name==null && toolname==null
+        && description==null && author == null)){
+            List<BioContainerTool> mongoTools = service.findAll();
+            tools = mongoTools.stream().map( x-> {
+                String authorTool = (x.getAuthor() != null && !x.getAuthor().isEmpty())?x.getAuthor().stream().findAny().get():null;
+                return Tool.builder()
+                        .author(authorTool)
+                        .toolname(x.getName())
+                        .build();
+            }).collect(Collectors.toList());
+        }
+
         return tools;
     }
 
