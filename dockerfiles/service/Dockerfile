@@ -31,5 +31,5 @@ RUN apt-get clean all && \
     apt-get install -y --force-yes oracle-java8-installer maven
 
 
-ADD biocontainers-api/target/biocontainers-api-1.0-SNAPSHOT.jar /api-service.jar
+ADD ../../biocontainers-api/target/biocontainers-api-1.0-SNAPSHOT.jar /api-service.jar
 ENTRYPOINT ["java", "-jar", "/api-service.jar"]
