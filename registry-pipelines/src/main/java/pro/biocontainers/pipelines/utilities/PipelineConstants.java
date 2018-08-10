@@ -23,14 +23,16 @@ public class PipelineConstants {
 
 
     public enum JobNames {
-        READ_DOCKERHUB_CONTAINERS_JOB("Read all containers from dockerhub"),
-        READ_QUAYIO_CONTAINERS_JOB("Read all containers from quay.io"),
-        ANNOTATE_CONTAINERS_JOB("Annotate all the containers from Recipes");
+        READ_DOCKERHUB_CONTAINERS_JOB("importDockerHubToMongoDB", "Read all containers from dockerhub"),
+        READ_QUAYIO_CONTAINERS_JOB("importQuayIOToMongoDB", "Read all containers from quay.io"),
+        ANNOTATE_CONTAINERS_JOB("annotateToolFromContainers", "Annotate all the containers from Recipes");
 
         String name;
+        String description;
 
-        JobNames(String name){
+        JobNames(String name, String description){
            this.name = name;
+           this.description = description;
         }
 
         public String getName() {

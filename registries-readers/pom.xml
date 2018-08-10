@@ -93,31 +93,6 @@
                     <skipDeploy>true</skipDeploy>
                 </configuration>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.6</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <!-- Adds the classpath to the created manifest -->
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix>lib/</classpathPrefix>
-                            <!-- Configures the main class of the application -->
-                            <!--<mainClass>uk.ac.ebi.pride.utilities.data.exporters.MzTabConverterTool</mainClass>-->
-                            <mainClass>uk.ac.ebi.pride.utilities.data.controller.tools.PGConverter</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 

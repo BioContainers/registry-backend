@@ -33,7 +33,7 @@ public class DataSourceConfiguration {
         DatabasePopulatorUtils.execute(populator , dataSource());
     }
 
-    @Bean(name = "hsqlDatraSource", destroyMethod="close")
+    @Bean(name = "hsqlDatraSource", destroyMethod="")
     @Primary
     public DataSource dataSource() {
         BasicDataSource dataSource = new BasicDataSource();

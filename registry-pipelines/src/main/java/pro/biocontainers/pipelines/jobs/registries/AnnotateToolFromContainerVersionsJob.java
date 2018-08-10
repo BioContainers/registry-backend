@@ -17,6 +17,7 @@ package pro.biocontainers.pipelines.jobs.registries;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,6 +45,7 @@ import java.util.stream.Collectors;
 
 @Configuration
 @Slf4j
+@EnableBatchProcessing
 @Import({ DataSourceConfiguration.class, MongoDBConfiguration.class, GitHubConfiguration.class})
 public class AnnotateToolFromContainerVersionsJob extends AbstractJob {
 
