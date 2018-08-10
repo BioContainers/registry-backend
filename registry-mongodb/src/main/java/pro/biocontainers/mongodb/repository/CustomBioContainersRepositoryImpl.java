@@ -40,17 +40,20 @@ public class CustomBioContainersRepositoryImpl implements CustomBioContainersRep
                 filterCriteria = Criteria.where("id").regex(id);
             else
                 filterCriteria = filterCriteria.andOperator(new Criteria("id").regex(id));
-        }else if(name != null && !name.trim().isEmpty()){
+        }
+        if(name != null && !name.trim().isEmpty()){
             if(filterCriteria == null)
                 filterCriteria = Criteria.where("name").regex(name);
             else
                 filterCriteria = filterCriteria.andOperator(new Criteria("name").regex(name));
-        }else if(description != null && !description.trim().isEmpty()){
+        }
+        if(description != null && !description.trim().isEmpty()){
             if(filterCriteria == null)
                 filterCriteria = Criteria.where("description").regex(description);
             else
                 filterCriteria = filterCriteria.andOperator(new Criteria("description").regex(description));
-        }else if(toolname != null && !toolname.trim().isEmpty()){
+        }
+        if(toolname != null && !toolname.trim().isEmpty()){
             if(filterCriteria == null)
                 filterCriteria = Criteria.where("name").regex(toolname);
             else

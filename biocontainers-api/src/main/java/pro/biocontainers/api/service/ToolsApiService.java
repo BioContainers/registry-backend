@@ -44,7 +44,7 @@ public class ToolsApiService {
     public List<Tool> get(String id,  String name,
                           String toolname, String description, String author) {
 
-        List<Tool> tools = new ArrayList<>();
+        List<Tool> tools;
         List<BioContainerTool> mongoTools;
         if((id == null && name==null && toolname==null
         && description==null && author == null)){
@@ -53,11 +53,18 @@ public class ToolsApiService {
         }else{
             mongoTools = service.filterAll(id, name, toolname, description, author);
         }
+
         tools = mongoTools.stream().map( x-> {
+
             String authorTool = (x.getAuthor() != null && !x.getAuthor().isEmpty())?x.getAuthor().stream().findAny().get():null;
+
             return Tool.builder()
                     .author(authorTool)
                     .toolname(x.getName())
+                    .description(x.getDescription())
+                    .verified(true)
+                    .contains(x.getToolVersions().stream()
+                            .filter(y -> y != null && !y.isEmpty()).collect(Collectors.toList()))
                     .build();
         }).collect(Collectors.toList());
 
