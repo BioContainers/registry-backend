@@ -11,7 +11,9 @@ import pro.biocontainers.data.model.ToolClass;
 import pro.biocontainers.data.model.ToolVersion;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Builder
 @Data
@@ -51,7 +53,7 @@ public class BioContainerTool implements Tool {
     private String organization;
 
     @Field("author")
-    private String author;
+    private Set<String> author;
 
     @Field("otherTools")
     private List<String> otherTools;
@@ -69,13 +71,16 @@ public class BioContainerTool implements Tool {
     private String verifiedSource;
 
     @Field("toolVersions")
-    private List<BioContainerToolVersion> toolVersions;
+    private Set<String> toolVersions;
 
-    @Indexed(name = "popularity")
-    Integer popularity;
+    @Field("externalIdentifiers")
+    private List<String> externalIdentifiers;
 
     @Field("registryURL")
     private String registryURL;
+
+    @Field("license")
+    private String license;
 
     @Override
     public String getUrl() {
@@ -95,11 +100,6 @@ public class BioContainerTool implements Tool {
     @Override
     public List<ToolClass> getToolClasses() {
         return this.toolClasses;
-    }
-
-    @Override
-    public String getAuthor() {
-        return this.author;
     }
 
     @Override
@@ -137,8 +137,10 @@ public class BioContainerTool implements Tool {
         return false;
     }
 
-    @Override
-    public Collection<? extends ToolVersion> getVersions() {
-        return this.toolVersions;
+    public void addVersion(String version){
+        if(toolVersions == null )
+            toolVersions = new HashSet<>();
+        toolVersions.add(version);
     }
+
 }

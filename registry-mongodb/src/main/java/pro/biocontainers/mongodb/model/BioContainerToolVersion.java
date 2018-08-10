@@ -79,6 +79,9 @@ public class BioContainerToolVersion implements ToolVersion {
     @Field("text")
     String text;
 
+    @Field("downloads")
+    Integer downloads;
+
     @Override
     public String getName() {
         return this.name;
@@ -119,5 +122,37 @@ public class BioContainerToolVersion implements ToolVersion {
     @Override
     public String getHashName() {
         return this.hashName;
+    }
+
+    public List<Tuple<String, List<String>>> getAdditionalIdentifiers() {
+        return additionalIdentifiers;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getHomeURL() {
+        return homeURL;
+    }
+
+    public String getDocURL() {
+        return docURL;
+    }
+
+    public String getLicense() {
+        return license;
+    }
+
+    /**
+     * Get all maintainers
+     * @return
+     */
+    public List<String> getMaintainers(){
+        return containerImages.stream()
+                .map(result -> result.getMaintainer())
+                .flatMap(List::stream)
+                .map(String::new)
+                .collect(Collectors.toList());
     }
 }

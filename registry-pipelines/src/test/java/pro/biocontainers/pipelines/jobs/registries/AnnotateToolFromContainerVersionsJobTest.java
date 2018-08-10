@@ -12,28 +12,20 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import pro.biocontainers.pipelines.configs.JobRunnerTestConfiguration;
+import pro.biocontainers.pipelines.jobs.registries.dockerhub.ImportContainersFromDockerHubJob;
 
-/**
- * This code is licensed under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * ==Overview==
- * <p>
- * This class
- * <p>
- * Created by ypriverol (ypriverol@gmail.com) on 26/07/2018.
- */
+import static org.junit.Assert.*;
+
+
+
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AnnotateContainersFromRecipeJob.class, JobRunnerTestConfiguration.class})
+@ContextConfiguration(classes = {AnnotateToolFromContainerVersionsJob.class, JobRunnerTestConfiguration.class})
 @TestPropertySource(value = "classpath:application-test.properties")
 @Slf4j
-public class AnnotateContainersFromRecipeJobTest {
+public class AnnotateToolFromContainerVersionsJobTest {
 
     @Autowired
-    AnnotateContainersFromRecipeJob importJob;
+    AnnotateToolFromContainerVersionsJob importJob;
 
     @Autowired
     private JobLauncherTestUtils jobLauncherTestUtils;
@@ -43,7 +35,7 @@ public class AnnotateContainersFromRecipeJobTest {
      * @throws Exception
      */
     @Test
-    public void annotateContainersFromRecipes() throws Exception {
+    public void importFromRegistries() throws Exception {
         JobExecution jobExecution = jobLauncherTestUtils.launchJob();
         Assert.assertEquals(BatchStatus.COMPLETED.name(), jobExecution.getExitStatus().getExitCode());
     }

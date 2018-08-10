@@ -3,6 +3,7 @@ package pro.biocontainers.api.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import java.util.List;
  *
  */
 @Data
+@Builder
 @ApiModel(description = "A tool (or described tool) is defined as a tuple of a descriptor file (which potentially consists of multiple files), a set of container images, and a set of instructions for creating those images.")
 public class Tool {
     @ApiModelProperty(example = "http://agora.broadinstitute.org/tools/123456", required = true, value = "The URL for this tool in this registry")

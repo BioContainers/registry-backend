@@ -125,4 +125,8 @@ public class ContainerImage implements IContainerImage{
     public void setContainerFile(ContainerFile containerFile) {
         this.containerFile = containerFile;
     }
+
+    public List<String> getMaintainer() {
+        return maintainer;
+    }
 }

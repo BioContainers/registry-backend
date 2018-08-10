@@ -12,10 +12,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import pro.biocontainers.pipelines.configs.JobRunnerTestConfiguration;
-import pro.biocontainers.pipelines.jobs.registries.AnnotateContainersFromRecipeJob;
-import pro.biocontainers.pipelines.jobs.registries.dockerhub.ImportContainersFromDockerHubJob;
-
-import static org.junit.Assert.*;
 
 /**
  * This code is licensed under the Apache License, Version 2.0 (the

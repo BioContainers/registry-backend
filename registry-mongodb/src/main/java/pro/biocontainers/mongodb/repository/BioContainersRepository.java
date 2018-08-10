@@ -20,7 +20,7 @@ public interface BioContainersRepository extends MongoRepository<BioContainerToo
     @Override
     Optional<BioContainerTool> findById(String objectId);
 
-    @Query("{'accession' : ?0}")
+    @Query("{'id' : ?0}")
     Optional<BioContainerTool> findByAccession(String accession);
 
 }
