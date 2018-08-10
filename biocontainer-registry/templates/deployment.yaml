@@ -1,0 +1,71 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "biocontainer-registry.fullname" . }}
+  labels:
+    app: {{ template "biocontainer-registry.name" . }}
+    chart: {{ template "biocontainer-registry.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "biocontainer-registry.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "biocontainer-registry.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      initContainers:
+        - name: mongo-db-user-creator-init
+          image: "{{ .Values.init.image.repository }}:{{ .Values.init.image.tag }}"
+          imagePullPolicy: {{ .Values.init.image.pullPolicy }}
+          env:
+            - name: "SERVICE_USER"
+              value: "yes"
+            {{ if .Values.galaxy.init.force_copy }}
+            - name: "GALAXY_INIT_FORCE_COPY"
+              value: {{ .Values.galaxy.init.force_copy }}
+            {{ end }}
+          volumeMounts:
+            - mountPath: {{.Values.export_dir}}
+              name: {{.Values.galaxy.pvc.name}}
+              {{ if .Values.galaxy.pvc.subPath }}
+              subPath: {{.Values.galaxy.pvc.subPath}}
+              {{ end }}
+          resources:
+{{ toYaml .Values.galaxy.init.resources | indent 12 }}
+        {{ if and .Values.galaxy.backend.postgres (not .Values.legacy.pre_k8s_16) }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
