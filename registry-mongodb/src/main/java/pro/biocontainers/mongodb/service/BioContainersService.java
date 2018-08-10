@@ -76,4 +76,8 @@ public class BioContainersService {
     public Optional<BioContainerTool> findToolByAccession(String id) {
         return repository.findByAccession(id);
     }
+
+    public List<BioContainerTool> filterAll(String id, String name, String toolname, String description, String author) {
+        return repository.filterAll(id, name, toolname, description, author);
+    }
 }

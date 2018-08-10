@@ -35,29 +35,31 @@ public class ToolsApiService {
      * List all tools.
      *
      * @param id           A unique identifier of the tool, scoped to this registry, for example `123456`
-     * @param registry     The image registry that contains the image.
-     * @param organization The organization in the registry that published the image.
      * @param name         The name of the image.
      * @param toolname     The name of the tool.
      * @param description  The description of the tool.
      * @param author       The author of the tool.
      * @return An array of Tools that match the filter.
      */
-    public List<Tool> get(String id, String registry, String organization, String name,
+    public List<Tool> get(String id,  String name,
                           String toolname, String description, String author) {
 
         List<Tool> tools = new ArrayList<>();
-        if((id == null && registry == null && organization == null && name==null && toolname==null
+        List<BioContainerTool> mongoTools;
+        if((id == null && name==null && toolname==null
         && description==null && author == null)){
-            List<BioContainerTool> mongoTools = service.findAll();
-            tools = mongoTools.stream().map( x-> {
-                String authorTool = (x.getAuthor() != null && !x.getAuthor().isEmpty())?x.getAuthor().stream().findAny().get():null;
-                return Tool.builder()
-                        .author(authorTool)
-                        .toolname(x.getName())
-                        .build();
-            }).collect(Collectors.toList());
+            mongoTools = service.findAll();
+
+        }else{
+            mongoTools = service.filterAll(id, name, toolname, description, author);
         }
+        tools = mongoTools.stream().map( x-> {
+            String authorTool = (x.getAuthor() != null && !x.getAuthor().isEmpty())?x.getAuthor().stream().findAny().get():null;
+            return Tool.builder()
+                    .author(authorTool)
+                    .toolname(x.getName())
+                    .build();
+        }).collect(Collectors.toList());
 
         return tools;
     }

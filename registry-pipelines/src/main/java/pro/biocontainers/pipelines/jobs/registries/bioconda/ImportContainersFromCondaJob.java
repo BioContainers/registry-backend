@@ -62,7 +62,7 @@ public class ImportContainersFromCondaJob extends AbstractJob {
     @Value("${public-url.dockerhub}")
     String dockerHubRegistry;
 
-    @Value("${public-url.quayio}")
+    @Value("${public-url.quay-io}")
     String quayIOHubRegistry;
 
 

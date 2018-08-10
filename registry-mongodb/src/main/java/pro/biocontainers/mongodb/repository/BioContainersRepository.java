@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface BioContainersRepository extends MongoRepository<BioContainerTool, String> {
+public interface BioContainersRepository extends MongoRepository<BioContainerTool, String>, CustomBioContainersRepository {
 
     @Override
     <S extends BioContainerTool> List<S> saveAll(Iterable<S> iterable);

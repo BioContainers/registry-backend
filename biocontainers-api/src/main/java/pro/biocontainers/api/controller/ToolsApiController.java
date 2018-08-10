@@ -52,7 +52,7 @@ public class ToolsApiController {
                                           @RequestParam(value = "description", required = false) String description,
                                           @RequestParam(value = "author", required = false) String author) {
 
-        return new ResponseEntity<>(serviceTool.get(id, registry, organization, name, toolname, description, author),
+        return new ResponseEntity<>(serviceTool.get(id, name, toolname, description, author),
                 HttpStatus.OK);
     }
 
