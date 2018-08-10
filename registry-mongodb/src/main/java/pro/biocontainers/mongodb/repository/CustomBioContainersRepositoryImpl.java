@@ -50,6 +50,11 @@ public class CustomBioContainersRepositoryImpl implements CustomBioContainersRep
                 filterCriteria = Criteria.where("description").regex(description);
             else
                 filterCriteria = filterCriteria.andOperator(new Criteria("description").regex(description));
+        }else if(toolname != null && !toolname.trim().isEmpty()){
+            if(filterCriteria == null)
+                filterCriteria = Criteria.where("name").regex(toolname);
+            else
+                filterCriteria = filterCriteria.andOperator(new Criteria("name").regex(toolname));
         }
 
         Query queryMongo = new Query().addCriteria(filterCriteria);
