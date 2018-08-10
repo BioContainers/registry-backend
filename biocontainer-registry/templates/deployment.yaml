@@ -19,10 +19,10 @@ spec:
         app: {{ template "biocontainer-registry.name" . }}
         release: {{ .Release.Name }}
     spec:
-      initContainers:
-        - name: mongo-db-user-creator-init
-          image: "{{ .Values.init.image.repository }}:{{ .Values.init.image.tag }}"
-          imagePullPolicy: {{ .Values.init.image.pullPolicy }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: "MONGO_DB"
               value: {{ .Values.mongoConfig.dbName }}
@@ -30,20 +30,10 @@ spec:
               value: {{ .Values.mongoConfig.servicePassword }}
             - name: "MONGODB_USER"
               value: {{ .Values.mongoConfig.serviceUsername }}
-            - name: "MONGODB_ROLES"
-              value: {{ .Values.mongoConfig.roles }}
-            - name: "ADMIN_USER"
-              value: {{ index .Values "mongodb-replicaset" "auth" "adminUser" }}
-            - name: "ADMIN_PASSWORD"
-              value: {{ index .Values "mongodb-replicaset" "auth" "adminPassword" }}
             - name: "MONGODB_HOST"
-              value: {{ template "mongodb-replicaset.fullname" . }}
-          resources:
-{{ toYaml .Values.init.resources | indent 12 }}
-      containers:
-        - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+              value: {{ template "mongodb.fullname" . }}
+            - name: "MONGODB_PORT"
+              value: {{ .Values.mongodb.port }}
           ports:
             - name: http
               containerPort: 80

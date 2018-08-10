@@ -57,11 +57,8 @@ mongoConfig:
   servicePassword: changeme2
   roles: dbOwner
 
-mongodb-replicaset:
-  auth:
-    enabled: true
-    adminUser: mongouser
-    adminPassword: changeme
-
-
+mongodb:
+  mongodbUsername: biocontainers
+  mongodbPassword: changeme
+  mongodbDatabase: biocont-registry
   # defaults variables for mongodb here
