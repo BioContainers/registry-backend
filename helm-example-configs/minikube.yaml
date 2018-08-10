@@ -2,3 +2,4 @@ image:
   repository: ypriverol/biocontainers-api
   tag: "1.0"
 
+pv_minikube: true

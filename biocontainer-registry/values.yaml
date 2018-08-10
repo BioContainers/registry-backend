@@ -51,6 +51,11 @@ tolerations: []
 
 affinity: {}
 
+
+pv:
+  minikube:
+    hostPath: /data/mongodb-biocontainers
+
 mongoConfig:
   dbName: biocontainers
   serviceUsername: registry
