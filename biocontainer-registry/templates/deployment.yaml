@@ -24,21 +24,22 @@ spec:
           image: "{{ .Values.init.image.repository }}:{{ .Values.init.image.tag }}"
           imagePullPolicy: {{ .Values.init.image.pullPolicy }}
           env:
-            - name: "SERVICE_USER"
-              value: "yes"
-            {{ if .Values.galaxy.init.force_copy }}
-            - name: "GALAXY_INIT_FORCE_COPY"
-              value: {{ .Values.galaxy.init.force_copy }}
-            {{ end }}
-          volumeMounts:
-            - mountPath: {{.Values.export_dir}}
-              name: {{.Values.galaxy.pvc.name}}
-              {{ if .Values.galaxy.pvc.subPath }}
-              subPath: {{.Values.galaxy.pvc.subPath}}
-              {{ end }}
+            - name: "MONGO_DB"
+              value: {{ .Values.mongoConfig.dbName }}
+            - name: "MONGODB_PASS"
+              value: {{ .Values.mongoConfig.servicePassword }}
+            - name: "MONGODB_USER"
+              value: {{ .Values.mongoConfig.serviceUsername }}
+            - name: "MONGODB_ROLES"
+              value: {{ .Values.mongoConfig.roles }}
+            - name: "ADMIN_USER"
+              value: {{ index .Values "mongodb-replicaset" "auth" "adminUser" }}
+            - name: "ADMIN_PASSWORD"
+              value: {{ index .Values "mongodb-replicaset" "auth" "adminPassword" }}
+            - name: "MONGODB_HOST"
+              value: {{ template "mongodb-replicaset.fullname" . }}
           resources:
-{{ toYaml .Values.galaxy.init.resources | indent 12 }}
-        {{ if and .Values.galaxy.backend.postgres (not .Values.legacy.pre_k8s_16) }}
+{{ toYaml .Values.init.resources | indent 12 }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
