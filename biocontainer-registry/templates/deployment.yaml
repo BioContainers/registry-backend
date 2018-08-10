@@ -19,6 +19,26 @@ spec:
         app: {{ template "biocontainer-registry.name" . }}
         release: {{ .Release.Name }}
     spec:
+      initContainers:
+        - name: mongo-db-user-creator-init
+          image: "{{ .Values.init.image.repository }}:{{ .Values.init.image.tag }}"
+          imagePullPolicy: {{ .Values.init.image.pullPolicy }}
+          env:
+            - name: "SERVICE_USER"
+              value: "yes"
+            {{ if .Values.galaxy.init.force_copy }}
+            - name: "GALAXY_INIT_FORCE_COPY"
+              value: {{ .Values.galaxy.init.force_copy }}
+            {{ end }}
+          volumeMounts:
+            - mountPath: {{.Values.export_dir}}
+              name: {{.Values.galaxy.pvc.name}}
+              {{ if .Values.galaxy.pvc.subPath }}
+              subPath: {{.Values.galaxy.pvc.subPath}}
+              {{ end }}
+          resources:
+{{ toYaml .Values.galaxy.init.resources | indent 12 }}
+        {{ if and .Values.galaxy.backend.postgres (not .Values.legacy.pre_k8s_16) }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

@@ -1,0 +1,8 @@
+image:
+  repository: ypriverol/biocontainers-api:latest
+
+mongodb-replicaset:
+  auth:
+    enabled: true
+    adminUser: admin
+    adminPassword: asdkljeqhdq
