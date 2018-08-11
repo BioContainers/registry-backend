@@ -92,6 +92,7 @@ public class AnnotateToolFromContainerVersionsJob extends AbstractJob {
                                     .build();
 
                         tool.addVersion(x.getMetaVersion());
+                        tool.addIdentifiers(x.getAdditionalIdentifiers());
 
                         Optional<BioContainerTool> currentToolOptional = mongoService.findToolByAccession(tool.getId());
 

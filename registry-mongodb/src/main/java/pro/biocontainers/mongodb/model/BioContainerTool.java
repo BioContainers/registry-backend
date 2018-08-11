@@ -8,10 +8,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import pro.biocontainers.data.model.Tool;
 import pro.biocontainers.data.model.ToolClass;
+import pro.biocontainers.data.model.Tuple;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Builder
 @Data
@@ -71,8 +70,8 @@ public class BioContainerTool implements Tool {
     @Field("toolVersions")
     private Set<String> toolVersions;
 
-    @Field("externalIdentifiers")
-    private List<String> externalIdentifiers;
+    @Field("additionalIdentifiers")
+    List<Tuple<String, List<String>>> additionalIdentifiers;
 
     @Field("registryURL")
     private String registryURL;
@@ -141,4 +140,25 @@ public class BioContainerTool implements Tool {
         toolVersions.add(version);
     }
 
+    public void addIdentifiers(List<Tuple<String, List<String>>> additionalIdentifiers) {
+
+        if(this.additionalIdentifiers != null){
+            List<Tuple<String, List<String>>> results = new ArrayList<>();
+            for(Tuple<String, List<String>> tuple: additionalIdentifiers){
+                Optional<Tuple<String, List<String>>> resultTuple = this.additionalIdentifiers.stream().filter(x -> x.getKey().equalsIgnoreCase(tuple.getKey())).findAny();
+                Set<String> tuples = new HashSet<>();
+                if(resultTuple.isPresent()){
+                    tuples.addAll(resultTuple.get().getValue());
+                    tuples.addAll(tuple.getValue());
+                }else
+                    tuples.addAll(tuple.getValue());
+                results.add(new Tuple<>(tuple.getKey(), new ArrayList<>(tuples)));
+
+            }
+            this.additionalIdentifiers = results;
+        }else if(additionalIdentifiers != null)
+            this.additionalIdentifiers = additionalIdentifiers;
+
+
+    }
 }

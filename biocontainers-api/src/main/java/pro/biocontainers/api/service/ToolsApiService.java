@@ -70,6 +70,7 @@ public class ToolsApiService {
                     .verified(true)
                     .contains(x.getContains())
                     .url(url)
+                    .toolclass(x.getToolClasses().stream().map(y-> ToolClass.getByName(y.getName())).collect(Collectors.toList()))
                     .build();
         }).collect(Collectors.toList());
 

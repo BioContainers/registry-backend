@@ -45,6 +45,14 @@ public enum ToolClass {
         this.description = description;
     }
 
+    public static ToolClass getByName(String name){
+        for(ToolClass toolClass: values()){
+            if(toolClass.getName().equalsIgnoreCase(name))
+                return toolClass;
+        }
+        return null;
+    }
+
     public String getId() {
         return id;
     }
