@@ -2,6 +2,7 @@ package pro.biocontainers.pipelines.utilities;
 
 import lombok.extern.log4j.Log4j;
 import pro.biocontainers.data.model.ContainerType;
+import pro.biocontainers.data.model.ToolClass;
 import pro.biocontainers.data.model.Tuple;
 import pro.biocontainers.mongodb.model.BioContainerTool;
 import pro.biocontainers.mongodb.model.BioContainerToolVersion;
@@ -32,28 +33,6 @@ import java.util.stream.Collectors;
  */
 @Log4j
 public class BiocontainerTransformer {
-
-    public static BioContainerTool transformContainerToBiocontainer(IRegistryContainer container, String accessionURL) {
-//        String accession = accessionURL.replace("%%name_space%%", container.getNameSpace()).replace("%%software_name%%", container.getName());
-//        List<ContainerImage> images = new ArrayList<>();
-//        container.getContainerTags().stream().forEach( x-> {
-//            images.add(ContainerImage.builder()
-//                    .size(x.getValue())
-//                    .tag(x.getKey())
-//                    .build());
-//        });
-//        return  BioContainerTool.builder()
-//                .name(container.getName())
-//                .id(accession)
-//                .description(container.getDescription())
-////                .lastUpdate(container.getLastUpdated())
-////                .pullCount(container.getPullCount())
-////                .images(images)
-//                .starred(container.isStarred())
-//                .build();
-
-        return null;
-    }
 
     /**
      * Convert Docker Container to {@link BioContainerToolVersion}
@@ -121,6 +100,8 @@ public class BiocontainerTransformer {
                         .docURL(container.getDocURL())
                         .homeURL(container.getHomeURL())
                         .text(container.toString())
+                        .toolClasses(Collections.singletonList(ToolClass.SINGLE_TOOL))
+                        .contains(Collections.singletonList(container.getSoftwareName()))
                         .additionalIdentifiers(container
                                 .getExternalIds()
                                 .entrySet()
@@ -202,8 +183,9 @@ public class BiocontainerTransformer {
                         .homeURL(container.getHomeURL())
                         .docURL(container.getDocumentationURL())
                         .license(container.getLicense())
-                        .text(generateText(container.getLabels().stream().map(Label::getValue).collect(Collectors.toList())))
-
+                        .contains(Collections.singletonList(container.getSoftwareName()))
+                .text(generateText(container.getLabels().stream().map(Label::getValue).collect(Collectors.toList())))
+                        .toolClasses(Collections.singletonList(ToolClass.SINGLE_TOOL))
                         .additionalIdentifiers(container
                                 .getExternalIds()
                                 .entrySet()

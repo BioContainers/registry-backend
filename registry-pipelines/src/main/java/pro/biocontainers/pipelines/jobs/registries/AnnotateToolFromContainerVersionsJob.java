@@ -81,11 +81,13 @@ public class AnnotateToolFromContainerVersionsJob extends AbstractJob {
 
                         }
                         BioContainerTool tool = BioContainerTool.builder()
-                                    .author(new HashSet<>(x.getMaintainers()))
-                                    .name(id)
-                                    .id(id)
-                                    .urlHome(x.getHomeURL())
-                                    .description(x.getDescription())
+                                .author(new HashSet<>(x.getMaintainers()))
+                                .name(id)
+                                .id(id)
+                                .urlHome(x.getHomeURL())
+                                .description(x.getDescription())
+                                .toolClasses(x.getToolClasses())
+                                .contains(x.getContains())
                                     .license(x.getLicense())
                                     .build();
 

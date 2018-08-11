@@ -2,7 +2,7 @@ package pro.biocontainers.api.service;
 
 import org.dummycreator.ClassBindings;
 import org.dummycreator.DummyCreator;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import pro.biocontainers.api.model.*;
 import pro.biocontainers.data.model.ContainerType;
@@ -24,6 +24,10 @@ public class ToolsApiService {
 //    BioContainersService service;
 
     BioContainersService service;
+
+    @Value("${biocontainers-registry}")
+    private String apiToolURL;
+
 
     public ToolsApiService(BioContainersService service) {
         this.service = service;
@@ -57,14 +61,15 @@ public class ToolsApiService {
         tools = mongoTools.stream().map( x-> {
 
             String authorTool = (x.getAuthor() != null && !x.getAuthor().isEmpty())?x.getAuthor().stream().findAny().get():null;
+            String url = apiToolURL.replace("%%tool_accession%%", x.getId());
 
             return Tool.builder()
                     .author(authorTool)
                     .toolname(x.getName())
                     .description(x.getDescription())
                     .verified(true)
-                    .contains(x.getToolVersions().stream()
-                            .filter(y -> y != null && !y.isEmpty()).collect(Collectors.toList()))
+                    .contains(x.getContains())
+                    .url(url)
                     .build();
         }).collect(Collectors.toList());
 
