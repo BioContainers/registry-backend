@@ -14,5 +14,27 @@ public class BioToolEntry {
     @JsonProperty("name")
     String name;
 
+    @JsonProperty("topic")
+    Topic[] topics;
+
+    @JsonProperty("description")
+    String description;
+
+    @JsonProperty("homepage")
+    String homePage;
+
+    @JsonProperty("download")
+    DownloadURL[] downloadURLS;
+
+    @JsonProperty("license")
+    String license;
+
+    @JsonProperty("contact")
+    BioToolContact[] contacts;
+
+    @JsonProperty("publications")
+    BioToolPublication[] publications;
+
+
 
 }

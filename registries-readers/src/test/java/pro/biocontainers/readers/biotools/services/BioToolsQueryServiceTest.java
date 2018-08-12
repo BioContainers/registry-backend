@@ -35,8 +35,14 @@ public class BioToolsQueryServiceTest {
         BioToolsQueryService service = new BioToolsQueryService(restTemplateBuilder(), configuration);
 
         Optional<BioToolEntry> toolOptional = service.getBioToolEntry("roc");
-        if(toolOptional.isPresent())
+        if(toolOptional.isPresent()){
             Assert.assertTrue(toolOptional.get().getId().equalsIgnoreCase("roc"));
+
+            Assert.assertTrue(toolOptional.get().getDownloadURLS().length == 1);
+
+            Assert.assertTrue(toolOptional.get().getLicense().equalsIgnoreCase("Artistic-2.0"));
+        }
+
 
     }
 }
