@@ -1,13 +1,15 @@
 package pro.biocontainers.pipelines.utilities;
 
+import javafx.beans.property.adapter.JavaBeanBooleanPropertyBuilder;
 import lombok.extern.log4j.Log4j;
 import pro.biocontainers.data.model.ContainerType;
 import pro.biocontainers.data.model.ToolClass;
 import pro.biocontainers.data.model.Tuple;
-import pro.biocontainers.mongodb.model.BioContainerTool;
-import pro.biocontainers.mongodb.model.BioContainerToolVersion;
-import pro.biocontainers.mongodb.model.ContainerImage;
+import pro.biocontainers.mongodb.model.*;
 import pro.biocontainers.readers.IRegistryContainer;
+import pro.biocontainers.readers.biotools.model.BioToolEntry;
+import pro.biocontainers.readers.biotools.model.PubAuthor;
+import pro.biocontainers.readers.biotools.model.Topic;
 import pro.biocontainers.readers.dockerhub.model.DockerHubContainer;
 import pro.biocontainers.readers.quayio.model.QuayIOContainer;
 import pro.biocontainers.readers.utilities.conda.model.CondaRecipe;
@@ -218,5 +220,66 @@ public class BiocontainerTransformer {
         return builder.append(softwareName).append(":")
                 .append(key)
                 .toString();
+    }
+
+    public static BioTool transformBioToolEntry(BioToolEntry bioToolEntry) {
+        List<String> topics = new ArrayList<>();
+        if(bioToolEntry.getTopics() != null && bioToolEntry.getTopics().length > 0)
+            topics = Arrays.asList(bioToolEntry.getTopics()).stream().map(Topic::getTerm).collect(Collectors.toList());
+
+        List<Tuple<String, String>> contacts = new ArrayList<>();
+        if(bioToolEntry.getContacts() != null && bioToolEntry.getContacts().length > 0)
+            contacts = Arrays.stream(bioToolEntry.getContacts())
+                    .map(x -> new Tuple<String, String>(x.getName(), x.getEmail()))
+                    .collect(Collectors.toList());
+
+        List<DownloadURL> downloadURLS = new ArrayList<>();
+        if(bioToolEntry.getDownloadURLS() != null && bioToolEntry.getDownloadURLS().length > 0)
+            downloadURLS = Arrays.asList(bioToolEntry.getDownloadURLS())
+                    .stream()
+                    .map( x-> DownloadURL.builder()
+                            .url(x.getUrl())
+                            .type(x.getType())
+                            .build())
+                    .collect(Collectors.toList());
+        List<BioToolPublication> publications = new ArrayList<>();
+        if(bioToolEntry.getPublications() != null && bioToolEntry.getPublications().length >0)
+            publications = Arrays.stream(bioToolEntry.getPublications())
+                    .map(x -> {
+                        PubMetadata pubMetadata = null;
+                        if(x.getPubmedMetadata() != null){
+                            List<String> authors = new ArrayList<>();
+                            if(x.getPubmedMetadata().getPubAuthors() != null && x.getPubmedMetadata().getPubAuthors().length >0)
+                                authors = Arrays.stream(x.getPubmedMetadata().getPubAuthors()).map(PubAuthor::getName).collect(Collectors.toList());
+                            pubMetadata = PubMetadata
+                                    .builder()
+                                    .title(x.getPubmedMetadata().getTitle())
+                                    .date(x.getPubmedMetadata().getDate())
+                                    .citationCount(x.getPubmedMetadata().getCitationCount())
+                                    .journal(x.getPubmedMetadata().getJournal())
+                                    .pubAbstract(x.getPubmedMetadata().getPubAbstract())
+                                    .pubAuthors(authors)
+                                    .build();
+                        }
+                        return BioToolPublication
+                                .builder()
+                                .doi(x.getDoi())
+                                .pmcid(x.getPmcid())
+                                .pmid(x.getPmid())
+                                .pubmedMetadata(pubMetadata)
+                                .build();
+                    })
+                    .collect(Collectors.toList());
+        return BioTool.builder()
+                .id(bioToolEntry.getId())
+                .name(bioToolEntry.getName())
+                .description(bioToolEntry.getDescription())
+                .homePage(bioToolEntry.getHomePage())
+                .topics(topics)
+                .contacts(contacts)
+                .downloadURLS(downloadURLS)
+                .license(bioToolEntry.getLicense())
+                .publications(publications)
+                .build();
     }
 }

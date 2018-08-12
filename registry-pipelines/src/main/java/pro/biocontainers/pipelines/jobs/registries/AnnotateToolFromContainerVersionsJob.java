@@ -20,7 +20,6 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,21 +31,23 @@ import pro.biocontainers.mongodb.model.BioContainerToolVersion;
 import pro.biocontainers.mongodb.service.BioContainersService;
 import pro.biocontainers.pipelines.configs.DataSourceConfiguration;
 import pro.biocontainers.pipelines.jobs.AbstractJob;
+import pro.biocontainers.pipelines.utilities.BiocontainerTransformer;
 import pro.biocontainers.pipelines.utilities.PipelineConstants;
 import pro.biocontainers.readers.ExternalID;
+import pro.biocontainers.readers.biotools.configs.BioToolsConfiguration;
+import pro.biocontainers.readers.biotools.model.BioToolEntry;
+import pro.biocontainers.readers.biotools.services.BioToolsQueryService;
 import pro.biocontainers.readers.github.configs.GitHubConfiguration;
-import pro.biocontainers.readers.github.services.GitHubFileNameList;
-import pro.biocontainers.readers.github.services.GitHubFileReader;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Configuration
 @Slf4j
 @EnableBatchProcessing
-@Import({ DataSourceConfiguration.class, MongoDBConfiguration.class, GitHubConfiguration.class})
+@Import({ DataSourceConfiguration.class, MongoDBConfiguration.class,
+        GitHubConfiguration.class, BioToolsConfiguration.class})
 public class AnnotateToolFromContainerVersionsJob extends AbstractJob {
 
     @Bean
@@ -57,13 +58,17 @@ public class AnnotateToolFromContainerVersionsJob extends AbstractJob {
     @Autowired
     BioContainersService mongoService;
 
+    @Autowired
+    BioToolsConfiguration bioToolsConfiguration;
+
+
 
     /**
      * This methods connects to the database read all the Oracle information for public
      * @return
      */
     @Bean
-    Step annnotateTools() {
+    Step annotateTools() {
         return stepBuilderFactory
                 .get(PipelineConstants.StepNames.ANNOTATE_DOCKERHUB_RECIPE.name())
                 .tasklet((stepContribution, chunkContext) -> {
@@ -122,10 +127,38 @@ public class AnnotateToolFromContainerVersionsJob extends AbstractJob {
     public Job annotateToolFromContainers() {
         return jobBuilderFactory
                 .get(PipelineConstants.JobNames.ANNOTATE_CONTAINERS_JOB.getName())
-                .start(annnotateTools())
+                .start(annotateTools())
+                .next(annotateBioToolsMetadata())
                 .build();
     }
 
+    @Bean
+    public Step annotateBioToolsMetadata() {
+        return stepBuilderFactory
+                .get(PipelineConstants.StepNames.ANNOTATE_BIOTOOLS_RECIPE.name())
+                .tasklet((stepContribution, chunkContext) -> {
+                    BioToolsQueryService service = new BioToolsQueryService(restTemplateBuilder(), bioToolsConfiguration);
+                    List<BioContainerTool> allTools = mongoService.findAll();
+                    allTools.stream().forEach( x-> {
+                        boolean update = false;
+                        for(String idContain: x.getContains()){
+                            Optional<BioToolEntry> bioToolEntry = service.getBioToolEntry(idContain);
+                            if(bioToolEntry.isPresent() && x.getAdditionalIdentifiers().stream().anyMatch(y -> y.getKey().equalsIgnoreCase(ExternalID.BIOTOOLS.getName()))){
+                                x.addBioToolMetadata(BiocontainerTransformer.transformBioToolEntry(bioToolEntry.get()));
+                                update = true;
+                            }
+                        }
+                        if(update)
+                            mongoService.updateContainer(x);
+                        log.info(x.toString());
+                    });
+
+
+                    return RepeatStatus.FINISHED;
+                })
+                .build();
+
+    }
 
 
 }

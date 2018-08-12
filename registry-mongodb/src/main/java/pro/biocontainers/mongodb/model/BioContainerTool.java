@@ -79,6 +79,9 @@ public class BioContainerTool implements Tool {
     @Field("license")
     private String license;
 
+    @Field("bioTools")
+    Set<BioTool> bioTools;
+
     @Override
     public String getUrl() {
         return registryURL;
@@ -159,6 +162,14 @@ public class BioContainerTool implements Tool {
         }else if(additionalIdentifiers != null)
             this.additionalIdentifiers = additionalIdentifiers;
 
+
+    }
+
+    public void addBioToolMetadata(BioTool bioTool) {
+        if(this.bioTools == null)
+            this.bioTools = new HashSet<>();
+
+        this.bioTools.add(bioTool);
 
     }
 }

@@ -9,15 +9,18 @@ public class PipelineConstants {
 
     public enum StepNames {
 
-        READ_DOCKERHUB_REGISTRY_LIST("Read all Dockerhub Containers in the list"),
-        READ_QUAYIO_REGISTRY_LIST("Read all QuayIO Containers in the list"),
-        ANNOTATE_QUAYIO_RECIPE("Annotate Containers with Conda Recipe"),
-        ANNOTATE_DOCKERHUB_RECIPE("Annotate Containers with Dockerfile Recipe");
+        READ_DOCKERHUB_REGISTRY_LIST("listDockerHubRegistry", "Read all Dockerhub Containers in the list"),
+        READ_QUAYIO_REGISTRY_LIST("readQUAIORegistry", "Read all QuayIO Containers in the list"),
+        ANNOTATE_QUAYIO_RECIPE("annotateQUAIORecipe", "Annotate Containers with Conda Recipe"),
+        ANNOTATE_BIOTOOLS_RECIPE("annotateBioToolsMetadata", "Annotate BioTools Metadata"),
+        ANNOTATE_DOCKERHUB_RECIPE("annotateDockerHubRecipe", "Annotate Containers with Dockerfile Recipe");
 
         String name;
+        String description;
 
-        StepNames(String name) {
+        StepNames(String name, String description) {
             this.name = name;
+            this.description = description;
         }
     }
 
