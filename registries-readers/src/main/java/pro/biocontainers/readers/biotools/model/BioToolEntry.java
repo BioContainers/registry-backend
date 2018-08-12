@@ -32,7 +32,7 @@ public class BioToolEntry {
     @JsonProperty("contact")
     BioToolContact[] contacts;
 
-    @JsonProperty("publications")
+    @JsonProperty("publication")
     BioToolPublication[] publications;
 
 
