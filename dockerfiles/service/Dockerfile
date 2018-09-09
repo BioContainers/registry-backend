@@ -32,4 +32,6 @@ RUN apt-get clean all && \
 
 
 ADD ../../biocontainers-api/target/biocontainers-api-1.0-SNAPSHOT.jar /api-service.jar
-ENTRYPOINT ["java", "-jar", "/api-service.jar"]
+ADD run.sh /usr/local/bin/run.sh
+RUN chmod u+x /usr/local/bin/run.sh
+ENTRYPOINT ["run.sh"]
