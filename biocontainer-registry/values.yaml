@@ -4,6 +4,12 @@
 
 replicaCount: 1
 
+init:
+  image:
+    repository: pcm32/mongo-init
+    tag: latest
+    pullPolicy: IfNotPresent
+
 image:
   repository: biocontainers/biocontainers-api
   tag: latest
@@ -45,5 +51,19 @@ tolerations: []
 
 affinity: {}
 
-mongodb-replicaset: {}
+
+pv:
+  minikube:
+    hostPath: /data/mongodb-biocontainers
+
+mongoConfig:
+  dbName: biocontainers
+  serviceUsername: registry
+  servicePassword: changeme2
+  roles: dbOwner
+
+mongodb:
+  mongodbUsername: biocontainers
+  mongodbPassword: changeme
+  mongodbDatabase: biocont-registry
   # defaults variables for mongodb here
