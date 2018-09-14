@@ -56,14 +56,15 @@ pv:
   minikube:
     hostPath: /data/mongodb-biocontainers
 
-mongoConfig:
-  dbName: biocontainers
-  serviceUsername: registry
-  servicePassword: changeme2
-  roles: dbOwner
+biocont_db_name: biocont-registry
+#  dbName: biocontainers
+#  serviceUsername: registry
+#  servicePassword: changeme2
+#  roles: dbOwner
 
 mongodb:
   mongodbUsername: biocontainers
   mongodbPassword: changeme
-  mongodbDatabase: biocont-registry
+  mongodbDatabase: admin
+  mongodbRootPassword: ch4ng3MeAswell
   # defaults variables for mongodb here
