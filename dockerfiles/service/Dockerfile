@@ -1,7 +1,7 @@
 
 ################## BASE IMAGE ######################
 
-FROM biocontainers/biocontainers:debian-stretch-backports
+FROM openjdk:8-jdk-alpine
 
 ################## METADATA ######################
 
@@ -19,19 +19,12 @@ MAINTAINER Yasset Perez-Riverol <ypriverol@gmail.com>
 
 ################## INSTALLATION ######################
 
+RUN apk update && apk add maven wget git
+RUN git clone --single-branch -b helm-repo https://github.com/BioContainers/registry-backend.git
+RUN cd /registry-backend && mvn install -DskipTests
 
-RUN apt-get clean all && \
-    apt-get update && \
-    apt-get upgrade -y && \
-    apt-get -y install software-properties-common && \
-    add-apt-repository -y ppa:webupd8team/java  && \
-    echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
-    echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections && \
-    apt-get update && \
-    apt-get install -y --force-yes oracle-java8-installer maven
-
-
-ADD ../../biocontainers-api/target/biocontainers-api-1.0-SNAPSHOT.jar /api-service.jar
+RUN cp /registry-backend/biocontainers-api/target/biocontainers-api-1.0-SNAPSHOT.jar /api-service.jar
+RUN rm -rfv /registry-backend
 ADD run.sh /usr/local/bin/run.sh
 RUN chmod u+x /usr/local/bin/run.sh
 ENTRYPOINT ["run.sh"]

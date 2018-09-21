@@ -8,9 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import pro.biocontainers.data.model.Tool;
 import pro.biocontainers.data.model.ToolClass;
-import pro.biocontainers.data.model.ToolVersion;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,7 +27,7 @@ public class BioContainerTool implements Tool {
     @Field("id")
     String id;
 
-    /** Nmae of the software can be duplicated **/
+    /** Name of the software can be duplicated **/
     @Indexed(name = "name")
     String name;
 
