@@ -102,7 +102,7 @@ public class ToolsApiService {
         List<ToolVersion> versions = new ArrayList<>();
         if(mongoVersions != null && mongoVersions.size() > 0){
             versions = mongoVersions.stream().map(x -> {
-                List<? extends ContainerImage> dockerImages = ((List<ContainerImage>) x.getImages())
+                List<? extends ContainerImage> dockerImages = (x.getImages())
                         .stream()
                         .sorted(Comparator.comparing(ContainerImage::getLastUpdate))
                         .collect(Collectors.toList());

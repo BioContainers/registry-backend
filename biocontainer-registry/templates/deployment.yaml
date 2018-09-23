@@ -24,27 +24,31 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-            - name: "MONGO_DB"
-              value: {{ .Values.mongoConfig.dbName }}
+            - name: "MONGO_ROOT_PASS"
+              value: {{ .Values.mongodb.mongodbRootPassword}}
+            - name: "BIOCONT_DB_NAME"
+              value: {{ .Values.biocont_db_name }}
+            - name: "MONGODB_ADMIN_DB"
+              value: {{ .Values.mongodb.mongodbDatabase }}
             - name: "MONGODB_PASS"
-              value: {{ .Values.mongoConfig.servicePassword }}
+              value: {{ .Values.mongodb.mongodbPassword }}
             - name: "MONGODB_USER"
-              value: {{ .Values.mongoConfig.serviceUsername }}
+              value: {{ .Values.mongodb.mongodbUsername }}
             - name: "MONGODB_HOST"
               value: {{ template "mongodb.fullname" . }}
             - name: "MONGODB_PORT"
               value: {{ .Values.mongodb.port }}
           ports:
             - name: http
-              containerPort: 8080
+              containerPort: {{ .Values.service.port }}
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
+              path: /api/v2
               port: http
           readinessProbe:
             httpGet:
-              path: /
+              path: /api/v2
               port: http
           resources:
 {{ toYaml .Values.resources | indent 12 }}

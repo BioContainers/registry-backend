@@ -4,12 +4,6 @@
 
 replicaCount: 1
 
-init:
-  image:
-    repository: pcm32/mongo-init
-    tag: latest
-    pullPolicy: IfNotPresent
-
 image:
   repository: biocontainers/biocontainers-api
   tag: latest
@@ -17,7 +11,7 @@ image:
 
 service:
   type: NodePort
-  port: 8080
+  port: 9999
   nodePort: 30780
 
 ingress:
@@ -56,14 +50,15 @@ pv:
   minikube:
     hostPath: /data/mongodb-biocontainers
 
-mongoConfig:
-  dbName: biocontainers
-  serviceUsername: registry
-  servicePassword: changeme2
-  roles: dbOwner
+biocont_db_name: biocont-registry
+#  dbName: biocontainers
+#  serviceUsername: registry
+#  servicePassword: changeme2
+#  roles: dbOwner
 
 mongodb:
   mongodbUsername: biocontainers
   mongodbPassword: changeme
-  mongodbDatabase: biocont-registry
+  mongodbDatabase: admin
+  mongodbRootPassword: ch4ng3MeAswell
   # defaults variables for mongodb here

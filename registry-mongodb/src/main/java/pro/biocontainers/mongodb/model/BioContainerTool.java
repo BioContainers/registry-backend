@@ -26,7 +26,7 @@ public class BioContainerTool implements Tool {
     @Field("id")
     String id;
 
-    /** Nmae of the software can be duplicated **/
+    /** Name of the software can be duplicated **/
     @Indexed(name = "name")
     String name;
 

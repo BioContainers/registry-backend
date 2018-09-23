@@ -111,7 +111,7 @@
             <url>http://www.ebi.ac.uk/Tools/maven/repos/content/groups/ebi-repo/</url>
         </repository>
         <repository>
-            <id>nexus-ebi-dockerContainer-repo</id>
+            <id>nexus-ebi-ebi-snapshots-repo</id>
             <url>http://www.ebi.ac.uk/Tools/maven/repos/content/groups/ebi-snapshots/</url>
         </repository>
     </repositories>
