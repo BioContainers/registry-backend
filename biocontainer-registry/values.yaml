@@ -4,12 +4,6 @@
 
 replicaCount: 1
 
-init:
-  image:
-    repository: pcm32/mongo-init
-    tag: latest
-    pullPolicy: IfNotPresent
-
 image:
   repository: biocontainers/biocontainers-api
   tag: latest
@@ -17,7 +11,7 @@ image:
 
 service:
   type: NodePort
-  port: 8080
+  port: 9999
   nodePort: 30780
 
 ingress:
