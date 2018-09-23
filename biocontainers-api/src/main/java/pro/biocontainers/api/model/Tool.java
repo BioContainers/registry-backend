@@ -38,7 +38,7 @@ public class Tool {
 
     @ApiModelProperty(required = true, value = "")
     @JsonProperty("toolclass")
-    private ToolClass toolclass;
+    private List<ToolClass> toolclass;
 
     @ApiModelProperty(value = "The description of the tool.")
     @JsonProperty("description")

@@ -8,10 +8,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import pro.biocontainers.data.model.Tool;
 import pro.biocontainers.data.model.ToolClass;
+import pro.biocontainers.data.model.Tuple;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Builder
 @Data
@@ -53,8 +52,8 @@ public class BioContainerTool implements Tool {
     @Field("author")
     private Set<String> author;
 
-    @Field("otherTools")
-    private List<String> otherTools;
+    @Field("contains")
+    private List<String> contains;
 
     @Field("hasChecker")
     private Boolean hasChecker;
@@ -71,14 +70,17 @@ public class BioContainerTool implements Tool {
     @Field("toolVersions")
     private Set<String> toolVersions;
 
-    @Field("externalIdentifiers")
-    private List<String> externalIdentifiers;
+    @Field("additionalIdentifiers")
+    List<Tuple<String, List<String>>> additionalIdentifiers;
 
     @Field("registryURL")
     private String registryURL;
 
     @Field("license")
     private String license;
+
+    @Field("bioTools")
+    Set<BioTool> bioTools;
 
     @Override
     public String getUrl() {
@@ -107,7 +109,7 @@ public class BioContainerTool implements Tool {
 
     @Override
     public List<String> getContains() {
-        return this.otherTools;
+        return this.contains;
     }
 
     @Override
@@ -141,4 +143,33 @@ public class BioContainerTool implements Tool {
         toolVersions.add(version);
     }
 
+    public void addIdentifiers(List<Tuple<String, List<String>>> additionalIdentifiers) {
+
+        if(this.additionalIdentifiers != null){
+            List<Tuple<String, List<String>>> results = new ArrayList<>();
+            for(Tuple<String, List<String>> tuple: additionalIdentifiers){
+                Optional<Tuple<String, List<String>>> resultTuple = this.additionalIdentifiers.stream().filter(x -> x.getKey().equalsIgnoreCase(tuple.getKey())).findAny();
+                Set<String> tuples = new HashSet<>();
+                if(resultTuple.isPresent()){
+                    tuples.addAll(resultTuple.get().getValue());
+                    tuples.addAll(tuple.getValue());
+                }else
+                    tuples.addAll(tuple.getValue());
+                results.add(new Tuple<>(tuple.getKey(), new ArrayList<>(tuples)));
+
+            }
+            this.additionalIdentifiers = results;
+        }else if(additionalIdentifiers != null)
+            this.additionalIdentifiers = additionalIdentifiers;
+
+
+    }
+
+    public void addBioToolMetadata(BioTool bioTool) {
+        if(this.bioTools == null)
+            this.bioTools = new HashSet<>();
+
+        this.bioTools.add(bioTool);
+
+    }
 }

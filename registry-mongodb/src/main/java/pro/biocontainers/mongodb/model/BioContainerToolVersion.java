@@ -6,10 +6,7 @@ import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import pro.biocontainers.data.model.DescriptorType;
-import pro.biocontainers.data.model.ToolDescriptor;
-import pro.biocontainers.data.model.ToolVersion;
-import pro.biocontainers.data.model.Tuple;
+import pro.biocontainers.data.model.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -59,6 +56,9 @@ public class BioContainerToolVersion implements ToolVersion {
     @Field("additionalIdentifiers")
     List<Tuple<String, List<String>>> additionalIdentifiers;
 
+    @Field("contains")
+    List<String> contains;
+
     /** Container Images **/
     @Field("containerImages")
     private Set<ContainerImage> containerImages;
@@ -81,6 +81,9 @@ public class BioContainerToolVersion implements ToolVersion {
 
     @Field("downloads")
     Integer downloads;
+
+    @Field("toolClasses")
+    List<ToolClass> toolClasses;
 
     @Override
     public String getName() {
@@ -154,5 +157,13 @@ public class BioContainerToolVersion implements ToolVersion {
                 .flatMap(List::stream)
                 .map(String::new)
                 .collect(Collectors.toList());
+    }
+
+    public List<ToolClass> getToolClasses() {
+        return toolClasses;
+    }
+
+    public List<String> getContains() {
+        return contains;
     }
 }
