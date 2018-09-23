@@ -1,9 +1,32 @@
-#!/bin/env bash
+#!/bin/bash
 
 #   --mongodb.biocontainers.db.authenticationDatabase= \
 #  --mongodb.biocontainers.db.port= \
 
-mongo --host $MONGODB_HOST -u root -p $MONGO_ROOT_PASS --authenticationDatabase $MONGODB_ADMIN_DB --eval "db.grantRolesToUser( $MONGODB_USER , [ { 'role' : 'readWrite', 'db' : $BIOCONT_DB_NAME } ] )"
+cat > mongo_exec.js <<- EOM
+db = db.getSiblingDB('admin');
+try {
+  db.createUser({ user: "$MONGODB_USER" , pwd: "$MONGODB_PASS", roles: ["userAdminAnyDatabase", "dbAdminAnyDatabase", "readWriteAnyDatabase"] });
+} catch(err) {
+  print("Could not create user, possibly exists:"+err.message )
+  print("Trying to add role to existing user")
+  db.grantRolesToUser( "$MONGODB_USER", ["userAdminAnyDatabase", "dbAdminAnyDatabase", "readWriteAnyDatabase"] );
+}
+printjson( db.getUser( "$MONGODB_USER", {
+   showCredentials: false,
+   showPrivileges: true,
+   showAuthenticationRestrictions: true
+} ) )
+EOM
+
+cat mongo_exec.js
+
+
+mongo --host $MONGODB_HOST -u root -p $MONGO_ROOT_PASS --authenticationDatabase \
+  $MONGODB_ADMIN_DB mongo_exec.js
+
+  #--eval \
+  #"db.grantRolesToUser( $MONGODB_USER , [ { 'role' : 'readWrite', 'db' : $BIOCONT_DB_NAME } ] )"
 
 java -jar /api-service.jar --mongodb.biocontainers.db.database=$BIOCONT_DB_NAME \
   --mongodb.biocontainers.db.user=$MONGODB_USER \
