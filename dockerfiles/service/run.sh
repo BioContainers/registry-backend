@@ -33,3 +33,4 @@ java -jar /api-service.jar --mongodb.biocontainers.db.database=$BIOCONT_DB_NAME 
   --mongodb.biocontainers.db.password=$MONGODB_PASS \
   --mongodb.biocontainers.db.authenticationDatabase=$MONGODB_ADMIN_DB \
   --mongodb.biocontainers.db.host=$MONGODB_HOST \
+  --mongodb.biocontainers.db.port=27017
