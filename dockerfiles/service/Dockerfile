@@ -20,7 +20,7 @@ MAINTAINER Yasset Perez-Riverol <ypriverol@gmail.com>
 ################## INSTALLATION ######################
 
 RUN apk update && apk add maven wget git
-RUN git clone --single-branch -b helm-repo https://github.com/BioContainers/registry-backend.git
+RUN git clone --single-branch -b master https://github.com/BioContainers/registry-backend.git
 RUN cd /registry-backend && mvn install -DskipTests
 
 FROM openjdk:8-jre-stretch
