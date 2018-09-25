@@ -1,12 +1,10 @@
 package pro.biocontainers.pipelines.utilities;
 
-import javafx.beans.property.adapter.JavaBeanBooleanPropertyBuilder;
 import lombok.extern.log4j.Log4j;
 import pro.biocontainers.data.model.ContainerType;
 import pro.biocontainers.data.model.ToolClass;
 import pro.biocontainers.data.model.Tuple;
 import pro.biocontainers.mongodb.model.*;
-import pro.biocontainers.readers.IRegistryContainer;
 import pro.biocontainers.readers.biotools.model.BioToolEntry;
 import pro.biocontainers.readers.biotools.model.PubAuthor;
 import pro.biocontainers.readers.biotools.model.Topic;

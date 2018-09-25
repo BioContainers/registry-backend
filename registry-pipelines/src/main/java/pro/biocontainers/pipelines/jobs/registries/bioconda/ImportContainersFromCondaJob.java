@@ -55,9 +55,9 @@ public class ImportContainersFromCondaJob extends AbstractJob {
     @Autowired
     GitHubConfiguration gitHubConfiguration;
 
-    GitHubFileReader fileReaderService;
+    final GitHubFileReader fileReaderService;
 
-    RestTemplateBuilder builder;
+    final RestTemplateBuilder builder;
 
     @Value("${public-url.dockerhub}")
     String dockerHubRegistry;
@@ -65,19 +65,10 @@ public class ImportContainersFromCondaJob extends AbstractJob {
     @Value("${public-url.quay-io}")
     String quayIOHubRegistry;
 
-
-    @Bean
-    public RestTemplateBuilder getRestTemplate() {
+    public ImportContainersFromCondaJob(){
         builder = new RestTemplateBuilder();
-        return builder;
-    }
-
-    @Bean
-    GitHubFileReader getFileReaderService(){
         fileReaderService = new GitHubFileReader(gitHubConfiguration, builder);
-        return this.fileReaderService;
     }
-
 
     /**
      * This methods connects to the database read all the Oracle information for public.
