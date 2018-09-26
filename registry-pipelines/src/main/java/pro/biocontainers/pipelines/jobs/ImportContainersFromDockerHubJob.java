@@ -1,4 +1,4 @@
-package pro.biocontainers.pipelines.jobs.registries.dockerhub;
+package pro.biocontainers.pipelines.jobs;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;

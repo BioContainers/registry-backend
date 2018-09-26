@@ -1,4 +1,4 @@
-package pro.biocontainers.pipelines.jobs.registries.bioconda;
+package pro.biocontainers.pipelines.jobs;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -57,9 +57,9 @@ public class ImportContainersFromCondaJob extends AbstractJob {
     @Autowired
     GitHubConfiguration gitHubConfiguration;
 
-    final GitHubFileReader fileReaderService;
+    GitHubFileReader fileReaderService;
 
-    final RestTemplateBuilder builder;
+    RestTemplateBuilder builder;
 
     @Value("${public-url.dockerhub}")
     String dockerHubRegistry;
@@ -67,9 +67,25 @@ public class ImportContainersFromCondaJob extends AbstractJob {
     @Value("${public-url.quay-io}")
     String quayIOHubRegistry;
 
-    public ImportContainersFromCondaJob(){
+    @Value("${biocontainers-registry}")
+    String bioContainersURL;
+
+    @Value("${biocontainers-registry-version}")
+    String bioContainersVersionURL;
+
+    @Value("${biocontainers-registry-image}")
+    String bioContainersImageURL;
+
+    @Bean
+    public RestTemplateBuilder getRestTemplate() {
         builder = new RestTemplateBuilder();
+        return builder;
+    }
+
+    @Bean
+    GitHubFileReader getFileReaderService(){
         fileReaderService = new GitHubFileReader(gitHubConfiguration, builder);
+        return this.fileReaderService;
     }
 
     /**
@@ -81,7 +97,6 @@ public class ImportContainersFromCondaJob extends AbstractJob {
         return stepBuilderFactory
                 .get(PipelineConstants.StepNames.READ_QUAYIO_REGISTRY_LIST.name())
                 .tasklet((stepContribution, chunkContext) -> {
-
 
                     GitHubFileNameList condaFileList = fileReaderService.getCondaFiles();
                     Map<String, Set<CondaRecipe>> toolNames = new ConcurrentHashMap<>();

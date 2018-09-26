@@ -12,10 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import pro.biocontainers.pipelines.configs.JobRunnerTestConfiguration;
-import pro.biocontainers.pipelines.jobs.registries.dockerhub.ImportContainersFromDockerHubJob;
-
-import static org.junit.Assert.*;
-
+import pro.biocontainers.pipelines.jobs.AnnotateToolFromContainerVersionsJob;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)

@@ -1,4 +1,4 @@
-package pro.biocontainers.pipelines.jobs.registries;
+package pro.biocontainers.pipelines.jobs;
 
 /**
  * This code is licensed under the Apache License, Version 2.0 (the

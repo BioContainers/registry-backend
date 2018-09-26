@@ -19,7 +19,7 @@ public class GitHubConfiguration {
     @Value("${github.docker-api-containers-urls}")
     String gitHubAPIDockerFiles;
 
-    @Value("${githug.conda-api-containers-urls}")
+    @Value("${github.conda-api-containers-urls}")
     String gitHubAPICondaFiles;
 
 }
