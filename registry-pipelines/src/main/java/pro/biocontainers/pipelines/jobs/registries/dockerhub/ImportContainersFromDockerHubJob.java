@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -174,6 +175,7 @@ public class ImportContainersFromDockerHubJob extends AbstractJob {
     public Job importDockerHubToMongoDB() {
         return jobBuilderFactory
                 .get(PipelineConstants.JobNames.READ_DOCKERHUB_CONTAINERS_JOB.getName())
+                .incrementer(new RunIdIncrementer())
                 .start(readContainersFromDockerHub())
                 .build();
     }

@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -129,6 +130,7 @@ public class AnnotateToolFromContainerVersionsJob extends AbstractJob {
     public Job annotateToolFromContainers() {
         return jobBuilderFactory
                 .get(PipelineConstants.JobNames.ANNOTATE_CONTAINERS_JOB.getName())
+                .incrementer(new RunIdIncrementer())
                 .start(annotateTools())
                 .next(annotateBioToolsMetadata())
                 .build();

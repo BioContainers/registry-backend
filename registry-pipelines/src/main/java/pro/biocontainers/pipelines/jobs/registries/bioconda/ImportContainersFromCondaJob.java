@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -146,7 +147,7 @@ public class ImportContainersFromCondaJob extends AbstractJob {
     public Job importQuayIOToMongoDB() {
         return jobBuilderFactory
                 .get(PipelineConstants.JobNames.READ_QUAYIO_CONTAINERS_JOB.getName())
-                .start(readContainersFromQUAYIO())
+                .incrementer(new RunIdIncrementer()).start(readContainersFromQUAYIO())
                 .build();
     }
 }
