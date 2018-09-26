@@ -11,6 +11,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.annotation.Order;
 import pro.biocontainers.mongodb.config.MongoDBConfiguration;
 import pro.biocontainers.mongodb.model.BioContainerToolVersion;
 import pro.biocontainers.mongodb.service.BioContainersService;
@@ -169,6 +170,7 @@ public class ImportContainersFromDockerHubJob extends AbstractJob {
      * @return the calculatePrideArchiveDataUsage job
      */
     @Bean
+    @Order(1)
     public Job importDockerHubToMongoDB() {
         return jobBuilderFactory
                 .get(PipelineConstants.JobNames.READ_DOCKERHUB_CONTAINERS_JOB.getName())

@@ -24,6 +24,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.annotation.Order;
 import pro.biocontainers.data.model.Tuple;
 import pro.biocontainers.mongodb.config.MongoDBConfiguration;
 import pro.biocontainers.mongodb.model.BioContainerTool;
@@ -124,6 +125,7 @@ public class AnnotateToolFromContainerVersionsJob extends AbstractJob {
      * @return the calculatePrideArchiveDataUsage job
      */
     @Bean
+    @Order(3)
     public Job annotateToolFromContainers() {
         return jobBuilderFactory
                 .get(PipelineConstants.JobNames.ANNOTATE_CONTAINERS_JOB.getName())
@@ -135,7 +137,7 @@ public class AnnotateToolFromContainerVersionsJob extends AbstractJob {
     @Bean
     public Step annotateBioToolsMetadata() {
         return stepBuilderFactory
-                .get(PipelineConstants.StepNames.ANNOTATE_BIOTOOLS_RECIPE.name())
+                .get(PipelineConstants.StepNames.ANNOTATE_BIOTOOLS_RECIPE.getName())
                 .tasklet((stepContribution, chunkContext) -> {
                     BioToolsQueryService service = new BioToolsQueryService(restTemplateBuilder(), bioToolsConfiguration);
                     List<BioContainerTool> allTools = mongoService.findAll();

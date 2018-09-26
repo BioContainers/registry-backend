@@ -30,6 +30,4 @@ RUN apt-get update && apt-get install -y --allow-unauthenticated mongodb-org-she
 
 COPY --from=0 /registry-backend/registry-pipelines/target/registry-pipelines-1.0-SNAPSHOT.jar /registry-pipelines.jar
 
-ADD run.sh /usr/local/bin/run.sh
-RUN chmod u+x /usr/local/bin/run.sh
-ENTRYPOINT ["run.sh"]
+

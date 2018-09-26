@@ -11,6 +11,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.annotation.Order;
 import org.yaml.snakeyaml.reader.ReaderException;
 import pro.biocontainers.mongodb.config.MongoDBConfiguration;
 import pro.biocontainers.mongodb.model.BioContainerToolVersion;
@@ -141,6 +142,7 @@ public class ImportContainersFromCondaJob extends AbstractJob {
      * @return the calculatePrideArchiveDataUsage job
      */
     @Bean
+    @Order(2)
     public Job importQuayIOToMongoDB() {
         return jobBuilderFactory
                 .get(PipelineConstants.JobNames.READ_QUAYIO_CONTAINERS_JOB.getName())
