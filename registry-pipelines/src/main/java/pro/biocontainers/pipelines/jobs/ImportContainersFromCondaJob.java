@@ -143,10 +143,6 @@ public class ImportContainersFromCondaJob extends AbstractJob {
                             log.info("New BioContainerTool Version to store -- " + mongoToolVersion.get().getName());
                         }
                     }));
-
-
-
-
                     return RepeatStatus.FINISHED;
                 })
                 .build();

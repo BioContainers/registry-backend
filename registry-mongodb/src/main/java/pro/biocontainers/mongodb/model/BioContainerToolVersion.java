@@ -36,6 +36,9 @@ public class BioContainerToolVersion implements ToolVersion {
     @Field("version")
     String version;
 
+    @Field("id")
+    String id;
+
     @Indexed(name = "name")
     String name;
 
@@ -92,6 +95,10 @@ public class BioContainerToolVersion implements ToolVersion {
 
     @Override
     public String getId() {
+        return this.id;
+    }
+
+    public String getVersion(){
         return this.version;
     }
 

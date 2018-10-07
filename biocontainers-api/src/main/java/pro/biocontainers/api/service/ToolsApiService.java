@@ -50,20 +50,22 @@ public class ToolsApiService {
 
         List<Tool> tools;
         List<BioContainerTool> mongoTools;
-        if((id == null && name==null && toolname==null
-        && description==null && author == null)){
+        if((id == null && name==null && toolname==null && description==null && author == null)){
             mongoTools = service.findAll();
 
         }else{
             mongoTools = service.filterAll(id, name, toolname, description, author);
         }
 
+        // COnvert the BioContainersTool to a  Tools representation.
         tools = mongoTools.stream().map( x-> {
 
             String authorTool = (x.getAuthor() != null && !x.getAuthor().isEmpty())?x.getAuthor().stream().findAny().get():null;
+
             String url = apiToolURL.replace("%%tool_accession%%", x.getId());
 
             return Tool.builder()
+                    .id(x.getId())
                     .author(authorTool)
                     .toolname(x.getName())
                     .description(x.getDescription())
@@ -86,7 +88,27 @@ public class ToolsApiService {
 
     public Tool getById(String id) {
 
-        return dummyCreator.create(Tool.class);
+        Tool tool = null;
+        Optional<BioContainerTool> toolOptional = service.findToolByAccession(id);
+        if(toolOptional.isPresent()){
+            BioContainerTool x = toolOptional.get();
+            String authorTool = (x.getAuthor() != null && !x.getAuthor().isEmpty())?x.getAuthor().stream().findAny().get():null;
+
+            String url = apiToolURL.replace("%%tool_accession%%", x.getId());
+
+            return Tool.builder()
+                    .id(x.getId())
+                    .author(authorTool)
+                    .toolname(x.getName())
+                    .description(x.getDescription())
+                    .verified(true)
+                    .contains(x.getContains())
+                    .url(url)
+                    .toolclass(x.getToolClasses().stream().map(y-> ToolClass.getByName(y.getName())).collect(Collectors.toList()))
+                    .build();
+        }
+
+        return tool;
     }
 
     /**

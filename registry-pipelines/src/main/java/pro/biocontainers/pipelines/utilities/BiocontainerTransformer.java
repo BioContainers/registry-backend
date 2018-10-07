@@ -39,11 +39,12 @@ public class BiocontainerTransformer {
      * @param container {@link DockerContainer}
      * @return BioContainerToolVersion
      */
-    public static Optional<BioContainerToolVersion> transformCondaToolVersionToBiocontainer(CondaRecipe container,
-                                                                                                List<QuayIOContainer> dockerQUAYIOContainers,
-                                                                                                String accessionCommand) {
+    public static Optional<BioContainerToolVersion> transformCondaToolVersionToBiocontainer(CondaRecipe container, List<QuayIOContainer> dockerQUAYIOContainers, String accessionCommand) {
         // Parse the DockerContainers
         List<QuayIOContainer> finalContainers = new ArrayList<>();
+        if(container.getSoftwareName().equalsIgnoreCase("abyss")){
+            System.out.println("here");
+        }
         if(dockerQUAYIOContainers != null){
             for(QuayIOContainer hubContainer: dockerQUAYIOContainers){
                 List<Tuple<String, Integer>> sameVersions = hubContainer
@@ -65,16 +66,19 @@ public class BiocontainerTransformer {
 
         if(finalContainers.size() > 0){
             finalContainers.forEach(x -> x.getContainerTags().forEach(y -> {
-                ContainerImage containerImage = ContainerImage.builder()
-                        .size(y.getValue())
-                        .fullTag(buildDockerCommand(container.getSoftwareName(), y.getKey(), accessionCommand))
-                        .description(container.getDescription())
-                        .containerType(ContainerType.DOCKER)
-                        .lastUpdate(x.getLastUpdated())
-                        .tag(y.getKey())
-                        .maintainer(maintainers)
-                        .build();
-                containerImages.add(containerImage);
+                if(y.getKey().contains(container.getSoftwareVersion())){
+                    ContainerImage containerImage = ContainerImage.builder()
+                            .size(y.getValue())
+                            .fullTag(buildDockerCommand(container.getSoftwareName(), y.getKey(), accessionCommand))
+                            .description(container.getDescription())
+                            .containerType(ContainerType.DOCKER)
+                            .lastUpdate(x.getLastUpdated())
+                            .tag(y.getKey())
+                            .maintainer(maintainers)
+                            .build();
+                    containerImages.add(containerImage);
+                }
+
             }));
         }
 
@@ -90,6 +94,7 @@ public class BiocontainerTransformer {
         return Optional
                 .of(BioContainerToolVersion
                         .builder()
+                        .id(container.getSoftwareName() + ":" + container.getSoftwareVersion())
                         .name(container.getSoftwareName())
                         .version(container.getSoftwareVersion())
                         .description(container.getDescription())
