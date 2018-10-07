@@ -26,6 +26,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.Order;
+import pro.biocontainers.data.model.ToolClass;
 import pro.biocontainers.data.model.Tuple;
 import pro.biocontainers.mongodb.config.MongoDBConfiguration;
 import pro.biocontainers.mongodb.model.BioContainerTool;
@@ -41,9 +42,8 @@ import pro.biocontainers.readers.biotools.model.BioToolEntry;
 import pro.biocontainers.readers.biotools.services.BioToolsQueryService;
 import pro.biocontainers.readers.github.configs.GitHubConfiguration;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Configuration
 @Slf4j
@@ -76,30 +76,70 @@ public class AnnotateToolFromContainerVersionsJob extends AbstractJob {
                 .tasklet((stepContribution, chunkContext) -> {
 
                     List<BioContainerToolVersion> allVersions = mongoService.findAllToolVersion();
-                    allVersions.stream().forEach( x-> {
-                        List<Tuple<String, List<String>>> externalIdentifiers =  x.getAdditionalIdentifiers();
-                        String id = x.getName();
-                        if(externalIdentifiers != null && externalIdentifiers.stream().filter(y -> y.getKey().equalsIgnoreCase(ExternalID.BIOTOOLS.getName())).count() >0) {
-                          id = externalIdentifiers.stream().filter(y -> y.getKey().equalsIgnoreCase(ExternalID.BIOTOOLS.getName())).findFirst().get().getValue().get(0);
-                          if(id.split("/").length > 1){
-                              String[] idClean = id.split("/");
-                              id = idClean[idClean.length -1];
-                          }
+                    Map<String, List<BioContainerToolVersion>> toolsNames = allVersions.stream()
+                            .collect(Collectors
+                                    .groupingBy(BioContainerToolVersion::getName, Collectors.toList()));
+                    toolsNames.entrySet().stream().forEach( x -> {
+                        String name = x.getKey();
+                        List<BioContainerToolVersion> versions = x.getValue();
+                        List<String> bioTools = new ArrayList<>();
 
-                        }
+                        versions.stream().forEach( version -> {
+                            version.getAdditionalIdentifiers().stream().forEach(id -> {
+                                if(id.getKey().equalsIgnoreCase(ExternalID.BIOTOOLS.getName())){
+                                    for(String idBio : id.getValue()){
+                                        if(idBio.split("/").length > 1){
+                                            String[] idClean = idBio.split("/");
+                                            String idBioClean = idClean[idClean.length -1];
+                                            bioTools.add(idBioClean);
+                                        }
+                                    }
+                                }
+                            });
+                        });
+                        String id = name;
+                        List<String> maintainers = versions.stream().
+                                map(BioContainerToolVersion::getMaintainers).
+                                flatMap(Collection::stream).
+                                collect(Collectors.toList());
+                        Optional<String> url = versions.stream()
+                                .map(BioContainerToolVersion::getHomeURL)
+                                .filter(urlVersion -> (urlVersion != null && !urlVersion.isEmpty()))
+                                .findFirst();
+                        Optional<String> description = versions.stream()
+                                .map(BioContainerToolVersion::getDescription)
+                                .filter(urlVersion -> (urlVersion != null && !urlVersion.isEmpty()))
+                                .findFirst();
+                        List<ToolClass> classContainer = versions.stream()
+                                .map(BioContainerToolVersion::getToolClasses)
+                                .flatMap(Collection::parallelStream)
+                                .filter(urlVersion -> (urlVersion != null))
+                                .collect(Collectors.toList());
+                        List<String> contains = versions.stream()
+                                .map(BioContainerToolVersion::getContains)
+                                .flatMap(Collection::parallelStream)
+                                .filter(urlVersion -> (urlVersion != null))
+                                .collect(Collectors.toList());
+                        Optional<String> licence = versions.stream()
+                                .map(BioContainerToolVersion::getLicense)
+                                .filter(urlVersion -> (urlVersion != null))
+                                .findFirst();
+
                         BioContainerTool tool = BioContainerTool.builder()
-                                .author(new HashSet<>(x.getMaintainers()))
-                                .name(id)
+                                .author(new HashSet<>(maintainers))
+                                .name(name)
                                 .id(id)
-                                .urlHome(x.getHomeURL())
-                                .description(x.getDescription())
-                                .toolClasses(x.getToolClasses())
-                                .contains(x.getContains())
-                                    .license(x.getLicense())
-                                    .build();
+                                .urlHome(url.isPresent()?url.get():null)
+                                .description(description.isPresent()?description.get():null)
+                                .toolClasses(classContainer)
+                                .contains(contains)
+                                .license((licence.isPresent())?licence.get():null)
+                                .toolVersions(versions.stream()
+                                        .map(BioContainerToolVersion::getId)
+                                        .collect(Collectors.toSet()))
+                                .build();
 
-                        tool.addVersion(x.getMetaVersion());
-                        tool.addIdentifiers(x.getAdditionalIdentifiers());
+                        tool.addIdentifiers(versions.stream().map(BioContainerToolVersion::getAdditionalIdentifiers).flatMap(Collection::parallelStream).collect(Collectors.toList()));
 
                         Optional<BioContainerTool> currentToolOptional = mongoService.findToolByAccession(tool.getId());
 

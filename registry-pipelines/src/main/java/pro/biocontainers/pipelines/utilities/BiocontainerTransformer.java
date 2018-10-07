@@ -152,17 +152,19 @@ public class BiocontainerTransformer {
 
         if(finalContainers.size() > 0){
             finalContainers.forEach(x -> x.getContainerTags().forEach(y -> {
-                ContainerImage containerImage = ContainerImage.builder()
-                        .size(y.getValue())
-                        .fullTag(buildDockerCommand(container.getSoftwareName(), y.getKey(), accessionCommand))
-                        .description(container.getDescription())
-                        .containerType(ContainerType.DOCKER)
-                        .lastUpdate(x.getLastUpdated())
-                        .maintainer(maintainers)
-                        .tag(y.getKey())
-                        .build();
-                containerImages.add(containerImage);
-            }));
+                if(y.getKey().contains(container.getVersion())){
+                    ContainerImage containerImage = ContainerImage.builder()
+                            .size(y.getValue())
+                            .fullTag(buildDockerCommand(container.getSoftwareName(), y.getKey(), accessionCommand))
+                            .description(container.getDescription())
+                            .containerType(ContainerType.DOCKER)
+                            .lastUpdate(x.getLastUpdated())
+                            .maintainer(maintainers)
+                            .tag(y.getKey())
+                            .build();
+                    containerImages.add(containerImage);
+                }
+           }));
         }
 
         List<DockerHubContainer> finalUpdates = finalContainers.stream().filter(x -> x.getLastUpdated() != null)
@@ -179,6 +181,7 @@ public class BiocontainerTransformer {
                 .of(BioContainerToolVersion
                         .builder()
                         .name(container.getSoftwareName())
+                        .id(container.getSoftwareName() + ":" + container.getVersion())
                         .version(container.getSoftwareVersion())
                         .description(container.getDescription())
                         .lastUpdate(finalUpdate)
