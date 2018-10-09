@@ -138,10 +138,12 @@ public class ToolsApiService {
                         .id(x.getMetaVersion())
                         .containerfile(latestImage.getContainerType() == ContainerType.DOCKER)
                         .verified(true)
-                        .latestImage(latestImage.getAccession())
+                        .latestImage(latestImage.getId())
                         .imageName(x.getName() + "/" + x.getMetaVersion() + "/" + latestImage.getTag())
                         .images(dockerImages.stream().map(ContainerImage::getTag).collect(Collectors.toList()))
+                        .containerImages(dockerImages)
                         .build();
+
             }).collect(Collectors.toList());
         }
         return versions;
@@ -155,12 +157,26 @@ public class ToolsApiService {
      * @return A tool version.
      */
     public ToolVersion getByVersionId(String id, String versionId) {
-        BioContainerToolVersion container = service.findVersions(id).stream().filter(x -> x.getMetaVersion().equalsIgnoreCase(versionId)).findAny().get();
+        BioContainerToolVersion container = service.findVersions(id)
+                .stream()
+                .filter(x -> x.getMetaVersion().equalsIgnoreCase(versionId)).findAny().get();
+
+        List<? extends ContainerImage> dockerImages = (container.getImages())
+                .stream()
+                .sorted(Comparator.comparing(ContainerImage::getLastUpdate))
+                .collect(Collectors.toList());
+        ContainerImage latestImage = dockerImages.stream().findFirst().get();
+
         return ToolVersion.builder()
-                .id(container.getMetaVersion())
-                .verified(true)
-                .containerfile(container.getImages().stream().filter(x -> ((ContainerImage) x).getContainerType() == ContainerType.DOCKER).count() > 0)
+                .metaVersion(container.getMetaVersion())
                 .name(container.getName())
+                .id(container.getMetaVersion())
+                .containerfile(latestImage.getContainerType() == ContainerType.DOCKER)
+                .verified(true)
+                .latestImage(latestImage.getId())
+                .imageName(container.getName() + "/" + container.getMetaVersion() + "/" + latestImage.getTag())
+                .images(dockerImages.stream().map(ContainerImage::getTag).collect(Collectors.toList()))
+                .containerImages(dockerImages)
                 .build();
     }
 
@@ -292,7 +308,7 @@ public class ToolsApiService {
         if (container.isPresent()) {
             images = container.get().getImages().stream().map(x -> pro.biocontainers.api.model.ContainerImage
                     .builder()
-                    .accession(((ContainerImage) x).getAccession())
+                    .accession(((ContainerImage) x).getId())
                     .tag(((ContainerImage) x).getTag())
                     .downloads(((ContainerImage) x).getDownloads())
                     .lastUpdate(((ContainerImage) x).getLastUpdate())

@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Data;
+import pro.biocontainers.data.model.ContainerImage;
 
 import java.util.List;
 
@@ -64,5 +65,10 @@ public class ToolVersion {
     @JsonProperty("verified_source")
     @ApiModelProperty(value = "Source of metadata that can support a verified tool, such as an email or URL")
     private String verifiedSource;
+
+    @JsonProperty("container_images")
+    @ApiModelProperty(value = "List of containers Images for ToolVersion")
+    private List<? extends ContainerImage> containerImages;
+
 }
 

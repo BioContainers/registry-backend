@@ -70,7 +70,7 @@ public class ContainerImage implements IContainerImage{
     private String additionalMetadata;
 
     @Override
-    public String getAccession() {
+    public String getId() {
         return this.tag;
     }
 
@@ -128,5 +128,30 @@ public class ContainerImage implements IContainerImage{
 
     public List<String> getMaintainer() {
         return maintainer;
+    }
+
+    @Override
+    public String getFullTag() {
+        return fullTag;
+    }
+
+    public String getContainerFileProject() {
+        return containerFileProject;
+    }
+
+    public String getLicense() {
+        return license;
+    }
+
+    public String getSoftwareURL() {
+        return softwareURL;
+    }
+
+    public String getDocumentationURL() {
+        return documentationURL;
+    }
+
+    public String getAdditionalMetadata() {
+        return additionalMetadata;
     }
 }

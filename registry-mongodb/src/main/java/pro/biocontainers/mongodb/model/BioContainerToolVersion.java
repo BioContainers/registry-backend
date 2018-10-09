@@ -106,7 +106,7 @@ public class BioContainerToolVersion implements ToolVersion {
     public String getLatestImage() {
         List<ContainerImage> images = getImages().stream().sorted(Comparator.comparing(ContainerImage::getLastUpdate)).collect(Collectors.toList());
         ContainerImage image = images.stream().findFirst().get();
-        return image.getAccession();
+        return image.getId();
     }
 
     @Override

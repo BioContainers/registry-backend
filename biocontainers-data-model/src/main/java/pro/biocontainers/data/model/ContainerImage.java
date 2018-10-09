@@ -18,4 +18,6 @@ public interface ContainerImage {
     String getTag();
 
     Integer getSize();
+
+    String getFullTag();
 }
